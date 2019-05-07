@@ -1,0 +1,6 @@
+{
+    "require": {
+        "slim/slim": "^3.0",
+        "twilio/sdk": "^5.29"
+    }
+}
