@@ -2,6 +2,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Twilio\Rest\Client;
+use \Firebase\JWT\JWT;
 require '../src/config/ResultsApi.class.php';
 $app = new \Slim\App;
 $app->options('/{routes:.+}', function ($request, $response, $args) {
@@ -10,12 +11,30 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
             ->withHeader('Content-type', 'application/json')
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
+            ->withHeader('access-control-expose-headers','X-Token')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
             
 });
+$app->add(new \Tuupola\Middleware\JwtAuthentication([
+    "path" => "/api", /* or ["/api", "/admin"] */
+    "attribute" => "decoded_token_data",
+    "header" => "X-Token",
+    "regexp" => "/(.*)/",
+    "cookie" => "user",
+    "secret" => "supersecretkeyyoushouldnotcommittogithub",
+    "algorithm" => ["HS256"],
+    "error" => function ($response, $arguments) {
+        $data["status"] = "error";
+        $data["message"] = $arguments["message"];
+        return $response
+            ->withHeader("Content-Type", "application/json")
+            ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+    }
+]));
 
 //Get All Books
 
@@ -26,8 +45,7 @@ $app->get('/api/GetAllBook',function(Request $request , Response $response, $arg
     $userName = $request->getParam('userName');
     $auth = checkAPIKey($key,$userName);
     if (!$auth){
-        $resultObj->set_ErrorMessage("you are not authorized to access this API");
-        
+        $resultObj->set_ErrorMessage("you are not authorized to access this API"); 
         $resultObj->set_statusCode(403);
        //echo json_encode(array("message" => "you are not authorized to access this API"));
        echo json_encode($resultObj,JSON_UNESCAPED_UNICODE);
@@ -54,7 +72,31 @@ $app->get('/api/GetAllBook',function(Request $request , Response $response, $arg
     }
 });
 
-//Get All Books 2 without result obj
+$app->post('/login',function(Request $request , Response $response){
+    //test for git
+    $resultObj = new ResultAPI();
+    $input = $request->getParsedBody();
+    $user = new Users();
+    $user->userName =$input['userName'];
+    $user->key =$input['key'];
+    $auth = $user->checkAPIKey();
+    if(!$auth){
+        $resultObj->set_result($user->key);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage("These credentials do not match our records.");
+        return $this->response->withJson($resultObj);  
+    }
+    session_start();
+    $token = JWT::encode(['key' => $input['key'], 'userName' => $input['userName']], 'supersecretkeyyoushouldnotcommittogithub', "HS256");
+
+    $cookie_name = "TokenApi";
+    $cookie_value = $token;
+    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+    $_SESSION['TokenApi'] = $token;
+    
+    return $this->response->withHeader('X-Token',$token);
+
+});
 
 $app->get('/api/GetAllBook2',function(Request $request , Response $response){
     //test for git
@@ -131,7 +173,6 @@ function convertToHoursMins($time, $format = '%02d:%02d') {
 
 
 //Add Book to database
-
 $app->post('/api/SetBook',function(Request $request , Response $response){
     $BooksObj = new Books();
     $BooksObj->StartDate = $request->getParam('StartDate');
@@ -147,22 +188,9 @@ $app->post('/api/SetBook',function(Request $request , Response $response){
 
 $app->get('/api/GetAllServiceTypeByService',function(Request $request , Response $response){
     $ServiceID = $request->getParam('ServiceID');
-    $sql = "call ServiceTypeByServiceIDGet('$ServiceID');";
+    $ServiceTypeObj = new ServiceTypes();
 
-    
-    try{
-        $mysqli = new db();
-        $mysqli = $mysqli->connect();
-        $mysqli->query("set character_set_client='utf8'");
-        $mysqli->query("set character_set_results='utf8'");
-        $result = $mysqli->query($sql);
-        $row = cast_query_results($result);
-        echo json_encode($row,JSON_UNESCAPED_UNICODE);
-    }
-    catch(PDOException $e){
-        $var = (string)$e->getMessage();
-        echo '{"error": "'.$var.'"}';
-    }
+    echo $ServiceTypeObj->GetServiceTypeByID($ServiceID,$response);
 });
 
 
@@ -244,16 +272,4 @@ function cast_query_results($rs) {
         }
     }
     return $data;
-}
-
-
-function checkAPIKey($key,$userName){
-    $sql = "SELECT * FROM APIKeys WHERE APIKey = '$key' AND UserName = '$userName' LIMIT 1";
-    $mysqli = new db();
-    $mysqli = $mysqli->connect();
-    $mysqli->query("set character_set_client='utf8'");
-    $mysqli->query("set character_set_results='utf8'");
-    $result = $mysqli->query($sql);
-    $rowcount = mysqli_num_rows($result);
-    return $rowcount;
 }

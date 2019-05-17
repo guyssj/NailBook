@@ -1,6 +1,12 @@
 <?php 
 //require '../src/config/ResultsApi.class.php';
 //require '../src/config/db.php';
+    /**
+     * 
+     * this class for Books
+     * 
+     * Created by Guy Gold. 16/12/2018
+     */
     class Books{
         
         /**

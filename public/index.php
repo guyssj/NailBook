@@ -5,6 +5,8 @@ header('Content-Type: application/json');
 require '../vendor/autoload.php';
 require '../src/config/db.php';
 require '../src/config/Books.class.php';
+require '../src/config/ServiceTypes.class.php';
+require '../src/config/Users.class.php';
 
 
 $app = new \Slim\App;
