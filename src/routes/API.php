@@ -20,11 +20,11 @@ $app->add(function ($req, $res, $next) {
             
 });
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
-    "path" => "/api", /* or ["/api", "/admin"] */
+    "path" => "/admin", /* or ["/api", "/admin"] */
     "attribute" => "decoded_token_data",
     "header" => "X-Token",
     "regexp" => "/(.*)/",
-    "cookie" => "user",
+    "cookie" => "userToken",
     "secret" => "supersecretkeyyoushouldnotcommittogithub",
     "algorithm" => ["HS256"],
     "error" => function ($response, $arguments) {
@@ -196,55 +196,13 @@ $app->get('/api/GetAllServiceTypeByService',function(Request $request , Response
 
 
 $app->post('/api/AddCustomer',function(Request $request , Response $response){
-    $StartDate = $request->getParam('StartDate');
-    $EndDate = $request->getParam('EndDate');
-    $CustomerID = $request->getParam('CustomerID');
-    $ServiceID = $request->getParam('ServiceID');
-    $Durtion = $request->getParam('Durtion');
-    
-    
-    // $sql = "call CustomerAdd('$First_name','$last_name','$phoneNumber','$phoneNumber2','$datecous','$email','$passport',@id);";
-    // $sql = "SELECT phoneNumber FROM Customers WHERE phoneNumber=$phoneNumber LIMIT 1";
-    try{
-        $mysqli = new db();
-        $mysqli = $mysqli->connect();
-        $mysqli->query("set character_set_client='utf8'");
-        $mysqli->query("set character_set_results='utf8'");
-        $result = $mysqli->query($sql);
-        $row_cnt = $result->num_rows;
-        //echo $result;
-        if($row_cnt > 0){
-            echo '{"error": "Customer has Exsits in database" }';
-            $result->close();
-        }
-        else{
-            $sql2 = "INSERT INTO Customers (first_name,Last_name,phoneNumber,phoneNumber2,datecous,email,passport)
-            VALUES (:First_name,:last_name,:phoneNumber,:phoneNumber2,:datecous,:email,:passport)";
-                $db = new db();
-                $db = $db->connect2();
-                $smst = $db->prepare($sql2);
-        
-                $smst->bindParam(':First_name', $First_name);
-                $smst->bindParam(':last_name', $last_name);
-                $smst->bindParam(':phoneNumber', $phoneNumber);
-                $smst->bindParam(':phoneNumber2', $phoneNumber2);
-                $smst->bindParam(':datecous', $datecous);
-                $smst->bindParam(':email', $email);
-                $smst->bindParam(':passport', $passport);
-                $db->query("set character_set_client='utf8'");
-                $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-        
-                $row = $smst->execute();
-        
-                echo $row;
 
-                $mysqli->close();
-        }
-    }catch(PDOException $e){
-        $var = (string)$e->getMessage();
-        echo '{"error": "'.$var.'"}';
-    }
+    $CustomerObj = new Customer();
+    $CustomerObj->FirstName = $request->getParam('FirstName');
+    $CustomerObj->LastName = $request->getParam('LastName');
+    $CustomerObj->PhoneNumber = $request->getParam('PhoneNumber');
 
+    echo $CustomerObj->Add();
 });
 
 //Cast the Fucking Result

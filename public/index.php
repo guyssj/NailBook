@@ -7,6 +7,8 @@ require '../src/config/db.php';
 require '../src/config/Books.class.php';
 require '../src/config/ServiceTypes.class.php';
 require '../src/config/Users.class.php';
+require '../src/config/Customer.class.php';
+
 
 
 $app = new \Slim\App;
