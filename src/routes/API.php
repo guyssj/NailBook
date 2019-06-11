@@ -98,10 +98,21 @@ $app->post('/login',function(Request $request , Response $response){
 
 });
 
-$app->get('/api/GetAllBook2',function(Request $request , Response $response){
+$app->get('/admin/GetAllBook2',function(Request $request , Response $response){
     //test for git
     $BooksObj = new Books();
     echo $BooksObj->GetBooks($response);
+});
+
+$app->get('/admin/GetCustomerById',function(Request $request , Response $response){
+    //test for git
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $Customers->CustomerID = $request->getParam('CustomerID');
+    $resultObj->set_result($Customers->GetCustomerById($Customers->CustomerID));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj,JSON_UNESCAPED_UNICODE);
+    
 });
 $app->get('/api/GetAllServices',function(Request $request , Response $response){
     $sql = "call ServiceGetAll();";
@@ -196,13 +207,14 @@ $app->get('/api/GetAllServiceTypeByService',function(Request $request , Response
 
 
 $app->post('/api/AddCustomer',function(Request $request , Response $response){
-
+    $resultObj = new ResultAPI();
     $CustomerObj = new Customer();
     $CustomerObj->FirstName = $request->getParam('FirstName');
     $CustomerObj->LastName = $request->getParam('LastName');
     $CustomerObj->PhoneNumber = $request->getParam('PhoneNumber');
-
-    echo $CustomerObj->Add();
+    $resultObj->set_result($CustomerObj->Add());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj,JSON_UNESCAPED_UNICODE);
 });
 
 //Cast the Fucking Result
