@@ -14,7 +14,8 @@
          */
         public $BookID;
         public $StartDate;
-        public $EndDate;
+        //public $EndDate;
+        Public $StartAt;
         public $CustomerID;
         public $ServiceID;
         public $Durtion;
@@ -49,8 +50,8 @@
          * Set book in the db
          */
         public function SetBook(Books $Books){
-            $sql = "call BookSet('$Books->StartDate','$Books->EndDate','$Books->CustomerID','$Books->ServiceID','$Books->Durtion','$Books->ServiceTypeID',@l_BookID);";
-            $sql2 = "SELECT StartDate FROM Books WHERE StartDate='$Books->StartDate' LIMIT 1;";
+            $sql = "call BookSet('$Books->StartDate','$Books->StartAt','$Books->CustomerID','$Books->ServiceID','$Books->Durtion','$Books->ServiceTypeID',@l_BookID);";
+            $sql2 = "SELECT StartDate FROM Books WHERE StartDate='$Books->StartDate' And StartAt='$Books->StartAt' LIMIT 1;";
             try{
                 $mysqli = new db();
                 $mysqli = $mysqli->connect();
@@ -59,7 +60,7 @@
                 $result = $mysqli->query($sql2);
                 $rowcount = mysqli_num_rows($result);
                 if($rowcount > 0){
-                    return json_encode(array("message" => "the Book in this time is exsits"));
+                    return -1;
                     $result->close();
                 }
                 else{
@@ -67,10 +68,11 @@
                     $db = $db->connect2();
                     $smst = $db->prepare($sql);
                     $smst->bindParam(':StartDate', $Books->StartDate);
-                    $smst->bindParam(':EndDate', $Books->EndDate);
+                    $smst->bindParam(':StartAt', $Books->StartAt);
                     $smst->bindParam(':CustomerID', $Books->CustomerID);
                     $smst->bindParam(':ServiceID', $Books->ServiceID);
                     $smst->bindParam(':Durtion', $Books->Durtion);
+                    $smst->bindParam(':ServiceTypeID', $Books->ServiceTypeID);
                     $db->query("set character_set_client='utf8'");
                     $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
                 
@@ -81,7 +83,7 @@
                 }
             }catch(PDOException $e){
                 $var = (string)$e->getMessage();
-                return '{"error": "'.$var.'"}';
+                return $var;
             }
         }
 

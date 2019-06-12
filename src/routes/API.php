@@ -105,7 +105,6 @@ $app->get('/admin/GetAllBook2',function(Request $request , Response $response){
 });
 
 $app->get('/admin/GetCustomerById',function(Request $request , Response $response){
-    //test for git
     $Customers = new Customer();
     $resultObj = new ResultAPI();
     $Customers->CustomerID = $request->getParam('CustomerID');
@@ -186,15 +185,23 @@ function convertToHoursMins($time, $format = '%02d:%02d') {
 //Add Book to database
 $app->post('/api/SetBook',function(Request $request , Response $response){
     $BooksObj = new Books();
+    $resultObj = new ResultAPI();
     $BooksObj->StartDate = $request->getParam('StartDate');
-    $BooksObj->EndDate = $request->getParam('EndDate');
+    $BooksObj->StartAt = $request->getParam('StartAt');
     $BooksObj->CustomerID = $request->getParam('CustomerID');
     $BooksObj->ServiceID = $request->getParam('ServiceID');
     $BooksObj->Durtion = $request->getParam('Durtion');
     $BooksObj->ServiceTypeID = $request->getParam('ServiceTypeID');
 
+    $resultObj->set_result($BooksObj->SetBook($BooksObj));
+    $resultObj->set_statusCode($response->getStatusCode());
+
+    if($resultObj->get_result() == -1){
+        $resultObj->set_ErrorMessage("Treatment is exists in this time");
+    }
+    echo json_encode($resultObj,JSON_UNESCAPED_UNICODE);
+
     
-    echo $BooksObj->SetBook($BooksObj);
 });
 
 $app->get('/api/GetAllServiceTypeByService',function(Request $request , Response $response){
