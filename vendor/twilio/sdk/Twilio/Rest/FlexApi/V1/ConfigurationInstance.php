@@ -17,43 +17,46 @@ use Twilio\Values;
 use Twilio\Version;
 
 /**
- * @property string accountSid
- * @property \DateTime dateCreated
- * @property \DateTime dateUpdated
- * @property array attributes
- * @property string status
- * @property string taskrouterWorkspaceSid
- * @property string taskrouterTargetWorkflowSid
- * @property string taskrouterTargetTaskqueueSid
- * @property array taskrouterTaskqueues
- * @property array taskrouterSkills
- * @property array taskrouterWorkerChannels
- * @property array taskrouterWorkerAttributes
- * @property string taskrouterOfflineActivitySid
- * @property string runtimeDomain
- * @property string messagingServiceInstanceSid
- * @property string chatServiceInstanceSid
- * @property string uiLanguage
- * @property array uiAttributes
- * @property string uiVersion
- * @property string serviceVersion
- * @property boolean callRecordingEnabled
- * @property string callRecordingWebhookUrl
- * @property boolean crmEnabled
- * @property string crmType
- * @property string crmCallbackUrl
- * @property string crmFallbackUrl
- * @property array crmAttributes
- * @property array publicAttributes
- * @property string url
+ * @property string $accountSid
+ * @property \DateTime $dateCreated
+ * @property \DateTime $dateUpdated
+ * @property array $attributes
+ * @property string $status
+ * @property string $taskrouterWorkspaceSid
+ * @property string $taskrouterTargetWorkflowSid
+ * @property string $taskrouterTargetTaskqueueSid
+ * @property array $taskrouterTaskqueues
+ * @property array $taskrouterSkills
+ * @property array $taskrouterWorkerChannels
+ * @property array $taskrouterWorkerAttributes
+ * @property string $taskrouterOfflineActivitySid
+ * @property string $runtimeDomain
+ * @property string $messagingServiceInstanceSid
+ * @property string $chatServiceInstanceSid
+ * @property string $uiLanguage
+ * @property array $uiAttributes
+ * @property string $uiVersion
+ * @property string $serviceVersion
+ * @property bool $callRecordingEnabled
+ * @property string $callRecordingWebhookUrl
+ * @property bool $crmEnabled
+ * @property string $crmType
+ * @property string $crmCallbackUrl
+ * @property string $crmFallbackUrl
+ * @property array $crmAttributes
+ * @property array $publicAttributes
+ * @property bool $pluginServiceEnabled
+ * @property array $pluginServiceAttributes
+ * @property array $integrations
+ * @property string $url
  */
 class ConfigurationInstance extends InstanceResource {
     /**
      * Initialize the ConfigurationInstance
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @return \Twilio\Rest\FlexApi\V1\ConfigurationInstance 
+     * @return \Twilio\Rest\FlexApi\V1\ConfigurationInstance
      */
     public function __construct(Version $version, array $payload) {
         parent::__construct($version);
@@ -88,6 +91,9 @@ class ConfigurationInstance extends InstanceResource {
             'crmFallbackUrl' => Values::array_get($payload, 'crm_fallback_url'),
             'crmAttributes' => Values::array_get($payload, 'crm_attributes'),
             'publicAttributes' => Values::array_get($payload, 'public_attributes'),
+            'pluginServiceEnabled' => Values::array_get($payload, 'plugin_service_enabled'),
+            'pluginServiceAttributes' => Values::array_get($payload, 'plugin_service_attributes'),
+            'integrations' => Values::array_get($payload, 'integrations'),
             'url' => Values::array_get($payload, 'url'),
         );
 
@@ -97,7 +103,7 @@ class ConfigurationInstance extends InstanceResource {
     /**
      * Generate an instance context for the instance, the context is capable of
      * performing various actions.  All instance actions are proxied to the context
-     * 
+     *
      * @return \Twilio\Rest\FlexApi\V1\ConfigurationContext Context for this
      *                                                      ConfigurationInstance
      */
@@ -111,7 +117,7 @@ class ConfigurationInstance extends InstanceResource {
 
     /**
      * Fetch a ConfigurationInstance
-     * 
+     *
      * @param array|Options $options Optional Arguments
      * @return ConfigurationInstance Fetched ConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -122,7 +128,7 @@ class ConfigurationInstance extends InstanceResource {
 
     /**
      * Create a new ConfigurationInstance
-     * 
+     *
      * @return ConfigurationInstance Newly created ConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -132,7 +138,7 @@ class ConfigurationInstance extends InstanceResource {
 
     /**
      * Update the ConfigurationInstance
-     * 
+     *
      * @return ConfigurationInstance Updated ConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -142,7 +148,7 @@ class ConfigurationInstance extends InstanceResource {
 
     /**
      * Magic getter to access properties
-     * 
+     *
      * @param string $name Property to access
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
@@ -162,7 +168,7 @@ class ConfigurationInstance extends InstanceResource {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

@@ -65,7 +65,7 @@ class Customer
         }
 
     }
-    public function GetCustomerById($ID)
+    public static function GetCustomerById($ID)
     {
         $sql = "call CustomerGetAll();";
         try {

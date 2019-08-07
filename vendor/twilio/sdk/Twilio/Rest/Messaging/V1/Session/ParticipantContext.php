@@ -9,6 +9,7 @@
 
 namespace Twilio\Rest\Messaging\V1\Session;
 
+use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Serialize;
@@ -21,12 +22,12 @@ use Twilio\Version;
 class ParticipantContext extends InstanceContext {
     /**
      * Initialize the ParticipantContext
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param string $sessionSid The unique id of the Session for this participant.
      * @param string $sid A 34 character string that uniquely identifies this
      *                    resource.
-     * @return \Twilio\Rest\Messaging\V1\Session\ParticipantContext 
+     * @return \Twilio\Rest\Messaging\V1\Session\ParticipantContext
      */
     public function __construct(Version $version, $sessionSid, $sid) {
         parent::__construct($version);
@@ -39,7 +40,7 @@ class ParticipantContext extends InstanceContext {
 
     /**
      * Update the ParticipantInstance
-     * 
+     *
      * @param array|Options $options Optional Arguments
      * @return ParticipantInstance Updated ParticipantInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -70,7 +71,7 @@ class ParticipantContext extends InstanceContext {
 
     /**
      * Fetch a ParticipantInstance
-     * 
+     *
      * @return ParticipantInstance Fetched ParticipantInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,7 +94,7 @@ class ParticipantContext extends InstanceContext {
 
     /**
      * Deletes the ParticipantInstance
-     * 
+     *
      * @return boolean True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -103,7 +104,7 @@ class ParticipantContext extends InstanceContext {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

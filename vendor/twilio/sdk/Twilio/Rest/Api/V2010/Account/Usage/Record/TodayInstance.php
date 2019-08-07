@@ -16,30 +16,30 @@ use Twilio\Values;
 use Twilio\Version;
 
 /**
- * @property string accountSid
- * @property string apiVersion
- * @property string category
- * @property string count
- * @property string countUnit
- * @property string description
- * @property \DateTime endDate
- * @property string price
- * @property string priceUnit
- * @property \DateTime startDate
- * @property array subresourceUris
- * @property string uri
- * @property string usage
- * @property string usageUnit
+ * @property string $accountSid
+ * @property string $apiVersion
+ * @property string $category
+ * @property string $count
+ * @property string $countUnit
+ * @property string $description
+ * @property \DateTime $endDate
+ * @property string $price
+ * @property string $priceUnit
+ * @property \DateTime $startDate
+ * @property array $subresourceUris
+ * @property string $uri
+ * @property string $usage
+ * @property string $usageUnit
  */
 class TodayInstance extends InstanceResource {
     /**
      * Initialize the TodayInstance
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $accountSid A 34 character string that uniquely identifies
      *                           this resource.
-     * @return \Twilio\Rest\Api\V2010\Account\Usage\Record\TodayInstance 
+     * @return \Twilio\Rest\Api\V2010\Account\Usage\Record\TodayInstance
      */
     public function __construct(Version $version, array $payload, $accountSid) {
         parent::__construct($version);
@@ -67,7 +67,7 @@ class TodayInstance extends InstanceResource {
 
     /**
      * Magic getter to access properties
-     * 
+     *
      * @param string $name Property to access
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
@@ -87,7 +87,7 @@ class TodayInstance extends InstanceResource {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

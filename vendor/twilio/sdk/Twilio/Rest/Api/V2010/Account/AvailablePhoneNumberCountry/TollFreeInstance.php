@@ -15,29 +15,29 @@ use Twilio\Values;
 use Twilio\Version;
 
 /**
- * @property string friendlyName
- * @property string phoneNumber
- * @property string lata
- * @property string locality
- * @property string rateCenter
- * @property string latitude
- * @property string longitude
- * @property string region
- * @property string postalCode
- * @property string isoCountry
- * @property string addressRequirements
- * @property boolean beta
- * @property string capabilities
+ * @property string $friendlyName
+ * @property string $phoneNumber
+ * @property string $lata
+ * @property string $locality
+ * @property string $rateCenter
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $region
+ * @property string $postalCode
+ * @property string $isoCountry
+ * @property string $addressRequirements
+ * @property bool $beta
+ * @property string $capabilities
  */
 class TollFreeInstance extends InstanceResource {
     /**
      * Initialize the TollFreeInstance
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $accountSid The account_sid
      * @param string $countryCode The ISO-3166-1 country code of the country.
-     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeInstance 
+     * @return \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeInstance
      */
     public function __construct(Version $version, array $payload, $accountSid, $countryCode) {
         parent::__construct($version);
@@ -64,7 +64,7 @@ class TollFreeInstance extends InstanceResource {
 
     /**
      * Magic getter to access properties
-     * 
+     *
      * @param string $name Property to access
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
@@ -84,7 +84,7 @@ class TollFreeInstance extends InstanceResource {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

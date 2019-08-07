@@ -23,12 +23,10 @@ abstract class SessionOptions {
      * @param \DateTime $dateCreated The date that this resource was created.
      * @param \DateTime $dateUpdated The date that this resource was last updated.
      * @param string $createdBy Identity of the session's creator.
-     * @param string $twilioAddress Twilio address the participant is contacting to.
-     * @param string $userAddress Address the participant is contacting from.
      * @return CreateSessionOptions Options builder
      */
-    public static function create($friendlyName = Values::NONE, $attributes = Values::NONE, $dateCreated = Values::NONE, $dateUpdated = Values::NONE, $createdBy = Values::NONE, $twilioAddress = Values::NONE, $userAddress = Values::NONE) {
-        return new CreateSessionOptions($friendlyName, $attributes, $dateCreated, $dateUpdated, $createdBy, $twilioAddress, $userAddress);
+    public static function create($friendlyName = Values::NONE, $attributes = Values::NONE, $dateCreated = Values::NONE, $dateUpdated = Values::NONE, $createdBy = Values::NONE) {
+        return new CreateSessionOptions($friendlyName, $attributes, $dateCreated, $dateUpdated, $createdBy);
     }
 
     /**
@@ -53,22 +51,18 @@ class CreateSessionOptions extends Options {
      * @param \DateTime $dateCreated The date that this resource was created.
      * @param \DateTime $dateUpdated The date that this resource was last updated.
      * @param string $createdBy Identity of the session's creator.
-     * @param string $twilioAddress Twilio address the participant is contacting to.
-     * @param string $userAddress Address the participant is contacting from.
      */
-    public function __construct($friendlyName = Values::NONE, $attributes = Values::NONE, $dateCreated = Values::NONE, $dateUpdated = Values::NONE, $createdBy = Values::NONE, $twilioAddress = Values::NONE, $userAddress = Values::NONE) {
+    public function __construct($friendlyName = Values::NONE, $attributes = Values::NONE, $dateCreated = Values::NONE, $dateUpdated = Values::NONE, $createdBy = Values::NONE) {
         $this->options['friendlyName'] = $friendlyName;
         $this->options['attributes'] = $attributes;
         $this->options['dateCreated'] = $dateCreated;
         $this->options['dateUpdated'] = $dateUpdated;
         $this->options['createdBy'] = $createdBy;
-        $this->options['twilioAddress'] = $twilioAddress;
-        $this->options['userAddress'] = $userAddress;
     }
 
     /**
      * The human-readable name of this session. Optional.
-     * 
+     *
      * @param string $friendlyName The human-readable name of this session.
      * @return $this Fluent Builder
      */
@@ -79,7 +73,7 @@ class CreateSessionOptions extends Options {
 
     /**
      * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned.
-     * 
+     *
      * @param string $attributes An optional string metadata field you can use to
      *                           store any data you wish.
      * @return $this Fluent Builder
@@ -91,7 +85,7 @@ class CreateSessionOptions extends Options {
 
     /**
      * The date that this resource was created.
-     * 
+     *
      * @param \DateTime $dateCreated The date that this resource was created.
      * @return $this Fluent Builder
      */
@@ -102,7 +96,7 @@ class CreateSessionOptions extends Options {
 
     /**
      * The date that this resource was last updated.
-     * 
+     *
      * @param \DateTime $dateUpdated The date that this resource was last updated.
      * @return $this Fluent Builder
      */
@@ -113,7 +107,7 @@ class CreateSessionOptions extends Options {
 
     /**
      * Identity of the session's creator. If the Session was created through the API, the value will be `system`
-     * 
+     *
      * @param string $createdBy Identity of the session's creator.
      * @return $this Fluent Builder
      */
@@ -123,30 +117,8 @@ class CreateSessionOptions extends Options {
     }
 
     /**
-     * Twilio address the participant is contacting to. Together with User address defines the participant.
-     * 
-     * @param string $twilioAddress Twilio address the participant is contacting to.
-     * @return $this Fluent Builder
-     */
-    public function setTwilioAddress($twilioAddress) {
-        $this->options['twilioAddress'] = $twilioAddress;
-        return $this;
-    }
-
-    /**
-     * Address the participant is contacting from. Together with Twilio address defines the participant.
-     * 
-     * @param string $userAddress Address the participant is contacting from.
-     * @return $this Fluent Builder
-     */
-    public function setUserAddress($userAddress) {
-        $this->options['userAddress'] = $userAddress;
-        return $this;
-    }
-
-    /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {
@@ -179,7 +151,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * The human-readable name of this session. Optional.
-     * 
+     *
      * @param string $friendlyName The human-readable name of this session.
      * @return $this Fluent Builder
      */
@@ -190,7 +162,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned.
-     * 
+     *
      * @param string $attributes An optional string metadata field you can use to
      *                           store any data you wish.
      * @return $this Fluent Builder
@@ -202,7 +174,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * The date that this resource was created.
-     * 
+     *
      * @param \DateTime $dateCreated The date that this resource was created.
      * @return $this Fluent Builder
      */
@@ -213,7 +185,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * The date that this resource was last updated.
-     * 
+     *
      * @param \DateTime $dateUpdated The date that this resource was last updated.
      * @return $this Fluent Builder
      */
@@ -224,7 +196,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * Identity of the session's creator. If the Session was created through the API, the value will be `system`
-     * 
+     *
      * @param string $createdBy Identity of the session's creator.
      * @return $this Fluent Builder
      */
@@ -235,7 +207,7 @@ class UpdateSessionOptions extends Options {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

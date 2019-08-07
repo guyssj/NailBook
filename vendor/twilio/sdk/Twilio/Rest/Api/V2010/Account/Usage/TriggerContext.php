@@ -9,6 +9,7 @@
 
 namespace Twilio\Rest\Api\V2010\Account\Usage;
 
+use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
@@ -17,12 +18,12 @@ use Twilio\Version;
 class TriggerContext extends InstanceContext {
     /**
      * Initialize the TriggerContext
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param string $accountSid The SID of the Account that created the resource
      *                           to fetch
      * @param string $sid The unique string that identifies the resource
-     * @return \Twilio\Rest\Api\V2010\Account\Usage\TriggerContext 
+     * @return \Twilio\Rest\Api\V2010\Account\Usage\TriggerContext
      */
     public function __construct(Version $version, $accountSid, $sid) {
         parent::__construct($version);
@@ -35,7 +36,7 @@ class TriggerContext extends InstanceContext {
 
     /**
      * Fetch a TriggerInstance
-     * 
+     *
      * @return TriggerInstance Fetched TriggerInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -58,7 +59,7 @@ class TriggerContext extends InstanceContext {
 
     /**
      * Update the TriggerInstance
-     * 
+     *
      * @param array|Options $options Optional Arguments
      * @return TriggerInstance Updated TriggerInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -89,7 +90,7 @@ class TriggerContext extends InstanceContext {
 
     /**
      * Deletes the TriggerInstance
-     * 
+     *
      * @return boolean True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,7 +100,7 @@ class TriggerContext extends InstanceContext {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

@@ -12,39 +12,42 @@ namespace Twilio\Rest\Insights\V1;
 use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
 /**
  * PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.
- * 
- * @property string accountSid
- * @property string callSid
- * @property string callType
- * @property string callState
- * @property string processingState
- * @property string direction
- * @property string disconnectedBy
- * @property \DateTime startTime
- * @property \DateTime endTime
- * @property integer duration
- * @property integer connectDuration
- * @property array from
- * @property array to
- * @property array carrierEdge
- * @property array clientEdge
- * @property array sipEdge
- * @property string tags
- * @property string url
+ *
+ * @property string $accountSid
+ * @property string $callSid
+ * @property string $callType
+ * @property string $callState
+ * @property string $processingState
+ * @property string $direction
+ * @property string $disconnectedBy
+ * @property \DateTime $startTime
+ * @property \DateTime $endTime
+ * @property int $duration
+ * @property int $connectDuration
+ * @property array $from
+ * @property array $to
+ * @property array $carrierEdge
+ * @property array $clientEdge
+ * @property array $sdkEdge
+ * @property array $sipEdge
+ * @property string $tags
+ * @property string $url
+ * @property array $attributes
  */
 class CallSummaryInstance extends InstanceResource {
     /**
      * Initialize the CallSummaryInstance
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $callSid The call_sid
-     * @return \Twilio\Rest\Insights\V1\CallSummaryInstance 
+     * @return \Twilio\Rest\Insights\V1\CallSummaryInstance
      */
     public function __construct(Version $version, array $payload, $callSid = null) {
         parent::__construct($version);
@@ -66,9 +69,11 @@ class CallSummaryInstance extends InstanceResource {
             'to' => Values::array_get($payload, 'to'),
             'carrierEdge' => Values::array_get($payload, 'carrier_edge'),
             'clientEdge' => Values::array_get($payload, 'client_edge'),
+            'sdkEdge' => Values::array_get($payload, 'sdk_edge'),
             'sipEdge' => Values::array_get($payload, 'sip_edge'),
             'tags' => Values::array_get($payload, 'tags'),
             'url' => Values::array_get($payload, 'url'),
+            'attributes' => Values::array_get($payload, 'attributes'),
         );
 
         $this->solution = array('callSid' => $callSid ?: $this->properties['callSid'], );
@@ -77,7 +82,7 @@ class CallSummaryInstance extends InstanceResource {
     /**
      * Generate an instance context for the instance, the context is capable of
      * performing various actions.  All instance actions are proxied to the context
-     * 
+     *
      * @return \Twilio\Rest\Insights\V1\CallSummaryContext Context for this
      *                                                     CallSummaryInstance
      */
@@ -91,17 +96,18 @@ class CallSummaryInstance extends InstanceResource {
 
     /**
      * Fetch a CallSummaryInstance
-     * 
+     *
+     * @param array|Options $options Optional Arguments
      * @return CallSummaryInstance Fetched CallSummaryInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch() {
-        return $this->proxy()->fetch();
+    public function fetch($options = array()) {
+        return $this->proxy()->fetch($options);
     }
 
     /**
      * Magic getter to access properties
-     * 
+     *
      * @param string $name Property to access
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
@@ -121,7 +127,7 @@ class CallSummaryInstance extends InstanceResource {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

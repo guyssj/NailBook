@@ -9,6 +9,8 @@ require '../src/config/ServiceTypes.class.php';
 require '../src/config/Users.class.php';
 require '../src/config/Customer.class.php';
 require '../src/config/Service.class.php';
+require '../src/config/SyncWithGoogle.class.php';
+
 
 
 

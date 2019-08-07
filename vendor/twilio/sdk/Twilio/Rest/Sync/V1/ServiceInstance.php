@@ -18,18 +18,20 @@ use Twilio\Version;
 
 /**
  * PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.
- * 
- * @property string sid
- * @property string uniqueName
- * @property string accountSid
- * @property string friendlyName
- * @property \DateTime dateCreated
- * @property \DateTime dateUpdated
- * @property string url
- * @property string webhookUrl
- * @property boolean reachabilityWebhooksEnabled
- * @property boolean aclEnabled
- * @property array links
+ *
+ * @property string $sid
+ * @property string $uniqueName
+ * @property string $accountSid
+ * @property string $friendlyName
+ * @property \DateTime $dateCreated
+ * @property \DateTime $dateUpdated
+ * @property string $url
+ * @property string $webhookUrl
+ * @property bool $reachabilityWebhooksEnabled
+ * @property bool $aclEnabled
+ * @property bool $reachabilityDebouncingEnabled
+ * @property int $reachabilityDebouncingWindow
+ * @property array $links
  */
 class ServiceInstance extends InstanceResource {
     protected $_documents = null;
@@ -39,11 +41,11 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Initialize the ServiceInstance
-     * 
+     *
      * @param \Twilio\Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid The sid
-     * @return \Twilio\Rest\Sync\V1\ServiceInstance 
+     * @param string $sid A unique identifier for this service instance.
+     * @return \Twilio\Rest\Sync\V1\ServiceInstance
      */
     public function __construct(Version $version, array $payload, $sid = null) {
         parent::__construct($version);
@@ -60,6 +62,8 @@ class ServiceInstance extends InstanceResource {
             'webhookUrl' => Values::array_get($payload, 'webhook_url'),
             'reachabilityWebhooksEnabled' => Values::array_get($payload, 'reachability_webhooks_enabled'),
             'aclEnabled' => Values::array_get($payload, 'acl_enabled'),
+            'reachabilityDebouncingEnabled' => Values::array_get($payload, 'reachability_debouncing_enabled'),
+            'reachabilityDebouncingWindow' => Values::array_get($payload, 'reachability_debouncing_window'),
             'links' => Values::array_get($payload, 'links'),
         );
 
@@ -69,7 +73,7 @@ class ServiceInstance extends InstanceResource {
     /**
      * Generate an instance context for the instance, the context is capable of
      * performing various actions.  All instance actions are proxied to the context
-     * 
+     *
      * @return \Twilio\Rest\Sync\V1\ServiceContext Context for this ServiceInstance
      */
     protected function proxy() {
@@ -82,7 +86,7 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Fetch a ServiceInstance
-     * 
+     *
      * @return ServiceInstance Fetched ServiceInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,7 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Deletes the ServiceInstance
-     * 
+     *
      * @return boolean True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -102,7 +106,7 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Update the ServiceInstance
-     * 
+     *
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Updated ServiceInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -113,8 +117,8 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Access the documents
-     * 
-     * @return \Twilio\Rest\Sync\V1\Service\DocumentList 
+     *
+     * @return \Twilio\Rest\Sync\V1\Service\DocumentList
      */
     protected function getDocuments() {
         return $this->proxy()->documents;
@@ -122,8 +126,8 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Access the syncLists
-     * 
-     * @return \Twilio\Rest\Sync\V1\Service\SyncListList 
+     *
+     * @return \Twilio\Rest\Sync\V1\Service\SyncListList
      */
     protected function getSyncLists() {
         return $this->proxy()->syncLists;
@@ -131,8 +135,8 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Access the syncMaps
-     * 
-     * @return \Twilio\Rest\Sync\V1\Service\SyncMapList 
+     *
+     * @return \Twilio\Rest\Sync\V1\Service\SyncMapList
      */
     protected function getSyncMaps() {
         return $this->proxy()->syncMaps;
@@ -140,8 +144,8 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Access the syncStreams
-     * 
-     * @return \Twilio\Rest\Sync\V1\Service\SyncStreamList 
+     *
+     * @return \Twilio\Rest\Sync\V1\Service\SyncStreamList
      */
     protected function getSyncStreams() {
         return $this->proxy()->syncStreams;
@@ -149,7 +153,7 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Magic getter to access properties
-     * 
+     *
      * @param string $name Property to access
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
@@ -169,7 +173,7 @@ class ServiceInstance extends InstanceResource {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

@@ -48,4 +48,25 @@
                 return json_encode($resultObj,JSON_UNESCAPED_UNICODE);
             }
         }
+
+        public static function GetServiceTypeByID2($ServiceID){
+            $resultObj = new ResultAPI();
+            $sql = "call ServiceTypeByServiceIDGet('$ServiceID');";
+            try{
+                $mysqli = new db();
+                $mysqli = $mysqli->connect();
+                $mysqli->query("set character_set_client='utf8'");
+                $mysqli->query("set character_set_results='utf8'");
+                $result = $mysqli->query($sql);
+                $row = cast_query_results($result);
+                foreach ($row as $key => $value) {
+                    if ($value['ServiceID'] == $ServiceID) {
+                        return $value;
+                    }
+                }
+            }catch(PDOException $e){
+                $resultObj->set_ErrorMessage($e->getMessage());
+                return $e;
+            }
+        }
     }

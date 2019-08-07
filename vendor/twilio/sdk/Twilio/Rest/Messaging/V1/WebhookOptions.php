@@ -25,14 +25,15 @@ abstract class WebhookOptions {
      *                              should be sent to.
      * @param string $postWebhookUrl The absolute url the post-event webhook
      *                               request should be sent to.
-     * @param integer $preWebhookRetryCount The number of retries in case of
-     *                                      pre-event webhook request failures.
-     * @param integer $postWebhookRetryCount The number of retries in case of
-     *                                       post-event webhook request failures.
+     * @param int $preWebhookRetryCount The number of retries in case of pre-event
+     *                                  webhook request failures.
+     * @param int $postWebhookRetryCount The number of retries in case of
+     *                                   post-event webhook request failures.
+     * @param string $target The routing target of the webhook.
      * @return UpdateWebhookOptions Options builder
      */
-    public static function update($webhookMethod = Values::NONE, $webhookFilters = Values::NONE, $preWebhookUrl = Values::NONE, $postWebhookUrl = Values::NONE, $preWebhookRetryCount = Values::NONE, $postWebhookRetryCount = Values::NONE) {
-        return new UpdateWebhookOptions($webhookMethod, $webhookFilters, $preWebhookUrl, $postWebhookUrl, $preWebhookRetryCount, $postWebhookRetryCount);
+    public static function update($webhookMethod = Values::NONE, $webhookFilters = Values::NONE, $preWebhookUrl = Values::NONE, $postWebhookUrl = Values::NONE, $preWebhookRetryCount = Values::NONE, $postWebhookRetryCount = Values::NONE, $target = Values::NONE) {
+        return new UpdateWebhookOptions($webhookMethod, $webhookFilters, $preWebhookUrl, $postWebhookUrl, $preWebhookRetryCount, $postWebhookRetryCount, $target);
     }
 }
 
@@ -46,23 +47,25 @@ class UpdateWebhookOptions extends Options {
      *                              should be sent to.
      * @param string $postWebhookUrl The absolute url the post-event webhook
      *                               request should be sent to.
-     * @param integer $preWebhookRetryCount The number of retries in case of
-     *                                      pre-event webhook request failures.
-     * @param integer $postWebhookRetryCount The number of retries in case of
-     *                                       post-event webhook request failures.
+     * @param int $preWebhookRetryCount The number of retries in case of pre-event
+     *                                  webhook request failures.
+     * @param int $postWebhookRetryCount The number of retries in case of
+     *                                   post-event webhook request failures.
+     * @param string $target The routing target of the webhook.
      */
-    public function __construct($webhookMethod = Values::NONE, $webhookFilters = Values::NONE, $preWebhookUrl = Values::NONE, $postWebhookUrl = Values::NONE, $preWebhookRetryCount = Values::NONE, $postWebhookRetryCount = Values::NONE) {
+    public function __construct($webhookMethod = Values::NONE, $webhookFilters = Values::NONE, $preWebhookUrl = Values::NONE, $postWebhookUrl = Values::NONE, $preWebhookRetryCount = Values::NONE, $postWebhookRetryCount = Values::NONE, $target = Values::NONE) {
         $this->options['webhookMethod'] = $webhookMethod;
         $this->options['webhookFilters'] = $webhookFilters;
         $this->options['preWebhookUrl'] = $preWebhookUrl;
         $this->options['postWebhookUrl'] = $postWebhookUrl;
         $this->options['preWebhookRetryCount'] = $preWebhookRetryCount;
         $this->options['postWebhookRetryCount'] = $postWebhookRetryCount;
+        $this->options['target'] = $target;
     }
 
     /**
      * The HTTP method to be used when sending a webhook request.
-     * 
+     *
      * @param string $webhookMethod The HTTP method to be used when sending a
      *                              webhook request.
      * @return $this Fluent Builder
@@ -74,7 +77,7 @@ class UpdateWebhookOptions extends Options {
 
     /**
      * The list of webhook event triggers that are enabled for this Service.
-     * 
+     *
      * @param string $webhookFilters The list of webhook event triggers that are
      *                               enabled for this Service.
      * @return $this Fluent Builder
@@ -86,7 +89,7 @@ class UpdateWebhookOptions extends Options {
 
     /**
      * The absolute url the pre-event webhook request should be sent to.
-     * 
+     *
      * @param string $preWebhookUrl The absolute url the pre-event webhook request
      *                              should be sent to.
      * @return $this Fluent Builder
@@ -98,7 +101,7 @@ class UpdateWebhookOptions extends Options {
 
     /**
      * The absolute url the post-event webhook request should be sent to.
-     * 
+     *
      * @param string $postWebhookUrl The absolute url the post-event webhook
      *                               request should be sent to.
      * @return $this Fluent Builder
@@ -110,9 +113,9 @@ class UpdateWebhookOptions extends Options {
 
     /**
      * The number of retries in case of pre-event webhook request failures. Maximum 3 retries are allowed, the default value is 0.
-     * 
-     * @param integer $preWebhookRetryCount The number of retries in case of
-     *                                      pre-event webhook request failures.
+     *
+     * @param int $preWebhookRetryCount The number of retries in case of pre-event
+     *                                  webhook request failures.
      * @return $this Fluent Builder
      */
     public function setPreWebhookRetryCount($preWebhookRetryCount) {
@@ -122,9 +125,9 @@ class UpdateWebhookOptions extends Options {
 
     /**
      * The number of retries in case of post-event webhook request failures. Maximum 3 retries are allowed, the default value is 0.
-     * 
-     * @param integer $postWebhookRetryCount The number of retries in case of
-     *                                       post-event webhook request failures.
+     *
+     * @param int $postWebhookRetryCount The number of retries in case of
+     *                                   post-event webhook request failures.
      * @return $this Fluent Builder
      */
     public function setPostWebhookRetryCount($postWebhookRetryCount) {
@@ -133,8 +136,19 @@ class UpdateWebhookOptions extends Options {
     }
 
     /**
+     * The routing target of the webhook. Can be ordinary or route internally to Flex
+     *
+     * @param string $target The routing target of the webhook.
+     * @return $this Fluent Builder
+     */
+    public function setTarget($target) {
+        $this->options['target'] = $target;
+        return $this;
+    }
+
+    /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

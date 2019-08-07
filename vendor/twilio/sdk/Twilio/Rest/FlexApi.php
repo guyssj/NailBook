@@ -14,8 +14,10 @@ use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\FlexApi\V1;
 
 /**
- * @property \Twilio\Rest\FlexApi\V1 v1
- * @property \Twilio\Rest\FlexApi\V1\ConfigurationList configuration
+ * @property \Twilio\Rest\FlexApi\V1 $v1
+ * @property \Twilio\Rest\FlexApi\V1\FlexFlowList $flexFlow
+ * @property \Twilio\Rest\FlexApi\V1\ConfigurationList $configuration
+ * @method \Twilio\Rest\FlexApi\V1\FlexFlowContext flexFlow(string $sid)
  * @method \Twilio\Rest\FlexApi\V1\ConfigurationContext configuration()
  */
 class FlexApi extends Domain {
@@ -23,7 +25,7 @@ class FlexApi extends Domain {
 
     /**
      * Construct the FlexApi Domain
-     * 
+     *
      * @param \Twilio\Rest\Client $client Twilio\Rest\Client to communicate with
      *                                    Twilio
      * @return \Twilio\Rest\FlexApi Domain for FlexApi
@@ -46,10 +48,10 @@ class FlexApi extends Domain {
 
     /**
      * Magic getter to lazy load version
-     * 
+     *
      * @param string $name Version to return
      * @return \Twilio\Version The requested version
-     * @throws \Twilio\Exceptions\TwilioException For unknown versions
+     * @throws TwilioException For unknown versions
      */
     public function __get($name) {
         $method = 'get' . ucfirst($name);
@@ -62,11 +64,11 @@ class FlexApi extends Domain {
 
     /**
      * Magic caller to get resource contexts
-     * 
+     *
      * @param string $name Resource to return
      * @param array $arguments Context parameters
      * @return \Twilio\InstanceContext The requested resource context
-     * @throws \Twilio\Exceptions\TwilioException For unknown resource
+     * @throws TwilioException For unknown resource
      */
     public function __call($name, $arguments) {
         $method = 'context' . ucfirst($name);
@@ -78,14 +80,29 @@ class FlexApi extends Domain {
     }
 
     /**
-     * @return \Twilio\Rest\FlexApi\V1\ConfigurationList 
+     * @return \Twilio\Rest\FlexApi\V1\FlexFlowList
+     */
+    protected function getFlexFlow() {
+        return $this->v1->flexFlow;
+    }
+
+    /**
+     * @param string $sid The unique ID of the FlexFlow
+     * @return \Twilio\Rest\FlexApi\V1\FlexFlowContext
+     */
+    protected function contextFlexFlow($sid) {
+        return $this->v1->flexFlow($sid);
+    }
+
+    /**
+     * @return \Twilio\Rest\FlexApi\V1\ConfigurationList
      */
     protected function getConfiguration() {
         return $this->v1->configuration;
     }
 
     /**
-     * @return \Twilio\Rest\FlexApi\V1\ConfigurationContext 
+     * @return \Twilio\Rest\FlexApi\V1\ConfigurationContext
      */
     protected function contextConfiguration() {
         return $this->v1->configuration();
@@ -93,7 +110,7 @@ class FlexApi extends Domain {
 
     /**
      * Provide a friendly representation
-     * 
+     *
      * @return string Machine friendly representation
      */
     public function __toString() {

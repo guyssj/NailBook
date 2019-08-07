@@ -2,6 +2,7 @@
 use \Firebase\JWT\JWT;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+
 require '../src/config/ResultsApi.class.php';
 $app = new \Slim\App;
 $app->options('/{routes:.+}', function ($request, $response, $args) {
@@ -99,11 +100,12 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
  */
 $app->get('/api/GetAllServices', function (Request $request, Response $response) {
     $Services = new Services();
+
     try {
         $results = $Services->GetAllServices();
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
     } catch (Exception $th) {
-        $resultObj =new ResultAPI();
+        $resultObj = new ResultAPI();
         $resultObj->set_result($results);
         $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());
@@ -236,6 +238,48 @@ $app->post('/api/AddCustomer', function (Request $request, Response $response) {
     $resultObj->set_result($CustomerObj->Add());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+/**
+ * POST api/GetTimes
+ *
+ * @param Customer in  request body
+ */
+$app->post('/api/Gets', function (Request $request, Response $response) {
+    $resultObj = new ResultAPI();
+    session_start();
+
+    $client = new Google_Client();
+    $client->setAuthConfig('credentials.json');
+    $client->addScope(Google_Service_Calendar::CALENDAR);
+
+    try {
+        if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+
+            $books = $request->getParsedBody();
+            $startTime = new DateTime($books['StartDate']);
+            $minutesToAdd = $books['StartAt'];
+            $duration = $books['Durtion'];
+            $startTime->modify("+{$minutesToAdd} minutes");
+
+            $endTime = new DateTime($startTime->date);
+            $endTime->modify("+{$duration} minutes");
+
+            $GoogleSync = new SyncGoogle();
+            //need create sign in to google before add the event
+            $GoogleSync->AddEvent($books);
+            $resultObj->set_result($startTime);
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+
+        } else {
+            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/NailBook/public/oauth2callback.php';
+            header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+        }
+    } catch (Exception $e) {
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($e->getMessage());
+    }
 });
 
 /**
