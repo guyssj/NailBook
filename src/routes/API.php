@@ -15,7 +15,7 @@ $app->add(function ($req, $res, $next) {
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('access-control-expose-headers', 'X-Token')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
 });
@@ -95,6 +95,26 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
 
 });
 
+$app->get('/api/GetCustomerById', function (Request $request, Response $response) {
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $Customers->CustomerID = $request->getParam('CustomerID');
+    $resultObj->set_result($Customers->GetCustomerById($Customers->CustomerID));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+
+});
+
+$app->get('/api/GetCustomerByPhone', function (Request $request, Response $response) {
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $Customers->PhoneNumber = $request->getParam('PhoneNumber');
+    $resultObj->set_result($Customers->GetByPhoneNumber($Customers->PhoneNumber));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+
+});
+
 /**
  * GET Method  /api/GetAllServices
  */
@@ -106,6 +126,25 @@ $app->get('/api/GetAllServices', function (Request $request, Response $response)
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
     } catch (Exception $th) {
         $resultObj = new ResultAPI();
+        $resultObj->set_result($results);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($results);
+        return $response->withJson($resultObj);
+    }
+
+});
+
+$app->get('/api/GetBookByCustomer', function (Request $request, Response $response) {
+    $Book = new Books();
+    $resultObj = new ResultAPI();
+    try {
+        $CustomerID = $request->getParam('CustomerID');
+        $results = $Book->GetBooksByCustomer($CustomerID);
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $th) {
         $resultObj->set_result($results);
         $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());
@@ -145,10 +184,15 @@ $app->get('/api/GetTimeSlots', function (Request $request, Response $response) {
 
     try {
         $bookExist = new Books();
+        $TimeSlots = [];
         $Date = $request->getParam('Date');
         //get from db if time is exists
         $arryOfTimeExsits = $bookExist->GetBooksByDate($Date);
 
+        // $timestepmp = strtotime("now");
+        // $times = date('H:i:s', $timestepmp);
+        // $time = explode(':', $times);
+        // $timeNew = ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
         // check in array from db and remove from all array time slots
         for ($i = 480; $i <= 1080; $i = $i + 10) {
             $foundTime = false;
@@ -224,6 +268,12 @@ $app->get('/api/GetAllServiceTypeByService', function (Request $request, Respons
     echo $ServiceTypeObj->GetServiceTypeByID($ServiceID, $response);
 });
 
+$app->get('/api/GetAllServiceTypes', function (Request $request, Response $response) {
+    $ServiceTypeObj = new ServiceTypes();
+
+    echo $ServiceTypeObj->GetServiceTypes($response);
+});
+
 /**
  * POST api/AddCustomer
  *
@@ -236,6 +286,41 @@ $app->post('/api/AddCustomer', function (Request $request, Response $response) {
     $CustomerObj->LastName = $request->getParam('LastName');
     $CustomerObj->PhoneNumber = $request->getParam('PhoneNumber');
     $resultObj->set_result($CustomerObj->Add());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->put('/api/UpdateBook', function (Request $request, Response $response) {
+    $BooksObj = new Books();
+    $resultObj = new ResultAPI();
+    $books = $request->getParsedBody();
+    $BooksObj->StartDate = $books['StartDate'];
+    $BooksObj->StartAt = $books['StartAt'];
+    $BooksObj->BookID = $books['BookID'];
+
+    $resultObj->set_result($BooksObj->UpdateBook($BooksObj));
+    if ($resultObj->get_result() <= 0 ) {
+        $resultObj->set_ErrorMessage("Treatment is exists in this time");
+    }
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/DeleteBook', function (Request $request, Response $response) {
+    $BooksObj = new Books();
+    $resultObj = new ResultAPI();
+    $books = $request->getParsedBody();
+    $BooksObj->BookID = $books['id'];
+
+    $resultObj->set_result($BooksObj->DeleteBook($BooksObj));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->get('/admin/GetAllCustomers', function (Request $request, Response $response) {
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $resultObj->set_result($Customers->GetAllCustomers());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
@@ -308,8 +393,8 @@ function cast_query_results($rs)
     }
 
     for ($i = 0; $i < count($data); $i++) {
-        foreach ($types as $name => $type) {
-            settype($data[$i][$name], $type);
+        foreach ($types as $orgname => $type) {
+            settype($data[$i][$orgname], $type);
         }
     }
     return $data;

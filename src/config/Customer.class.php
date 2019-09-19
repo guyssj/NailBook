@@ -47,10 +47,49 @@ class Customer
             return $var;
         }
     }
-
     public function GetByPhoneNumber($PhoneNumber)
     {
         $sql = "call CustomerGetByPhone('$PhoneNumber');";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            return $row;
+        } catch (PDOException $e) {
+            //$resultObj->set_ErrorMessage($e->getMessage());
+            return json_encode('error', JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    public function GetByPhoneNumber2($PhoneNumber)
+    {
+        $sql = "call CustomerGetByPhone('$PhoneNumber');";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            foreach ($row as $key => $value) {
+                if ($value['PhoneNumber'] == $PhoneNumber) {
+                    return $value;
+                }
+            }
+            return "Customer not found";
+        } catch (PDOException $e) {
+            //$resultObj->set_ErrorMessage($e->getMessage());
+            return json_encode('error', JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+    public function GetAllCustomers()
+    {
+        $sql = "call CustomerGetAll();";
         try {
             $mysqli = new db();
             $mysqli = $mysqli->connect();
