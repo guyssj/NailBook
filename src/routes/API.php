@@ -11,7 +11,7 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
+        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:8100')
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('access-control-expose-headers', 'X-Token')
