@@ -58,6 +58,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
             'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
         ),
+        'E' => 
+        array (
+            'Eko3alpha\\Slim\\Middleware\\' => 26,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -135,6 +139,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+        'Eko3alpha\\Slim\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/eko3alpha/slim-cors-middleware/src',
         ),
     );
 

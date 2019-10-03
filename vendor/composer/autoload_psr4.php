@@ -24,4 +24,5 @@ return array(
     'Google\\Auth\\' => array($vendorDir . '/google/auth/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
+    'Eko3alpha\\Slim\\Middleware\\' => array($vendorDir . '/eko3alpha/slim-cors-middleware/src'),
 );

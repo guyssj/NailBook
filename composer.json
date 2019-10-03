@@ -3,6 +3,7 @@
         "slim/slim": "^3.0",
         "twilio/sdk": "^5.34",
         "google/apiclient": "^2.0",
-        "tuupola/slim-jwt-auth": "^3.3"
+        "tuupola/slim-jwt-auth": "^3.3",
+        "eko3alpha/slim-cors-middleware": "^1.1"
     }
 }

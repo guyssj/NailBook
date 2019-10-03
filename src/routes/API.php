@@ -5,20 +5,28 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 require '../src/config/ResultsApi.class.php';
 $app = new \Slim\App;
+
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:8100')
+       // ->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('access-control-expose-headers', 'X-Token')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization');
+       // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
 
 });
+
+$app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
+    'http://localhost:4200'  => 'GET, POST, DELETE',
+    'http://localhost:8100' => ['GET', 'POST']
+  ]));
+
+
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path" => "/admin", /* or ["/api", "/admin"] */
     "attribute" => "decoded_token_data",
