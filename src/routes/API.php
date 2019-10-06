@@ -23,7 +23,8 @@ $app->add(function ($req, $res, $next) {
 
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'http://localhost:4200'  => 'GET, POST, DELETE',
-    'http://localhost:8100' => ['GET', 'POST']
+    'http://localhost:8100' => 'GET', 'POST',
+    'ionic://localhost' => 'GET','POST'
   ]));
 
 
@@ -35,6 +36,7 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "cookie" => "userToken",
     "secret" => "supersecretkeyyoushouldnotcommittogithub",
     "algorithm" => ["HS256"],
+    "secure" => false,
     "error" => function ($response, $arguments) {
         $data["status"] = "error";
         $data["message"] = $arguments["message"];
