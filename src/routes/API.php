@@ -3,137 +3,59 @@ use \Firebase\JWT\JWT;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-require '../src/config/ResultsApi.class.php';
-$app = new \Slim\App;
+//require '../src/config/ResultsApi.class.php';
+//$app = new \Slim\App;
 
-$app->options('/{routes:.+}', function ($request, $response, $args) {
-    return $response;
-});
-$app->add(function ($req, $res, $next) {
-    $response = $next($req, $res);
-    return $response
-       // ->withHeader('Access-Control-Allow-Origin', '*')
-        ->withHeader('Content-Type', 'application/json')
-        ->withHeader('Access-Control-Allow-Credentials', 'true')
-        ->withHeader('access-control-expose-headers', 'X-Token')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization');
-       // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+// $app->options('/{routes:.+}', function ($request, $response, $args) {
+//     return $response;
+// });
+// $app->add(function ($req, $res, $next) {
+//     $response = $next($req, $res);
+//     return $response
+//        // ->withHeader('Access-Control-Allow-Origin', '*')
+//         ->withHeader('Content-Type', 'application/json')
+//         ->withHeader('Access-Control-Allow-Credentials', 'true')
+//         ->withHeader('access-control-expose-headers', 'X-Token')
+//         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization');
+//        // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
 
-});
+// });
 
-$app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
-    'http://localhost:4200'  => 'GET, POST, DELETE',
-    'http://localhost:8100' => 'GET', 'POST',
-    'ionic://localhost' => 'GET','POST'
-  ]));
+// $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
+//     'http://localhost:4200'  => 'GET, POST, DELETE',
+//     'http://localhost:8100' => 'GET', 'POST',
+//     'ionic://localhost' => 'GET','POST'
+//   ]));
 
-$container = $app->getContainer();
-$container["token"] = function ($container) {
-    return new Token([]);
-};
-$app->add(new \Tuupola\Middleware\JwtAuthentication([
-    "path" => "/admin", /* or ["/api", "/admin"] */
-    "attribute" => "decoded_token_data",
-    "header" => "X-Token",
-    "regexp" => "/(.*)/",
-    "cookie" => "userToken",
-    "secret" => getenv('Secret'),
-    "algorithm" => ["HS256"],
-    "secure" => false,
-    "error" => function ($response, $arguments) {
-        $resultObj = new ResultAPI();
-        $resultObj->set_statusCode(403);
-        $resultObj->set_ErrorMessage( $arguments["message"]);
-        return $response
-            ->withHeader("Content-Type", "application/json")
-            ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-    },
-    "before" => function ($request, $arguments) use ($container) {
-        $container["token"]->populate($arguments["decoded"]);
-    }
-]));
+// $container = $app->getContainer();
+// $container["token"] = function ($container) {
+//     return new Token([]);
+// };
+// $app->add(new \Tuupola\Middleware\JwtAuthentication([
+//     "path" => "/admin", /* or ["/api", "/admin"] */
+//     "attribute" => "decoded_token_data",
+//     "header" => "X-Token",
+//     "regexp" => "/(.*)/",
+//     "cookie" => "userToken",
+//     "secret" => getenv('Secret'),
+//     "algorithm" => ["HS256"],
+//     "secure" => false,
+//     "error" => function ($response, $arguments) {
+//         $resultObj = new ResultAPI();
+//         $resultObj->set_statusCode(403);
+//         $resultObj->set_ErrorMessage( $arguments["message"]);
+//         return $response
+//             ->withHeader("Content-Type", "application/json")
+//             ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+//     },
+//     "before" => function ($request, $arguments) use ($container) {
+//         $container["token"]->populate($arguments["decoded"]);
+//     }
+// ]));
 
-/**
- * POST api/login
- *
- * login to books admin and return a token
- */
-$app->post('/login', function (Request $request, Response $response) {
-    $resultObj = new ResultAPI();
-    $input = $request->getParsedBody();
-    $user = new Users();
 
-    $now = new DateTime();
-    $future = new DateTime("now +2 hours");
 
-    //user auth with hash password
-    $options = ['cost' => 12];
-    $user->userName = $input['userName'];
-    $user->password = $input['key'];
-    //$user->password = password_hash($input['key'], PASSWORD_DEFAULT, $options);
-    $auth = $user->sign_in();
 
-    //this case check if user return from db and return code
-    if (!$auth) {
-        $resultObj->set_result($user->password);
-        $response = $response->withStatus(403);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage("These credentials do not match our records.");
-        return $response->withJson($resultObj);
-    }
-    session_start();
-
-    $payload = [
-        "iat" => $now->getTimeStamp(),
-        "exp" => $future->getTimeStamp(),
-        "sub" => $auth,
-    ];
-    
-    $token = JWT::encode($payload, getenv('Secret'), "HS256");
-
-    //set a cookie
-    $cookie_name = "TokenApi";
-    $cookie_value = $token;
-    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
-    $_SESSION['TokenApi'] = $token;
-
-    //return $response = $response->withHeader();
-    $resultObj->set_result($token);
-
-    return $response->withStatus(201)
-    ->withHeader("Content-Type", "application/json")
-    ->withHeader('X-Token', $token)
-    ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-});
-
-$app->get("/admin/dump", function ($request, $response, $arguments) {
-    print_r($this->token);
-});
-/**
- * GET admin/GetAllBook2
- *
- * Get all books return in json
- */
-$app->get('/admin/GetAllBook2', function (Request $request, Response $response) {
-    $BooksObj = new Books();
-    echo $BooksObj->GetBooks($response);
-});
-
-/**
- * GET admin/GetCustomerById?CustomerID={ID}
- *
- * Get Customer by ID
- *
- */
-$app->get('/admin/GetCustomerById', function (Request $request, Response $response) {
-    $Customers = new Customer();
-    $resultObj = new ResultAPI();
-    $Customers->CustomerID = $request->getParam('CustomerID');
-    $resultObj->set_result($Customers->GetCustomerById($Customers->CustomerID));
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-
-});
 
 $app->get('/api/GetCustomerById', function (Request $request, Response $response) {
     $Customers = new Customer();
@@ -160,12 +82,6 @@ $app->get('/api/GetCustomerByPhone', function (Request $request, Response $respo
  */
 $app->get('/api/GetAllServices', function (Request $request, Response $response) {
     $Services = new Services();
-    if (in_array("delete", $this->jwt->scope)) {
-        /* Code for deleting item */
-    } else {
-        /* No scope so respond with 401 Unauthorized */
-        return $response->withStatus(401);
-    }
     try {
         $results = $Services->GetAllServices();
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
@@ -362,13 +278,7 @@ $app->post('/admin/DeleteBook', function (Request $request, Response $response) 
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
 
-$app->get('/admin/GetAllCustomers', function (Request $request, Response $response) {
-    $Customers = new Customer();
-    $resultObj = new ResultAPI();
-    $resultObj->set_result($Customers->GetAllCustomers());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
+
 
 /**
  * POST api/GetTimes
@@ -377,15 +287,16 @@ $app->get('/admin/GetAllCustomers', function (Request $request, Response $respon
  */
 $app->post('/api/Gets', function (Request $request, Response $response) {
     $resultObj = new ResultAPI();
-    session_start();
-
+    $books = $request->getParsedBody();
     $client = new Google_Client();
-    $client->setAuthConfig('credentials.json');
+    $client->setAuthConfig ('../src/config/GoogleCalendar-c0c22e92b397.json');
+
+    $client->setApplicationName("BookNail");
     $client->addScope(Google_Service_Calendar::CALENDAR);
-
+    //$client->setAccessToken($books['token']);
+    session_start();
+    $_SESSION['access_token'] = $client->getAccessToken();
     try {
-        if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-
             $books = $request->getParsedBody();
             $startTime = new DateTime($books['StartDate']);
             $minutesToAdd = $books['StartAt'];
@@ -397,14 +308,9 @@ $app->post('/api/Gets', function (Request $request, Response $response) {
 
             $GoogleSync = new SyncGoogle();
             //need create sign in to google before add the event
-            $GoogleSync->AddEvent($books);
+            $GoogleSync->AddEvent($books,$client);
             $resultObj->set_result($startTime);
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-
-        } else {
-            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/NailBook/public/oauth2callback.php';
-            header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
-        }
     } catch (Exception $e) {
         $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());
