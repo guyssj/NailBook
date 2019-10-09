@@ -10,6 +10,7 @@ require '../src/config/Users.class.php';
 require '../src/config/Customer.class.php';
 require '../src/config/Service.class.php';
 require '../src/config/SyncWithGoogle.class.php';
+require '../src/config/token.class.php';
 
 
 

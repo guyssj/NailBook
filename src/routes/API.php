@@ -27,23 +27,30 @@ $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'ionic://localhost' => 'GET','POST'
   ]));
 
-
+$container = $app->getContainer();
+$container["token"] = function ($container) {
+    return new Token([]);
+};
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path" => "/admin", /* or ["/api", "/admin"] */
     "attribute" => "decoded_token_data",
     "header" => "X-Token",
     "regexp" => "/(.*)/",
     "cookie" => "userToken",
-    "secret" => "supersecretkeyyoushouldnotcommittogithub",
+    "secret" => getenv('Secret'),
     "algorithm" => ["HS256"],
     "secure" => false,
     "error" => function ($response, $arguments) {
-        $data["status"] = "error";
-        $data["message"] = $arguments["message"];
+        $resultObj = new ResultAPI();
+        $resultObj->set_statusCode(403);
+        $resultObj->set_ErrorMessage( $arguments["message"]);
         return $response
             ->withHeader("Content-Type", "application/json")
-            ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+            ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     },
+    "before" => function ($request, $arguments) use ($container) {
+        $container["token"]->populate($arguments["decoded"]);
+    }
 ]));
 
 /**
@@ -55,30 +62,53 @@ $app->post('/login', function (Request $request, Response $response) {
     $resultObj = new ResultAPI();
     $input = $request->getParsedBody();
     $user = new Users();
-    $user->userName = $input['userName'];
-    $user->key = $input['key'];
-    $auth = $user->checkAPIKey();
 
-    //this case if check if user return from db and return code
+    $now = new DateTime();
+    $future = new DateTime("now +2 hours");
+
+    //user auth with hash password
+    $options = ['cost' => 12];
+    $user->userName = $input['userName'];
+    $user->password = $input['key'];
+    //$user->password = password_hash($input['key'], PASSWORD_DEFAULT, $options);
+    $auth = $user->sign_in();
+
+    //this case check if user return from db and return code
     if (!$auth) {
-        $resultObj->set_result($user->key);
+        $resultObj->set_result($user->password);
         $response = $response->withStatus(403);
         $resultObj->set_statusCode($response->getStatusCode());
         $resultObj->set_ErrorMessage("These credentials do not match our records.");
         return $response->withJson($resultObj);
     }
     session_start();
-    $token = JWT::encode(['key' => $input['key'], 'userName' => $input['userName']], 'supersecretkeyyoushouldnotcommittogithub', "HS256");
 
+    $payload = [
+        "iat" => $now->getTimeStamp(),
+        "exp" => $future->getTimeStamp(),
+        "sub" => $auth,
+    ];
+    
+    $token = JWT::encode($payload, getenv('Secret'), "HS256");
+
+    //set a cookie
     $cookie_name = "TokenApi";
     $cookie_value = $token;
     setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
     $_SESSION['TokenApi'] = $token;
 
-    return $response = $response->withHeader('X-Token', $token);
+    //return $response = $response->withHeader();
+    $resultObj->set_result($token);
 
+    return $response->withStatus(201)
+    ->withHeader("Content-Type", "application/json")
+    ->withHeader('X-Token', $token)
+    ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 });
 
+$app->get("/admin/dump", function ($request, $response, $arguments) {
+    print_r($this->token);
+});
 /**
  * GET admin/GetAllBook2
  *
@@ -130,7 +160,12 @@ $app->get('/api/GetCustomerByPhone', function (Request $request, Response $respo
  */
 $app->get('/api/GetAllServices', function (Request $request, Response $response) {
     $Services = new Services();
-
+    if (in_array("delete", $this->jwt->scope)) {
+        /* Code for deleting item */
+    } else {
+        /* No scope so respond with 401 Unauthorized */
+        return $response->withStatus(401);
+    }
     try {
         $results = $Services->GetAllServices();
         echo json_encode($results, JSON_UNESCAPED_UNICODE);
