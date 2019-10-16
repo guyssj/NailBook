@@ -24,19 +24,19 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-       // ->withHeader('Access-Control-Allow-Origin', '*')
+        //->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('access-control-expose-headers', 'X-Token')
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With,X-Token, Content-Type, Accept, Origin, Authorization');
-       // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        //->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
 });
 
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
-    'http://localhost:4200'  => 'GET, POST, DELETE',
-    'http://localhost:8100' => 'GET', 'POST',
-    'ionic://localhost' => 'GET','POST'
+    'http://192.168.0.25:4200'  => 'GET, POST, DELETE',
+    'http://192.168.0.25:8100' => 'GET, POST',
+    'ionic://localhost' => 'GET, POST'
   ]));
 
 $container = $app->getContainer();

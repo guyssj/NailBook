@@ -49,6 +49,27 @@
             }
         }
 
+        public function Add(){
+            try {
+                $sql = "call ServiceTypeSet('$this->ServiceTypeName','$this->ServiceID','$this->Duration','$this->Price','$this->Description',@l_serviceTypeId);";
+                $db = new db();
+                $db = $db->connect2();
+                $smst = $db->prepare($sql);
+                $db->query("set character_set_client='utf8'");
+                $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+    
+                $row = $smst->execute();
+                $rs2 = $db->query("SELECT @l_serviceTypeId as id");
+                $row2 = $rs2->fetchObject();
+                
+                return $row2->id;
+    
+            } catch (PDOException $e) {
+                $var = (string) $e->getMessage();
+                return $var;
+            }
+        }
+
         public static function GetServiceTypeByID2($ServiceID){
             $resultObj = new ResultAPI();
             $sql = "call ServiceTypeByServiceIDGet('$ServiceID');";
