@@ -9,6 +9,7 @@
 
         Public $userName;
         Public $password;
+        Public $token;
 
 
         public function sign_in(){

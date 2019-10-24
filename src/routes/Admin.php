@@ -24,7 +24,7 @@ $app->post('/login', function (Request $request, Response $response) {
 
     //if user name or password invalid return code 403 
     if (!$auth) {
-        $resultObj->set_result($user->password);
+        $resultObj->set_result();
         $response = $response->withStatus(403);
         $resultObj->set_statusCode($response->getStatusCode());
         $resultObj->set_ErrorMessage("These credentials do not match our records.");
@@ -46,8 +46,10 @@ $app->post('/login', function (Request $request, Response $response) {
     setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
     $_SESSION['TokenApi'] = $token;
 
+    $user->token = $token;
+
     //return $response = $response->withHeader();
-    $resultObj->set_result($token);
+    $resultObj->set_result($user);
 
     return $response->withStatus(201)
     ->withHeader("Content-Type", "application/json")
