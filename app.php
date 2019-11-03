@@ -15,6 +15,8 @@ require __DIR__ ."/src/config/Service.class.php";
 require __DIR__ ."/src/config/token.class.php";
 require __DIR__ ."/src/config/ResultsApi.class.php";
 require __DIR__ ."/src/config/SyncWithGoogle.class.php";
+require __DIR__ ."/src/config/globalSMS.class.php";
+
 
 
 $app = new \Slim\App;

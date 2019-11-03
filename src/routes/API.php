@@ -161,6 +161,20 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
     if ($resultObj->get_result() == -1) {
         $resultObj->set_ErrorMessage("Treatment is exists in this time");
     }
+    else{
+
+        //if book set send a sms for customer
+        $customer = new Customer();
+        $customer = Customer::GetCustomerById($BooksObj->CustomerID);
+        $globalSMS = new globalSMS();
+        $Date = strtotime($BooksObj->StartDate);
+        $NewDate = date("d/m/Y",$Date);
+        $Time = $BooksObj->StartAt;
+        $newTime = hoursandmins($Time);
+        $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבע לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}";
+
+        $globalSMS->send_sms($customer['PhoneNumber'],$message);
+    }
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 
 });
@@ -317,4 +331,14 @@ function cast_query_results($rs)
         }
     }
     return $data;
+}
+
+function hoursandmins($time, $format = '%02d:%02d')
+{
+    if ($time < 1) {
+        return;
+    }
+    $hours = floor($time / 60);
+    $minutes = ($time % 60);
+    return sprintf($format, $hours, $minutes);
 }
