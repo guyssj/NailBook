@@ -68,6 +68,29 @@ $app->get('/admin/GetAllBook2', function (Request $request, Response $response) 
 });
 
 /**
+ * GET AddUserName
+ *
+ * Add user name
+ *
+ */
+$app->post('/Adduser', function (Request $request, Response $response) {
+    $resultObj = new ResultAPI();
+    $input = $request->getParsedBody();
+    $user = new Users();
+
+    //user auth with hash password
+    $user->userName = $input['userName'];
+    $user->password = $input['key'];
+    $auth = $user->create_new_user();
+
+    $resultObj->set_result($user);
+    return $response->withStatus(201)
+    ->withHeader("Content-Type", "application/json")
+    ->withHeader('X-Token', $token)
+    ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+});
+
+/**
  * GET admin/GetCustomerById?CustomerID={ID}
  *
  * Get Customer by ID
