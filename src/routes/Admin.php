@@ -109,7 +109,7 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
 
 /**
  * 
- * 
+ * test
  * get all customers from DB
  * only admin can get
  * 
