@@ -34,7 +34,7 @@
 
         public function create_new_user(){
             $sql = "call UserSet(:UserName,:Password,@l_Userid);";
-            
+            $options = ['cost' => 12];
             try {
                 $this->password = password_hash($this->password, PASSWORD_DEFAULT, $options);
                 $db = new db();
@@ -45,7 +45,7 @@
                 $db->query("set character_set_client='utf8'");
                 $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
                 $row = $smst->execute(['UserName' => $this->userName, 'Password' => $this->password]);
-                $row = $smst->rowCount();
+                $count = $smst->rowCount();
                 if($count > 0){
                     return true;
                 }

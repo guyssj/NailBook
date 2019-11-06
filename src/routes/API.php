@@ -95,15 +95,21 @@ $app->get('/api/GetTimeSlots', function (Request $request, Response $response) {
         $bookExist = new Books();
         $TimeSlots = [];
         $Date = $request->getParam('Date');
+
+        if($Date == null){
+            $Date = date("Y-m-d");
+        }
         //get from db if time is exists
         $arryOfTimeExsits = $bookExist->GetBooksByDate($Date);
 
-        // $timestepmp = strtotime("now");
-        // $times = date('H:i:s', $timestepmp);
-        // $time = explode(':', $times);
-        // $timeNew = ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
-        // check in array from db and remove from all array time slots
-        for ($i = 480; $i <= 1080; $i = $i + 10) {
+        //get day of the week for the date choosed
+        $dayofweek = date('w', strtotime($Date));
+        $WorkingHours = new WorkingHours();
+
+        //check the working hours in database
+        $WorkingHours->get_hours_by_day($dayofweek);
+
+        for ($i = $WorkingHours->openTime; $i <= $WorkingHours->closeTime; $i = $i + 10) {
             $foundTime = false;
             for ($l = 0; $l < count($arryOfTimeExsits); $l++) {
                 if ($arryOfTimeExsits[$l] == $i) {

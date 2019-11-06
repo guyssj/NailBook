@@ -16,6 +16,8 @@ require __DIR__ ."/src/config/token.class.php";
 require __DIR__ ."/src/config/ResultsApi.class.php";
 require __DIR__ ."/src/config/SyncWithGoogle.class.php";
 require __DIR__ ."/src/config/globalSMS.class.php";
+require __DIR__ ."/src/config/WorkingHours.class.php";
+
 
 
 

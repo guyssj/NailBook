@@ -24,10 +24,10 @@ $app->post('/login', function (Request $request, Response $response) {
 
     //if user name or password invalid return code 403 
     if (!$auth) {
-        $resultObj->set_result();
+        $resultObj->set_result("User name or password do not match our records");
         $response = $response->withStatus(403);
         $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage("These credentials do not match our records.");
+        $resultObj->set_ErrorMessage("User name or password do not match our records");
         return $response->withJson($resultObj);
     }
     session_start();
@@ -43,7 +43,7 @@ $app->post('/login', function (Request $request, Response $response) {
     //set a cookie
     $cookie_name = "TokenApi";
     $cookie_value = $token;
-    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+    //setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
     $_SESSION['TokenApi'] = $token;
 
     $user->token = $token;
@@ -86,7 +86,6 @@ $app->post('/Adduser', function (Request $request, Response $response) {
     $resultObj->set_result($user);
     return $response->withStatus(201)
     ->withHeader("Content-Type", "application/json")
-    ->withHeader('X-Token', $token)
     ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 });
 
