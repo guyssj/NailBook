@@ -105,6 +105,13 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
 
 });
 
+$app->get('/admin/GetAllWorkingHours', function (Request $request, Response $response) {
+    $WorkingHours = new WorkingHours();
+    $resultObj = new ResultAPI();
+    $resultObj->set_result($WorkingHours->get_all_hours());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
 
 /**
  * 

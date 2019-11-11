@@ -66,7 +66,38 @@ class Books
                 }
 
             }
-            return new Books;
+            throw new Exception("Book not Found");
+            
+
+        } catch (PDOException $e) {
+            return $e->message();
+        }
+    }
+
+    public function GetBookByCustomer($CustomerId)
+    {
+        $sql = "SELECT * FROM Books WHERE CustomerID='$CustomerId' ORDER BY StartDate ASC;";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            //return $row;
+            $date = date('Y-m-d', time());
+            $arrayt = [];
+            foreach ($row as $key => $value) {
+                $strtTime = $value['StartDate'];
+                if ($strtTime >= $date) {
+                    array_push($arrayt,$value);
+                }
+
+            }
+            if(count($arrayt) > 0)
+                return $arrayt;
+            throw new Exception("Book not Found");
+            
 
         } catch (PDOException $e) {
             return $e->message();
@@ -95,7 +126,7 @@ class Books
             foreach ($row as $key => $value) {
                 $strtTime = $value['StartAt'];
                 $endTime = $value['StartAt'] + $value['Durtion'];
-                for ($i = $strtTime; $i <= $endTime; $i = $i + 10) {
+                for ($i = $strtTime; $i < $endTime; $i = $i + 10) {
                     array_push($arrayt, $i);
                 }
 

@@ -53,11 +53,30 @@ $app->get('/api/GetBookByCustomer', function (Request $request, Response $respon
         $resultObj->set_result($results);
         $resultObj->set_statusCode($response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj->set_result($results);
+    } catch (Exception $e) {
+        $resultObj->set_result(null);
         $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
+        $resultObj->set_ErrorMessage($e->getMessage());
+        return $response->withJson($resultObj);
+    }
+
+});
+    //multipale books
+$app->get('/api/GetBooksByCustomer', function (Request $request, Response $response) {
+    $Book = new Books();
+    $resultObj = new ResultAPI();
+    try {
+        $CustomerID = $request->getParam('CustomerID');
+        $results = $Book->GetBookByCustomer($CustomerID);
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $resultObj->set_result(null);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($e->getMessage());
         return $response->withJson($resultObj);
     }
 
@@ -168,7 +187,6 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
         $resultObj->set_ErrorMessage("Treatment is exists in this time");
     }
     else{
-
         //if book set send a sms for customer
         $customer = new Customer();
         $customer = Customer::GetCustomerById($BooksObj->CustomerID);
@@ -238,6 +256,25 @@ $app->post('/api/AddServiceType', function (Request $request, Response $response
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
+
+$app->put('/admin/UpdateCustomer', function (Request $request, Response $response) {
+    $Customer = new Customer();
+    $resultObj = new ResultAPI();
+    $customer = $request->getParsedBody();
+    $Customer->CustomerID = $customer['CustomerID'];
+    $Customer->FirstName = $customer['FirstName'];
+    $Customer->LastName = $customer['LastName'];
+    $Customer->PhoneNumber = $customer['PhoneNumber'];
+
+
+    $resultObj->set_result($Customer->Update());
+    if ($resultObj->get_result() <= 0 ) {
+        $resultObj->set_ErrorMessage("Customer not saved");
+    }
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
 
 $app->put('/api/UpdateBook', function (Request $request, Response $response) {
     $BooksObj = new Books();
