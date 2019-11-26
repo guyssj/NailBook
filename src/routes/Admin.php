@@ -73,7 +73,7 @@ $app->get('/admin/GetAllBook2', function (Request $request, Response $response) 
  * Add user name
  *
  */
-$app->post('/Adduser', function (Request $request, Response $response) {
+$app->post('/admin/Adduser', function (Request $request, Response $response) {
     $resultObj = new ResultAPI();
     $input = $request->getParsedBody();
     $user = new Users();
@@ -105,10 +105,35 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
 
 });
 
+/**
+ * GET method admin/GetAllWorkingHours
+ * Get from DB all working houres
+ */
+
 $app->get('/admin/GetAllWorkingHours', function (Request $request, Response $response) {
     $WorkingHours = new WorkingHours();
     $resultObj = new ResultAPI();
     $resultObj->set_result($WorkingHours->get_all_hours());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+
+/**
+ * 
+ * PUT Method admin/UpdateWork
+ * updated the work houres per dayOfWeek
+ */
+$app->put('/admin/UpdateWork', function (Request $request, Response $response) {
+    $WorkingHours = new WorkingHours();
+    $resultObj = new ResultAPI();
+    $work = $request->getParsedBody();
+
+    $WorkingHours->dayOfWeek = $work['DayOfWeek'];
+    $WorkingHours->openTime = $work['OpenTime'];
+    $WorkingHours->closeTime = $work['CloseTime'];
+
+    $resultObj->set_result($WorkingHours->update_workingHours());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
@@ -126,4 +151,66 @@ $app->get('/admin/GetAllCustomers', function (Request $request, Response $respon
     $resultObj->set_result($Customers->GetAllCustomers());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/DeleteBook', function (Request $request, Response $response) {
+    $BooksObj = new Books();
+    $resultObj = new ResultAPI();
+    $books = $request->getParsedBody();
+    $BooksObj->BookID = $books['id'];
+
+    $resultObj->set_result($BooksObj->DeleteBook($BooksObj));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/AddNote', function (Request $request, Response $response) {
+    $BooksObj = new Books();
+    $resultObj = new ResultAPI();
+    $books = $request->getParsedBody();
+    $BooksObj->BookID = $books['BookID'];
+    $BooksObj->Notes = $books['Notes'];
+
+    $resultObj->set_result($BooksObj->AddNotes($BooksObj));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->put('/admin/UpdateCustomer', function (Request $request, Response $response) {
+    $Customer = new Customer();
+    $resultObj = new ResultAPI();
+    $customer = $request->getParsedBody();
+    $Customer->CustomerID = $customer['CustomerID'];
+    $Customer->FirstName = $customer['FirstName'];
+    $Customer->LastName = $customer['LastName'];
+    $Customer->PhoneNumber = $customer['PhoneNumber'];
+    $Customer->Color = $customer['Color'];
+
+
+    $resultObj->set_result($Customer->Update());
+    if ($resultObj->get_result() <= 0 ) {
+        $resultObj->set_ErrorMessage("Customer not saved");
+    }
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/AddCloseDay', function (Request $request, Response $response) {
+    $CloseDays = new CloseDays();
+    $resultObj = new ResultAPI();
+    $CloseDay = $request->getParsedBody();
+    try {
+        $CloseDays->Date = $CloseDay["Date"];
+        $results = $CloseDays->add_new_close_date();
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $th) {
+        $resultObj->set_result($results);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($results);
+        return $response->withJson($resultObj);
+    }
+
 });

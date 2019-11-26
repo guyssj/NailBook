@@ -17,6 +17,9 @@ require __DIR__ ."/src/config/ResultsApi.class.php";
 require __DIR__ ."/src/config/SyncWithGoogle.class.php";
 require __DIR__ ."/src/config/globalSMS.class.php";
 require __DIR__ ."/src/config/WorkingHours.class.php";
+require __DIR__ ."/src/config/Logger.class.php";
+require __DIR__ ."/src/config/CloseDays.class.php";
+
 
 
 
@@ -40,7 +43,8 @@ $app->add(function ($req, $res, $next) {
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'http://localhost:4200'  => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
-    'http://192.168.0.25:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.1.29:8100' => 'GET, POST, DELETE, PUT',
+    'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
     'ionic://localhost' => 'GET, POST'
   ]));
 
@@ -59,10 +63,11 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "secure" => false,
     "error" => function ($response, $arguments) {
         $resultObj = new ResultAPI();
-        $resultObj->set_statusCode(403);
+        $resultObj->set_statusCode($response->getStatusCode());
         $resultObj->set_ErrorMessage( $arguments["message"]);
         return $response
             ->withHeader("Content-Type", "application/json")
+            ->withStatus($response->getStatusCode())
             ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     },
     "before" => function ($request, $arguments) use ($container) {
@@ -72,5 +77,7 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
 
 require __DIR__ . "/src/routes/API.php";
 require __DIR__ . "/src/routes/Admin.php";
+require __DIR__ . "/src/routes/CustomersRoute.php";
+require __DIR__ . "/src/routes/ServicesRoute.php";
 
 $app->run();

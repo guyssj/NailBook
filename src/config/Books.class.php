@@ -21,6 +21,7 @@ class Books
     public $ServiceID;
     public $Durtion;
     public $ServiceTypeID;
+    public $Notes;
 
     /**
      * Get All books from Database
@@ -126,11 +127,12 @@ class Books
             foreach ($row as $key => $value) {
                 $strtTime = $value['StartAt'];
                 $endTime = $value['StartAt'] + $value['Durtion'];
-                for ($i = $strtTime; $i < $endTime; $i = $i + 10) {
+                for ($i = $strtTime; $i <= $endTime; $i = $i + 5) {
                     array_push($arrayt, $i);
                 }
 
             }
+            array_push($arrayt,$endTime+5);
             return $arrayt;
 
         } catch (PDOException $e) {
@@ -235,6 +237,32 @@ class Books
             $db->query("set character_set_client='utf8'");
             $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
             $row = $smst->execute(['BookID' => $Books->BookID]);
+            $count = $smst->rowCount();
+            if($count > 0){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
+
+    public function AddNotes(Books $Books)
+    {
+        $sql = "call BookAddNote(:BookID,:Notes);";
+        //$sql2 = "SELECT StartDate FROM Books WHERE StartDate='$Books->StartDate' And StartAt='$Books->StartAt' LIMIT 1;";
+        try {
+            $db = new db();
+            $db = $db->connect2();
+            $smst = $db->prepare($sql);
+            $smst->bindParam(':BookID', $Books->BookID);
+            $smst->bindParam(':Notes', $Books->Notes);
+            $db->query("set character_set_client='utf8'");
+            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $row = $smst->execute(['BookID' => $Books->BookID, 'Notes' => $Books->Notes]);
             $count = $smst->rowCount();
             if($count > 0){
                 return true;

@@ -5,45 +5,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 
 
-$app->get('/api/GetCustomerById', function (Request $request, Response $response) {
-    $Customers = new Customer();
-    $resultObj = new ResultAPI();
-    $Customers->CustomerID = $request->getParam('CustomerID');
-    $resultObj->set_result($Customers->GetCustomerById($Customers->CustomerID));
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-
-});
-
-$app->get('/api/GetCustomerByPhone', function (Request $request, Response $response) {
-    $Customers = new Customer();
-    $resultObj = new ResultAPI();
-    $Customers->PhoneNumber = $request->getParam('PhoneNumber');
-    $resultObj->set_result($Customers->GetByPhoneNumber($Customers->PhoneNumber));
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-
-});
-
-/**
- * GET Method  /api/GetAllServices
- */
-$app->get('/api/GetAllServices', function (Request $request, Response $response) {
-    $Services = new Services();
-    try {
-        $results = $Services->GetAllServices();
-        echo json_encode($results, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj = new ResultAPI();
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
-    }
-
-});
-
 $app->get('/api/GetBookByCustomer', function (Request $request, Response $response) {
     $Book = new Books();
     $resultObj = new ResultAPI();
@@ -101,6 +62,26 @@ $app->get('/api/GetSlotsExist', function (Request $request, Response $response) 
 
 });
 
+$app->get('/api/GetDateClosed', function (Request $request, Response $response) {
+    $CloseDays = new CloseDays();
+    $resultObj = new ResultAPI();
+    try {
+        $results = $CloseDays->get_date_closed();
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $th) {
+        $resultObj->set_result($results);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($results);
+        return $response->withJson($resultObj);
+    }
+
+});
+
+
+
 /**
  * GET /api/GetTimeSlots
  *
@@ -128,7 +109,7 @@ $app->get('/api/GetTimeSlots', function (Request $request, Response $response) {
         //check the working hours in database
         $WorkingHours->get_hours_by_day($dayofweek);
 
-        for ($i = $WorkingHours->openTime; $i <= $WorkingHours->closeTime; $i = $i + 10) {
+        for ($i = $WorkingHours->openTime; $i <= $WorkingHours->closeTime; $i = $i + 20) {
             $foundTime = false;
             for ($l = 0; $l < count($arryOfTimeExsits); $l++) {
                 if ($arryOfTimeExsits[$l] == $i) {
@@ -187,94 +168,21 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
         $resultObj->set_ErrorMessage("Treatment is exists in this time");
     }
     else{
-        //if book set send a sms for customer
-        $customer = new Customer();
-        $customer = Customer::GetCustomerById($BooksObj->CustomerID);
-        $globalSMS = new globalSMS();
-        $Date = strtotime($BooksObj->StartDate);
-        $NewDate = date("d/m/Y",$Date);
-        $Time = $BooksObj->StartAt;
-        $newTime = hoursandmins($Time);
-        $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבע לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}";
+        // if book set send a sms for customer
+        // $customer = new Customer();
+        // $customer = Customer::GetCustomerById($BooksObj->CustomerID);
+        // $globalSMS = new globalSMS();
+        // $Date = strtotime($BooksObj->StartDate);
+        // $NewDate = date("d/m/Y",$Date);
+        // $Time = $BooksObj->StartAt;
+        // $newTime = hoursandmins($Time);
+        // $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבע לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}";
 
-        $globalSMS->send_sms($customer['PhoneNumber'],$message);
+        // $globalSMS->send_sms($customer['PhoneNumber'],$message);
     }
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 
 });
-
-/**
- * GET api/GetAllServiceTypeByService?ServiceID={id}
- *
- * Return all Service Types by Service id
- */
-$app->get('/api/GetAllServiceTypeByService', function (Request $request, Response $response) {
-    $ServiceID = $request->getParam('ServiceID');
-    $ServiceTypeObj = new ServiceTypes();
-
-    echo $ServiceTypeObj->GetServiceTypeByID($ServiceID, $response);
-});
-
-$app->get('/api/GetAllServiceTypes', function (Request $request, Response $response) {
-    $ServiceTypeObj = new ServiceTypes();
-
-    echo $ServiceTypeObj->GetServiceTypes($response);
-});
-
-/**
- * POST api/AddCustomer
- *
- * @param Customer in  request body
- */
-$app->post('/api/AddCustomer', function (Request $request, Response $response) {
-    $resultObj = new ResultAPI();
-    $CustomerObj = new Customer();
-    $CustomerObj->FirstName = $request->getParam('FirstName');
-    $CustomerObj->LastName = $request->getParam('LastName');
-    $CustomerObj->PhoneNumber = $request->getParam('PhoneNumber');
-    $resultObj->set_result($CustomerObj->Add());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
-
-/**
- * POST api/AddServiceType
- *
- * @param ServiceTypes in  request body
- */
-$app->post('/api/AddServiceType', function (Request $request, Response $response) {
-    $resultObj = new ResultAPI();
-    $ServiceType = new ServiceTypes();
-    $ServiceTypeBody = $request->getParsedBody();
-
-    $ServiceType->ServiceTypeName = $ServiceTypeBody['ServiceTypeName'];
-    $ServiceType->ServiceID = $ServiceTypeBody['ServiceID'];
-    $ServiceType->Price = $ServiceTypeBody['Price'];
-    $ServiceType->Duration =$ServiceTypeBody['Duration'];
-    $ServiceType->Description =$ServiceTypeBody['Description'];
-    $resultObj->set_result($ServiceType->Add());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
-
-$app->put('/admin/UpdateCustomer', function (Request $request, Response $response) {
-    $Customer = new Customer();
-    $resultObj = new ResultAPI();
-    $customer = $request->getParsedBody();
-    $Customer->CustomerID = $customer['CustomerID'];
-    $Customer->FirstName = $customer['FirstName'];
-    $Customer->LastName = $customer['LastName'];
-    $Customer->PhoneNumber = $customer['PhoneNumber'];
-
-
-    $resultObj->set_result($Customer->Update());
-    if ($resultObj->get_result() <= 0 ) {
-        $resultObj->set_ErrorMessage("Customer not saved");
-    }
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
-
 
 $app->put('/api/UpdateBook', function (Request $request, Response $response) {
     $BooksObj = new Books();
@@ -291,18 +199,6 @@ $app->put('/api/UpdateBook', function (Request $request, Response $response) {
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
-
-$app->post('/admin/DeleteBook', function (Request $request, Response $response) {
-    $BooksObj = new Books();
-    $resultObj = new ResultAPI();
-    $books = $request->getParsedBody();
-    $BooksObj->BookID = $books['id'];
-
-    $resultObj->set_result($BooksObj->DeleteBook($BooksObj));
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
-
 
 
 /**
