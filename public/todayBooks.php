@@ -20,9 +20,12 @@
             $ServiceType = $value['ServiceTypeName'];
             $Date = strtotime($value['StartDate']);
             $NewDate = date("d/m/Y",$Date);
+            $decodeText = "היי מירית\nאני מאשר/ת הגעה,\n{$FirstName}";
+            $encodeText =urlencode($decodeText);
+            $LinkWhatApp = "https://wa.me/9720525533979/?text={$encodeText}";
             $Time = $value['StartAt'];
             $newTime = hoursandmins($Time);
-            $message ="שלום {$FirstName} {$LastName} ,\nזאת תזכורת לטיפול {$ServiceType} אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}";
+            $message ="שלום {$FirstName} {$LastName} ,\nזאת תזכורת לטיפול {$ServiceType} אצל מיריתוש\nבתאריך {$NewDate} בשעה {$newTime}\n\nלאישור הגעה לחצ/י על הלינק: {$LinkWhatApp}";
             //$message = "שלום {$FirstName} {$LastName} , הנך מוזמן לפגישה ל {$ServiceType}";
             $globalSMS->send_sms($phone,$message);
 

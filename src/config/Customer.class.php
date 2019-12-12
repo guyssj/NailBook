@@ -15,17 +15,22 @@ class Customer
     public $FirstName;
     public $LastName;
     public $PhoneNumber;
+    public $Color;
+    public $Notes;
 
     public function Add()
     {
         try {
-            $sql = "call CustomerSave('$this->FirstName','$this->LastName','$this->PhoneNumber',@l_CustomerID);";
+            $this->FirstName = str_replace("׳", "'", $this->FirstName);
+            $this->LastName = str_replace("׳", "'", $this->LastName);
+            $sql = "call CustomerSave('$this->FirstName','$this->LastName','$this->PhoneNumber','$this->Notes',@l_CustomerID);";
             $db = new db();
             $db = $db->connect2();
             $smst = $db->prepare($sql);
             $smst->bindParam(':FirstName', $this->FirstName);
             $smst->bindParam(':LastName', $this->LastName);
             $smst->bindParam(':PhoneNumber', $this->PhoneNumber);
+            $smst->bindParam(':Notes', $this->Notes);
             $db->query("set character_set_client='utf8'");
             $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
 
@@ -41,6 +46,44 @@ class Customer
                 }
             }
             return $row2->id;
+
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
+
+    public function Update()
+    {
+
+        // $sql = "call CustomerUpdate('$this->CustomerID','$this->FirstName','$this->LastName','$this->PhoneNumber');";
+        try {
+            $sql = "call CustomerUpdate(:CustomerID,:FirstName,:LastName,:PhoneNumber,:Color,:Notes);";
+
+            $db = new db();
+            $db = $db->connect2();
+            $smst = $db->prepare($sql);
+
+            //fix issue with quets
+            $this->FirstName = str_replace("׳", "'", $this->FirstName);
+            $this->LastName = str_replace("׳", "'", $this->LastName);
+            $smst->bindParam(':CustomerID', $this->CustomerID);
+            $smst->bindParam(':FirstName', $this->FirstName);
+            $smst->bindParam(':LastName', $this->LastName);
+            $smst->bindParam(':PhoneNumber', $this->PhoneNumber);
+            $smst->bindParam(':Color', $this->Color);
+            $smst->bindParam(':Notes', $this->Notes);
+
+
+            $db->query("set character_set_client='utf8'");
+            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $row = $smst->execute();
+            $row = $smst->rowCount();
+            if ($row > 0) {
+                return true;
+            } else {
+                return false;
+            }
 
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
