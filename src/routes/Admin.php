@@ -63,8 +63,8 @@ $app->post('/login', function (Request $request, Response $response) {
  * Get all books return in json
  */
 $app->get('/admin/GetAllBook2', function (Request $request, Response $response) {
-    $BooksObj = new Books();
-    echo $BooksObj->GetBooks($response);
+        $BooksObj = new Books();
+        echo $BooksObj->GetBooks($response);
 });
 
 /**
@@ -160,6 +160,50 @@ $app->post('/admin/DeleteBook', function (Request $request, Response $response) 
     $BooksObj->BookID = $books['id'];
 
     $resultObj->set_result($BooksObj->DeleteBook($BooksObj));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/DeleteCloseDay', function (Request $request, Response $response) {
+    $CloseDayObj = new CloseDays();
+    $resultObj = new ResultAPI();
+    $closeDays = $request->getParsedBody();
+    $CloseDayObj->CloseDayID = $closeDays['CloseDaysID'];
+
+    $resultObj->set_result($CloseDayObj->del_close_day());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+
+$app->post('/admin/DeleteLockHours', function (Request $request, Response $response) {
+    $resultObj = new ResultAPI();
+    $LockHours = $request->getParsedBody();
+    $LockID = $LockHours['idLockHours'];
+
+    $resultObj->set_result(LockHours::delete_lock_hours($LockID));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/admin/AddLockHours', function (Request $request, Response $response) {
+    $LockObj = new LockHours();
+    $resultObj = new ResultAPI();
+    $LockHours = $request->getParsedBody();
+    $LockObj->StartDate = $LockHours['StartDate'];
+    $LockObj->StartAt = $LockHours['StartAt'];
+    $LockObj->EndAt = $LockHours['EndAt'];
+
+    $resultObj->set_result($LockObj->add_new_lock_hours());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
+$app->get('/admin/GetAllLockHours', function (Request $request, Response $response) {
+    $LockObj = new LockHours();
+    $resultObj = new ResultAPI();
+
+    $resultObj->set_result($LockObj->get_all_lock_hours());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });

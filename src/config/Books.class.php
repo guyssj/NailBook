@@ -68,7 +68,6 @@ class Books
 
             }
             throw new Exception("Book not Found");
-            
 
         } catch (PDOException $e) {
             return $e->message();
@@ -91,14 +90,15 @@ class Books
             foreach ($row as $key => $value) {
                 $strtTime = $value['StartDate'];
                 if ($strtTime >= $date) {
-                    array_push($arrayt,$value);
+                    array_push($arrayt, $value);
                 }
 
             }
-            if(count($arrayt) > 0)
+            if (count($arrayt) > 0) {
                 return $arrayt;
+            }
+
             throw new Exception("Book not Found");
-            
 
         } catch (PDOException $e) {
             return $e->message();
@@ -122,18 +122,35 @@ class Books
             $mysqli->query("set character_set_results='utf8'");
             $result = $mysqli->query($sql);
             $row = cast_query_results($result);
-            //return $row;
+            return $row;
             $arrayt = [];
-            foreach ($row as $key => $value) {
-                $strtTime = $value['StartAt'];
-                $endTime = $value['StartAt'] + $value['Durtion'];
-                for ($i = $strtTime; $i <= $endTime; $i = $i + 5) {
-                    array_push($arrayt, $i);
-                }
+            // foreach ($row as $key => $value) {
+            //     $BookTimes = [];
+            //     $strtTime = $value['StartAt'];
+            //     $endTime = $value['StartAt'] + $value['Durtion'];
+            //     for ($i = $strtTime; $i <= $endTime; $i = $i + 5) {
+            //         array_push($BookTimes, $i);
+            //     }
+            //     array_push($arrayt,$BookTimes);
 
-            }
-            array_push($arrayt,$endTime+5);
-            return $arrayt;
+            // }
+
+            //check if have lock hours
+            // if (count($arrayt) > 0) {
+            //     for ($i = 0; $i < count($LockHours); $i++) {
+            //         array_push($arrayt, $LockHours[$i]);
+            //     }
+            // }
+            // else{
+            //     $arrayt = $LockHours;
+            // }
+
+            // if (isset($endTime)) {
+            //     array_push($arrayt, $endTime + 5);
+            // }
+
+            // sort($arrayt);
+            // return $arrayt;
 
         } catch (PDOException $e) {
             return $e->message();
@@ -238,10 +255,9 @@ class Books
             $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
             $row = $smst->execute(['BookID' => $Books->BookID]);
             $count = $smst->rowCount();
-            if($count > 0){
+            if ($count > 0) {
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         } catch (PDOException $e) {
@@ -264,16 +280,113 @@ class Books
             $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
             $row = $smst->execute(['BookID' => $Books->BookID, 'Notes' => $Books->Notes]);
             $count = $smst->rowCount();
-            if($count > 0){
+            if ($count > 0) {
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
             return $var;
         }
+    }
+
+    /**
+     *   Fetch All today's appointments and calculate disable slots
+     */
+    public function GetSlotsExist($Date)
+    {
+        $WorkingHours = new WorkingHours();
+        $dayofweek = date('w', strtotime($Date));
+
+        $WorkingHours->get_hours_by_day($dayofweek);
+        $AppBetweenTimes = array();
+        $AppNextTimes = array();
+        $LockTimesSlots = array();
+        $AllSlotTimesList = array();
+        $EndOfAppTimes = array();
+        $start = $WorkingHours->openTime;
+
+        $end = $WorkingHours->closeTime;
+        //$end = strtotime(convertToHoursMins($WorkingHours->closeTime, '%02d:%02d'));
+    
+    
+        for ($i = $start; $i <= $end; $i += 30) {
+            $AllSlotTimesList[] = $i;
+        }
+        $AllAppointmentsData = $this->GetBooksByDate($Date);
+
+        if ($AllAppointmentsData) {
+            foreach ($AllAppointmentsData as $Appointment) {
+                $AppStartTimes[] = $Appointment['StartAt'];
+                $AppEndTimes[] = $Appointment['StartAt'] + $Appointment['Durtion'];
+
+                //now calculate 5min slots between appointments startAt and EndAt
+                $start_et = $Appointment['StartAt'];
+                $end_et = $Appointment['StartAt'] + $Appointment['Durtion'];
+
+                for ($i = $start_et; $i < $end_et; $i += 5) //make 15-10=5min slot
+                {
+                    // $AppBetweenTimes[] = convertToHoursMins($i, '%02d:%02d');
+                    $AppBetweenTimes[] = $i;
+
+                    if ($i == $end_et - 5) {
+                        $EndOfAppTimes[] = $i + 5;
+
+                        // $EndOfAppTimes[] = convertToHoursMins($i + 5, '%02d:%02d');;
+                    }
+                }
+
+            }
+
+            //calculating  Next & Previous time of booked appointments
+            foreach ($AllSlotTimesList as $single) {
+                if (in_array($single, $AppStartTimes)) {
+                    //get next time
+                    $time = $single;
+                    $event_length = 30 - 5; // Service duration time    -  slot time
+                    $timestamp = $time;
+                    $endtime = $event_length + $timestamp;
+                    $next_time = $endtime; //echo "<br>";
+                    //calculate next time
+                    $start = $single;
+                    $end = $next_time;
+                    for ($i = $start; $i <= $end; $i += 5) //making 5min diffrance slot
+                    {
+                        // $AppNextTimes[] = convertToHoursMins($i, '%02d:%02d');
+
+                        $AppNextTimes[] = $i;
+                    }
+
+                    //get previous time
+                    $time1 = $single;
+                    $event_length1 = 30 - 5; // 60min Service duration time - 15 slot time
+                    $timestamp1 = $time1;
+                    $endtime1 = $timestamp1 - $event_length1;
+                    $next_time1 = $endtime1;
+                    //calculate previous time
+                    $start1 = $next_time1;
+                    $end1 = $single;
+                    for ($i = $start1; $i <= $end1; $i += 5) //making 5min diff slot
+                    {
+                        // $AppPreviousTimes[] = convertToHoursMins($i, '%02d:%02d');
+                        $AppPreviousTimes[] = $i;
+
+                    }
+                }
+            }
+            //end calculating Next & Previous time of booked appointments
+
+        } // end if $AllAppointmentsData
+        $LockTimesSlots = LockHours::get_slots_lock($Date);
+
+        $DisableSlotsTimes = array_merge($AppBetweenTimes, $AppNextTimes,$LockTimesSlots);
+        unset($AppBetweenTimes);
+        unset($AppNextTimes);
+        unset($LockTimesSlots);
+        if(isset($DisableSlotsTimes))
+            sort($DisableSlotsTimes);
+        return ['DisableSlots'=> $DisableSlotsTimes,'End' => $EndOfAppTimes];
     }
 
 }
