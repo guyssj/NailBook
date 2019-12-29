@@ -193,6 +193,8 @@ $app->post('/admin/AddLockHours', function (Request $request, Response $response
     $LockObj->StartDate = $LockHours['StartDate'];
     $LockObj->StartAt = $LockHours['StartAt'];
     $LockObj->EndAt = $LockHours['EndAt'];
+    $LockObj->Notes = $LockHours['Notes'];
+
 
     $resultObj->set_result($LockObj->add_new_lock_hours());
     $resultObj->set_statusCode($response->getStatusCode());
@@ -220,24 +222,7 @@ $app->post('/admin/AddNote', function (Request $request, Response $response) {
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
 
-$app->put('/admin/UpdateCustomer', function (Request $request, Response $response) {
-    $Customer = new Customer();
-    $resultObj = new ResultAPI();
-    $customer = $request->getParsedBody();
-    $Customer->CustomerID = $customer['CustomerID'];
-    $Customer->FirstName = $customer['FirstName'];
-    $Customer->LastName = $customer['LastName'];
-    $Customer->PhoneNumber = $customer['PhoneNumber'];
-    $Customer->Color = $customer['Color'];
 
-
-    $resultObj->set_result($Customer->Update());
-    if ($resultObj->get_result() <= 0 ) {
-        $resultObj->set_ErrorMessage("Customer not saved");
-    }
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
 
 $app->post('/admin/AddCloseDay', function (Request $request, Response $response) {
     $CloseDays = new CloseDays();

@@ -5,6 +5,7 @@
         public $StartDate;
         public $StartAt;
         public $EndAt;
+        public $Notes;
 
         public function get_all_lock_hours(){
             $sql = "SELECT * FROM LockHours";
@@ -23,7 +24,7 @@
         }
 
         public function add_new_lock_hours(){
-            $sql = "call LockHoursAdd(:StartDate,:StartAt,:EndAt);";
+            $sql = "call LockHoursAdd(:StartDate,:StartAt,:EndAt,:Notes);";
             try {
                 $db = new db();
                 $db = $db->connect2();
@@ -31,6 +32,7 @@
                 $smst->bindParam(':StartDate', $this->StartDate);
                 $smst->bindParam(':StartAt', $this->StartAt);
                 $smst->bindParam(':EndAt', $this->EndAt);
+                $smst->bindParam(':Notes', $this->Notes);
 
                 $db->query("set character_set_client='utf8'");
                 $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");

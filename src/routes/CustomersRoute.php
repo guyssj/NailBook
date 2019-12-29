@@ -49,3 +49,23 @@ $app->post('/api/AddCustomer', function (Request $request, Response $response) {
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
+
+$app->put('/admin/UpdateCustomer', function (Request $request, Response $response) {
+    $Customer = new Customer();
+    $resultObj = new ResultAPI();
+    $customer = $request->getParsedBody();
+    $Customer->CustomerID = $customer['CustomerID'];
+    $Customer->FirstName = $customer['FirstName'];
+    $Customer->LastName = $customer['LastName'];
+    $Customer->PhoneNumber = $customer['PhoneNumber'];
+    $Customer->Color = $customer['Color'];
+    $Customer->Notes = $customer['Notes'];
+
+
+    $resultObj->set_result($Customer->Update());
+    if ($resultObj->get_result() <= 0 ) {
+        $resultObj->set_ErrorMessage("Customer not saved");
+    }
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});

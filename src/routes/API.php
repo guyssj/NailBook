@@ -210,16 +210,16 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
         $resultObj->set_ErrorMessage("Treatment is exists in this time");
     } else {
         // if book set send a sms for customer
-        $customer = new Customer();
-        $customer = Customer::GetCustomerById($BooksObj->CustomerID);
-        $globalSMS = new globalSMS();
-        $Date = strtotime($BooksObj->StartDate);
-        $NewDate = date("d/m/Y",$Date);
-        $Time = $BooksObj->StartAt;
-        $newTime = hoursandmins($Time);
-        $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
+        // $customer = new Customer();
+        // $customer = Customer::GetCustomerById($BooksObj->CustomerID);
+        // $globalSMS = new globalSMS();
+        // $Date = strtotime($BooksObj->StartDate);
+        // $NewDate = date("d/m/Y",$Date);
+        // $Time = $BooksObj->StartAt;
+        // $newTime = hoursandmins($Time);
+        // $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
 
-        $globalSMS->send_sms($customer['PhoneNumber'],$message);
+        // $globalSMS->send_sms($customer['PhoneNumber'],$message);
     }
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 
