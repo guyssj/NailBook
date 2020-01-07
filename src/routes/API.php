@@ -2,43 +2,7 @@
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-$app->get('/api/GetBookByCustomer', function (Request $request, Response $response) {
-    $Book = new Books();
-    $resultObj = new ResultAPI();
-    try {
-        $CustomerID = $request->getParam('CustomerID');
-        $results = $Book->GetBooksByCustomer($CustomerID);
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $e) {
-        $resultObj->set_result(null);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($e->getMessage());
-        return $response->withJson($resultObj);
-    }
 
-});
-//multipale books
-$app->get('/api/GetBooksByCustomer', function (Request $request, Response $response) {
-    $Book = new Books();
-    $resultObj = new ResultAPI();
-    try {
-        $CustomerID = $request->getParam('CustomerID');
-        $results = $Book->GetBookByCustomer($CustomerID);
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $e) {
-        $resultObj->set_result(null);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($e->getMessage());
-        return $response->withJson($resultObj);
-    }
-
-});
 
 $app->get('/api/GetSlotsExist', function (Request $request, Response $response) {
     $SlotsExist = new Books();
@@ -59,66 +23,7 @@ $app->get('/api/GetSlotsExist', function (Request $request, Response $response) 
 
 });
 
-$app->get('/api/GetDateClosed', function (Request $request, Response $response) {
-    $CloseDays = new CloseDays();
-    $resultObj = new ResultAPI();
-    try {
-        $results = $CloseDays->get_date_closed();
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
-    }
 
-});
-
-/**
- * GET api/GetWorkHoursByDay?dayOfWeek={dayOfWeek}
- *
- * Get Working Hours by day of the week
- *
- * @param DayOfWeek
- */
-$app->get('/api/GetWorkHoursByDay', function (Request $request, Response $response) {
-    $WorkDay = new WorkingHours();
-    $resultObj = new ResultAPI();
-    try {
-        $dayOfWeek = $request->getParam('dayOfWeek');
-        $results = $WorkDay->get_hours_by_day($dayOfWeek);
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
-    }
-
-});
-
-$app->get('/api/GetLockHoursByDate', function (Request $request, Response $response) {
-    $LockObj = new LockHours();
-    $resultObj = new ResultAPI();
-    $date = $request->getParam('Date');
-    $endTimeOfLockHours = 0;
-    $arrayOfTimesLock = $LockObj->get_slots_lock($date);
-    if (count($arrayOfTimesLock) > 0) {
-        $count = count($arrayOfTimesLock)-1;
-
-        $endTimeOfLockHours = $arrayOfTimesLock[$count]+5;
-    }
-
-    $resultObj->set_result($endTimeOfLockHours);
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
 
 /**
  * GET /api/GetTimeSlots
@@ -188,58 +93,7 @@ function my_array_unique($array, $keep_key_assoc = false)
     return $keep_key_assoc ? $array : array_values($array);
 }
 
-/**
- * POST /api/SetBook
- *
- * Set appoinemnt
- */
-$app->post('/api/SetBook', function (Request $request, Response $response) {
-    $BooksObj = new Books();
-    $resultObj = new ResultAPI();
-    $BooksObj->StartDate = $request->getParam('StartDate');
-    $BooksObj->StartAt = $request->getParam('StartAt');
-    $BooksObj->CustomerID = $request->getParam('CustomerID');
-    $BooksObj->ServiceID = $request->getParam('ServiceID');
-    $BooksObj->Durtion = $request->getParam('Durtion');
-    $BooksObj->ServiceTypeID = $request->getParam('ServiceTypeID');
 
-    $resultObj->set_result($BooksObj->SetBook($BooksObj));
-    $resultObj->set_statusCode($response->getStatusCode());
-
-    if ($resultObj->get_result() == -1) {
-        $resultObj->set_ErrorMessage("Treatment is exists in this time");
-    } else {
-        // if book set send a sms for customer
-        // $customer = new Customer();
-        // $customer = Customer::GetCustomerById($BooksObj->CustomerID);
-        // $globalSMS = new globalSMS();
-        // $Date = strtotime($BooksObj->StartDate);
-        // $NewDate = date("d/m/Y",$Date);
-        // $Time = $BooksObj->StartAt;
-        // $newTime = hoursandmins($Time);
-        // $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
-
-        // $globalSMS->send_sms($customer['PhoneNumber'],$message);
-    }
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-
-});
-
-$app->put('/api/UpdateBook', function (Request $request, Response $response) {
-    $BooksObj = new Books();
-    $resultObj = new ResultAPI();
-    $books = $request->getParsedBody();
-    $BooksObj->StartDate = $books['StartDate'];
-    $BooksObj->StartAt = $books['StartAt'];
-    $BooksObj->BookID = $books['BookID'];
-
-    $resultObj->set_result($BooksObj->UpdateBook($BooksObj));
-    if ($resultObj->get_result() <= 0) {
-        $resultObj->set_ErrorMessage("Treatment is exists in this time");
-    }
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-});
 
 /**
  * POST api/GetTimes

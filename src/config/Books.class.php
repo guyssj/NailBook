@@ -124,33 +124,6 @@ class Books
             $row = cast_query_results($result);
             return $row;
             $arrayt = [];
-            // foreach ($row as $key => $value) {
-            //     $BookTimes = [];
-            //     $strtTime = $value['StartAt'];
-            //     $endTime = $value['StartAt'] + $value['Durtion'];
-            //     for ($i = $strtTime; $i <= $endTime; $i = $i + 5) {
-            //         array_push($BookTimes, $i);
-            //     }
-            //     array_push($arrayt,$BookTimes);
-
-            // }
-
-            //check if have lock hours
-            // if (count($arrayt) > 0) {
-            //     for ($i = 0; $i < count($LockHours); $i++) {
-            //         array_push($arrayt, $LockHours[$i]);
-            //     }
-            // }
-            // else{
-            //     $arrayt = $LockHours;
-            // }
-
-            // if (isset($endTime)) {
-            //     array_push($arrayt, $endTime + 5);
-            // }
-
-            // sort($arrayt);
-            // return $arrayt;
 
         } catch (PDOException $e) {
             return $e->message();
@@ -387,6 +360,62 @@ class Books
         if(isset($DisableSlotsTimes))
             sort($DisableSlotsTimes);
         return ['DisableSlots'=> $DisableSlotsTimes,'End' => $EndOfAppTimes];
+    }
+
+    public function get_book_today(){
+        $AppointmentDate = date("Y-m-d");
+        $todayApps = array();
+        $todayApps =  $this->GetBooksByDate($AppointmentDate);
+        return count($todayApps);
+    }
+
+    public function get_week_book(){
+        $dayofweek = date('w', strtotime(date("Y-m-d")));
+        
+        //this check set the sunday first day in week
+        if($dayofweek == 0){
+            $startWeek = date("Y-m-d", strtotime('sunday this week'));
+            $endWeek = date("Y-m-d", strtotime('friday next week'));
+        }
+        else{
+            $startWeek = date("Y-m-d", strtotime('sunday last week'));
+            $endWeek = date("Y-m-d", strtotime('friday this week'));
+        }
+        $sql = "SELECT * FROM Books WHERE StartDate BETWEEN '$startWeek' AND '$endWeek' ;";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            return count($row);
+
+        } catch (PDOException $e) {
+            return $e->message();
+        }
+    }
+
+    public function get_price_month(){
+        $first_day_this_month = date('Y-m-01'); // hard-coded '01' for first day
+        $last_day_this_month  = date('Y-m-t');
+        $sql = "SELECT sum(st.Price) as PriceForAllMonth from Books bk
+        JOIN ServiceType st ON bk.ServiceTypeID = st.ServiceTypeID
+        WHERE bk.StartDate BETWEEN '$first_day_this_month' AND '$last_day_this_month';";
+       // $sql = "SELECT * FROM Books WHERE StartDate BETWEEN '$startWeek' AND '$endWeek' ;";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            $PriceForAllMonth = (object)$row[0];
+            return $PriceForAllMonth;
+
+        } catch (PDOException $e) {
+            return $e->message();
+        }
     }
 
 }

@@ -69,3 +69,34 @@ $app->put('/admin/UpdateCustomer', function (Request $request, Response $respons
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
+
+/**
+ * GET admin/GetCustomerById?CustomerID={ID}
+ *
+ * Get Customer by ID
+ *
+ */
+$app->get('/admin/GetCustomerById', function (Request $request, Response $response) {
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $Customers->CustomerID = $request->getParam('CustomerID');
+    $resultObj->set_result($Customers->GetCustomerById($Customers->CustomerID));
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+
+});
+
+/**
+ * 
+ * test
+ * get all customers from DB
+ * only admin can get
+ * 
+ */
+$app->get('/admin/GetAllCustomers', function (Request $request, Response $response) {
+    $Customers = new Customer();
+    $resultObj = new ResultAPI();
+    $resultObj->set_result($Customers->GetAllCustomers());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
