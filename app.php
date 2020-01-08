@@ -39,6 +39,7 @@ $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'http://localhost:4200' => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
     'http://192.168.1.29:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.0.25:8100' => 'GET, POST, DELETE, PUT',
     'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
     'ionic://localhost' => 'GET, POST',
 ]));
@@ -53,7 +54,7 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "header" => "X-Token",
     "regexp" => "/(.*)/",
     "cookie" => "userToken",
-    "secret" => getenv('Secret'),
+    "secret" => $_SERVER['Secret'],
     "algorithm" => ["HS256"],
     "secure" => false,
     "error" => function ($response, $arguments) {
@@ -76,5 +77,10 @@ require __DIR__ . "/src/routes/API.php";
 require __DIR__ . "/src/routes/Admin.php";
 require __DIR__ . "/src/routes/CustomersRoute.php";
 require __DIR__ . "/src/routes/ServicesRoute.php";
+require __DIR__ . "/src/routes/BooksRoute.php";
+require __DIR__ . "/src/routes/LocksRoute.php";
+require __DIR__ . "/src/routes/WorkdayRoute.php";
+
+
 
 $app->run();
