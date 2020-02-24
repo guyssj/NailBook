@@ -4,6 +4,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 $app->get('/api/GetDateClosed', function (Request $request, Response $response) {
     $CloseDays = new CloseDays();
+    $Holidays = new Holidays();
     $resultObj = new ResultAPI();
     try {
         $results = $CloseDays->get_date_closed();
@@ -20,6 +21,25 @@ $app->get('/api/GetDateClosed', function (Request $request, Response $response) 
 
 });
 
+$app->get('/api/GetHolidayClosed', function (Request $request, Response $response) {
+    $CloseDays = new CloseDays();
+    $Holidays = new Holidays();
+    $resultObj = new ResultAPI();
+    try {
+        $results = $CloseDays->get_date_closed();
+        $ResultsMerage = array_merge($results,$Holidays->get_holidays());
+        $resultObj->set_result($ResultsMerage);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $th) {
+        $resultObj->set_result($results);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($results);
+        return $response->withJson($resultObj);
+    }
+
+});
 
 /**
  * 
@@ -94,6 +114,7 @@ $app->post('/admin/AddCloseDay', function (Request $request, Response $response)
     $CloseDay = $request->getParsedBody();
     try {
         $CloseDays->Date = $CloseDay["Date"];
+        $CloseDays->Notes = $CloseDay["Notes"];
         $results = $CloseDays->add_new_close_date();
         $resultObj->set_result($results);
         $resultObj->set_statusCode($response->getStatusCode());

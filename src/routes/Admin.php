@@ -63,7 +63,7 @@ $app->post('/login', function (Request $request, Response $response) {
  * Add user name
  *
  */
-$app->post('/admin/Adduser', function (Request $request, Response $response) {
+$app->post('/Adduser', function (Request $request, Response $response) {
     $resultObj = new ResultAPI();
     $input = $request->getParsedBody();
     $user = new Users();

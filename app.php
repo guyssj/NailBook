@@ -18,6 +18,7 @@ require __DIR__ . "/src/config/Logger.class.php";
 require __DIR__ . "/src/config/CloseDays.class.php";
 require __DIR__ . "/src/config/LockHours.class.php";
 require __DIR__ . "/src/config/TimeSlots.class.php";
+require __DIR__ . "/src/config/Holidays.class.php";
 
 $app = new \Slim\App;
 $app->options('/{routes:.+}', function ($request, $response, $args) {
@@ -80,7 +81,7 @@ require __DIR__ . "/src/routes/ServicesRoute.php";
 require __DIR__ . "/src/routes/BooksRoute.php";
 require __DIR__ . "/src/routes/LocksRoute.php";
 require __DIR__ . "/src/routes/WorkdayRoute.php";
-
+require __DIR__ . "/src/routes/HolidayRoute.php";
 
 
 $app->run();

@@ -141,6 +141,16 @@ $app->get('/admin/GetPriceMonth', function (Request $request, Response $response
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
 
+$app->get('/admin/GetPriceByMonth', function (Request $request, Response $response) {
+    $resultObj = new ResultAPI();
+    $BooksObj = new Books();
+    $year = $request->getParam('Year');
+    $month = $request->getParam('Month');
+    $resultObj->set_result($BooksObj->get_price_by_month($month,$year)->PriceForAllMonth);
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
+
 $app->post('/admin/AddNote', function (Request $request, Response $response) {
     $BooksObj = new Books();
     $resultObj = new ResultAPI();

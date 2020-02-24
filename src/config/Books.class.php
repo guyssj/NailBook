@@ -417,5 +417,26 @@ class Books
             return $e->message();
         }
     }
+    public function get_price_by_month($month,$year){
+        $first_day_this_month = date($year.'-'.$month.'-01'); // hard-coded '01' for first day
+        $last_day_this_month  = date($year.'-' .$month. '-t',strtotime($first_day_this_month));
+        $sql = "SELECT sum(st.Price) as PriceForAllMonth from Books bk
+        JOIN ServiceType st ON bk.ServiceTypeID = st.ServiceTypeID
+        WHERE bk.StartDate BETWEEN '$first_day_this_month' AND '$last_day_this_month';";
+       // $sql = "SELECT * FROM Books WHERE StartDate BETWEEN '$startWeek' AND '$endWeek' ;";
+        try {
+            $mysqli = new db();
+            $mysqli = $mysqli->connect();
+            $mysqli->query("set character_set_client='utf8'");
+            $mysqli->query("set character_set_results='utf8'");
+            $result = $mysqli->query($sql);
+            $row = cast_query_results($result);
+            $PriceForAllMonth = (object)$row[0];
+            return $PriceForAllMonth;
+
+        } catch (PDOException $e) {
+            return $e->message();
+        }
+    }
 
 }

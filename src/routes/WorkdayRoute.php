@@ -59,3 +59,16 @@ $app->put('/admin/UpdateWork', function (Request $request, Response $response) {
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });
+
+$app->post('/admin/AddWorkDay', function (Request $request, Response $response) {
+    $WorkingHours = new WorkingHours();
+    $resultObj = new ResultAPI();
+    $work = $request->getParsedBody();
+    $WorkingHours->dayOfWeek = $work['DayOfWeek'];
+    $WorkingHours->openTime = $work['OpenTime'];
+    $WorkingHours->closeTime = $work['CloseTime'];
+
+    $resultObj->set_result($WorkingHours->set_workingHours());
+    $resultObj->set_statusCode($response->getStatusCode());
+    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+});
