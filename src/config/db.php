@@ -4,7 +4,7 @@
         private $dbhost = 'localhost';
         private $dbuser = 'root';
         private $dbpass = 'guygoldi';
-        private $dbname = 'BookNail';
+        private $dbname = 'reptouch_booknail';
 
 
         //Connect to Database (mySQL)

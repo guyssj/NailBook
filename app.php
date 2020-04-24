@@ -39,8 +39,8 @@ $app->add(function ($req, $res, $next) {
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'http://localhost:4200' => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
-    'http://192.168.1.29:8100' => 'GET, POST, DELETE, PUT',
-    'http://192.168.0.25:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.1.34:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.0.68:8100' => 'GET, POST, DELETE, PUT',
     'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
     'ionic://localhost' => 'GET, POST',
 ]));

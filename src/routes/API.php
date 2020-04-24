@@ -50,6 +50,24 @@ $app->get('/api/GetTimeSlots', function (Request $request, Response $response) {
     echo json_encode($TimeSlots, JSON_UNESCAPED_UNICODE);
 });
 
+$app->get('/api/GetTimeSlotsForLock', function (Request $request, Response $response) {
+
+    //     check the working hours in database
+    //     get day of the week for the date choosed
+    $AppointmentDate = $request->getParam('Date');
+    if ($AppointmentDate == null) {
+        $AppointmentDate = date("Y-m-d"); //date("Y-m-d"); echo "<br>"; //assign selected date by user
+    }
+
+    $TimeSlots = TimeSlots::RenderSlotsLock($AppointmentDate);
+    unset($DisableSlotsTimes);
+    if (count($TimeSlots) > 0) {
+        $TimeSlots = my_array_unique($TimeSlots);
+        sort($TimeSlots);
+    }
+    echo json_encode($TimeSlots, JSON_UNESCAPED_UNICODE);
+});
+
 /**
  * function to convert Time to HoursMin
  *

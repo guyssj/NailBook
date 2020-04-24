@@ -92,9 +92,10 @@ $app->put('/api/UpdateBook', function (Request $request, Response $response) {
     $BooksObj = new Books();
     $resultObj = new ResultAPI();
     $books = $request->getParsedBody();
-    $BooksObj->StartDate = $books['StartDate'];
-    $BooksObj->StartAt = $books['StartAt'];
-    $BooksObj->BookID = $books['BookID'];
+    $BooksObj->from_array($books);
+    // $BooksObj->StartDate = $books['StartDate'];
+    // $BooksObj->StartAt = $books['StartAt'];
+    // $BooksObj->BookID = $books['BookID'];
 
     $resultObj->set_result($BooksObj->UpdateBook($BooksObj));
     if ($resultObj->get_result() <= 0) {

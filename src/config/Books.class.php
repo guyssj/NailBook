@@ -27,6 +27,12 @@ class Books
      * Get All books from Database
      * @var $response
      */
+
+    public function from_array($array)
+    {
+       foreach(get_object_vars($this) as $attrName => $attrValue)
+          $this->{$attrName} = $array[$attrName];
+    }
     public function GetBooks($response)
     {
         $resultObj = new ResultAPI();
@@ -114,7 +120,7 @@ class Books
      */
     public function GetBooksByDate($Date)
     {
-        $sql = "SELECT * FROM Books WHERE StartDate='$Date';";
+        $sql = "SELECT * FROM Books WHERE StartDate='$Date' ORDER BY StartAt ASC;";
         try {
             $mysqli = new db();
             $mysqli = $mysqli->connect();
@@ -177,10 +183,10 @@ class Books
      *
      * @param $Books
      */
-    public function UpdateBook(Books $Books)
+    public function UpdateBook()
     {
-        $sql = "call BookUpdate(:StartDate,:StartAt,:BookID);";
-        $sql2 = "SELECT StartDate FROM Books WHERE StartDate='$Books->StartDate' And StartAt='$Books->StartAt' LIMIT 1;";
+        $sql = "call BookUpdate(:StartDate,:StartAt,:BookID,:ServiceID,:ServiceTypeID,:Durtion);";
+        $sql2 = "SELECT StartDate FROM Books WHERE StartDate='$this->StartDate' And StartAt='$this->StartAt' LIMIT 1;";
         try {
             $mysqli = new db();
             $mysqli = $mysqli->connect();
@@ -195,12 +201,16 @@ class Books
                 $db = new db();
                 $db = $db->connect2();
                 $smst = $db->prepare($sql);
-                $smst->bindParam(':StartDate', $Books->StartDate);
-                $smst->bindParam(':StartAt', $Books->StartAt);
-                $smst->bindParam(':BookID', $Books->BookID);
+                $smst->bindParam(':StartDate', $this->StartDate);
+                $smst->bindParam(':StartAt', $this->StartAt);
+                $smst->bindParam(':BookID', $this->BookID);
+                $smst->bindParam(':ServiceID', $this->ServiceID);
+                $smst->bindParam(':ServiceTypeID', $this->ServiceTypeID);
+                $smst->bindParam(':Durtion', $this->Durtion);
+
                 $db->query("set character_set_client='utf8'");
                 $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-                $row = $smst->execute(['StartDate' => $Books->StartDate, 'StartAt' => $Books->StartAt, 'BookID' => $Books->BookID]);
+                $row = $smst->execute();
                 $row = $smst->rowCount();
                 $ro2 = $smst->fetchAll(PDO::FETCH_ASSOC);
                 //$ro2 = cast_query_results($ro2);
@@ -297,17 +307,123 @@ class Books
                 //now calculate 5min slots between appointments startAt and EndAt
                 $start_et = $Appointment['StartAt'];
                 $end_et = $Appointment['StartAt'] + $Appointment['Durtion'];
-
                 for ($i = $start_et; $i < $end_et; $i += 5) //make 15-10=5min slot
                 {
-                    // $AppBetweenTimes[] = convertToHoursMins($i, '%02d:%02d');
+                    // if ($i == $start_et){
+                    //    $count = count($AppBetweenTimes)-1;
+
+                    //    if ($count > -1 && $i-5 != $AppBetweenTimes[$count]){
+                    //     $EndOfAppTimes[] = $i - 5;
+                    //    }
+                    // }
                     $AppBetweenTimes[] = $i;
+                    // $AppBetweenTimes[] = convertToHoursMins($i, '%02d:%02d');
 
                     if ($i == $end_et - 5) {
                         $EndOfAppTimes[] = $i + 5;
+                   }
+                }
 
-                        // $EndOfAppTimes[] = convertToHoursMins($i + 5, '%02d:%02d');;
+            }
+
+            //calculating  Next & Previous time of booked appointments
+            foreach ($AllSlotTimesList as $single) {
+                if (in_array($single, $AppStartTimes)) {
+                    //get next time
+                    $time = $single;
+                    $event_length = 30 - 5; // Service duration time    -  slot time
+                    $timestamp = $time;
+                    $endtime = $event_length + $timestamp;
+                    $next_time = $endtime; //echo "<br>";
+                    //calculate next time
+                    $start = $single;
+                    $end = $next_time;
+                    for ($i = $start; $i <= $end; $i += 5) //making 5min diffrance slot
+                    {
+                        // $AppNextTimes[] = convertToHoursMins($i, '%02d:%02d');
+
+                        $AppNextTimes[] = $i;
                     }
+
+                    //get previous time
+                    $time1 = $single;
+                    $event_length1 = 30 - 5; // 60min Service duration time - 15 slot time
+                    $timestamp1 = $time1;
+                    $endtime1 = $timestamp1 - $event_length1;
+                    $next_time1 = $endtime1;
+                    //calculate previous time
+                    $start1 = $next_time1;
+                    $end1 = $single;
+                    for ($i = $start1; $i <= $end1; $i += 5) //making 5min diff slot
+                    {
+                        // $AppPreviousTimes[] = convertToHoursMins($i, '%02d:%02d');
+                        $AppPreviousTimes[] = $i;
+
+                    }
+                }
+            }
+            //end calculating Next & Previous time of booked appointments
+
+        } // end if $AllAppointmentsData
+        $LockTimesSlots = LockHours::get_slots_lock($Date);
+
+        $DisableSlotsTimes = array_merge($AppBetweenTimes, $AppNextTimes,$LockTimesSlots);
+        unset($AppBetweenTimes);
+        unset($AppNextTimes);
+        unset($LockTimesSlots);
+        if(isset($DisableSlotsTimes))
+            sort($DisableSlotsTimes);
+        return ['DisableSlots'=> $DisableSlotsTimes,'End' => $EndOfAppTimes];
+    }
+
+    /**
+     *   Fetch All today's appointments and calculate disable slots
+     */
+    public function GetSlotsExistForLock($Date)
+    {
+        $WorkingHours = new WorkingHours();
+        $dayofweek = date('w', strtotime($Date));
+
+        $WorkingHours->get_hours_by_day($dayofweek);
+        $AppBetweenTimes = array();
+        $AppNextTimes = array();
+        $LockTimesSlots = array();
+        $AllSlotTimesList = array();
+        $EndOfAppTimes = array();
+        $start = $WorkingHours->openTime;
+
+        $end = $WorkingHours->closeTime;
+        //$end = strtotime(convertToHoursMins($WorkingHours->closeTime, '%02d:%02d'));
+    
+    
+        for ($i = $start; $i <= $end; $i += 30) {
+            $AllSlotTimesList[] = $i;
+        }
+        $AllAppointmentsData = $this->GetBooksByDate($Date);
+
+        if ($AllAppointmentsData) {
+            foreach ($AllAppointmentsData as $Appointment) {
+                $AppStartTimes[] = $Appointment['StartAt'];
+                $AppEndTimes[] = $Appointment['StartAt'] + $Appointment['Durtion'];
+
+                //now calculate 5min slots between appointments startAt and EndAt
+                $start_et = $Appointment['StartAt'];
+                $end_et = $Appointment['StartAt'] + $Appointment['Durtion'];
+                for ($i = $start_et; $i < $end_et; $i += 5) //make 15-10=5min slot
+                {
+                    if ($i == $start_et){
+                       $count = count($AppBetweenTimes)-1;
+
+                       if ($count > -1 && $i-5 != $AppBetweenTimes[$count]){
+                        $EndOfAppTimes[] = $i - 5;
+                       }
+                    }
+                    $AppBetweenTimes[] = $i;
+                    // $AppBetweenTimes[] = convertToHoursMins($i, '%02d:%02d');
+
+                    if ($i == $end_et - 5) {
+                        $EndOfAppTimes[] = $i + 5;
+                   }
                 }
 
             }
