@@ -73,16 +73,26 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
         $resultObj->set_ErrorMessage("Treatment is exists in this time");
     } else {
         // if book set send a sms for customer
-        // $customer = new Customer();
-        // $customer = Customer::GetCustomerById($BooksObj->CustomerID);
-        // $globalSMS = new globalSMS();
-        // $Date = strtotime($BooksObj->StartDate);
-        // $NewDate = date("d/m/Y",$Date);
-        // $Time = $BooksObj->StartAt;
-        // $newTime = hoursandmins($Time);
-        // $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
-
-        // $globalSMS->send_sms($customer['PhoneNumber'],$message);
+        $SendSMS = Settings::get_Setting(Settings::SEND_SMS_APP)['SettingValue'];
+        if($SendSMS == "1"){
+            $customer = new Customer();
+            $customer = Customer::GetCustomerById($BooksObj->CustomerID);
+            $globalSMS = new globalSMS();
+            $Date = strtotime($BooksObj->StartDate);
+            $NewDate = date("d/m/Y",$Date);
+            $Time = $BooksObj->StartAt;
+            $newTime = hoursandmins($Time);
+            $message = Settings::get_Setting(Settings::SMS_TEMPLATE_APP)['SettingValue'];
+            $message = str_replace('\n',PHP_EOL,$message);
+            $message = str_replace('{FirstName}',$customer['FirstName'],$message);
+            $message = str_replace('{LastName}',$customer['LastName'],$message);
+            $message = str_replace('{Date}',$NewDate,$message);
+            $message = str_replace('{Time}',$newTime,$message);
+ //           $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
+            $log = new Logger();
+            $log->putLog($message);
+            $globalSMS->send_sms($customer['PhoneNumber'],$message);
+        }
     }
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 

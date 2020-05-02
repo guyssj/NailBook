@@ -72,7 +72,7 @@
                 $db = new db();
                 $db = $db->connect2();
                 $smst = $db->prepare($sql);
-                $smst->bindParam(':BookID', $id);
+                $smst->bindParam(':idLockHours', $id);
                 $db->query("set character_set_client='utf8'");
                 $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
                 $row = $smst->execute(['idLockHours' => $id]);

@@ -2,6 +2,7 @@
 
     require "../src/config/db.php";
     require "../src/config/globalSMS.class.php";
+    require "../src/config/Settings.class.php";
     $sql = "call TodayBooks();";
     
     try {
@@ -25,7 +26,16 @@
             $LinkWhatApp = "https://wa.me/9720525533979/?text={$encodeText}";
             $Time = $value['StartAt'];
             $newTime = hoursandmins($Time);
-            $message ="שלום {$FirstName} {$LastName} ,\nזאת תזכורת לטיפול {$ServiceType} אצל מיריתוש\nבתאריך {$NewDate} בשעה {$newTime}\n\nלאישור הגעה לחצ/י על הלינק: {$LinkWhatApp}";
+            $message = Settings::get_Setting(Settings::SMS_TEMPLATE_REMINDER)['SettingValue'];
+            $message = str_replace('\n',PHP_EOL,$message);
+            $message = str_replace('{FirstName}',$FirstName,$message);
+            $message = str_replace('{LastName}',$LastName,$message);
+            $message = str_replace('{Date}',$NewDate,$message);
+            $message = str_replace('{Time}',$newTime,$message);
+            $message = str_replace('{ServiceType}',$ServiceType,$message);
+            $message = str_replace('{Link}',$LinkWhatApp,$message);
+
+           // $message ="שלום {$FirstName} {$LastName} ,\nזאת תזכורת לטיפול {$ServiceType} אצל מיריתוש\nבתאריך {$NewDate} בשעה {$newTime}\nלא לשכוח מסכה\n\nלאישור הגעה לחצ/י על הלינק: {$LinkWhatApp}";
             //$message = "שלום {$FirstName} {$LastName} , הנך מוזמן לפגישה ל {$ServiceType}";
             $globalSMS->send_sms($phone,$message);
 

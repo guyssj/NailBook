@@ -527,6 +527,9 @@ class Books
             $result = $mysqli->query($sql);
             $row = cast_query_results($result);
             $PriceForAllMonth = (object)$row[0];
+            if(empty($PriceForAllMonth->PriceForAllMonth)){
+                $PriceForAllMonth->PriceForAllMonth = 0;
+            }
             return $PriceForAllMonth;
 
         } catch (PDOException $e) {
