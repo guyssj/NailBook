@@ -89,8 +89,6 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
             $message = str_replace('{Date}',$NewDate,$message);
             $message = str_replace('{Time}',$newTime,$message);
  //           $message ="שלום {$customer['FirstName']} {$customer['LastName']} ,\nנקבעה לך פגישה אצל מיריתוש\n בתאריך {$NewDate} בשעה {$newTime}\n {$LinkWhatApp} ";
-            $log = new Logger();
-            $log->putLog($message);
             $globalSMS->send_sms($customer['PhoneNumber'],$message);
         }
     }
