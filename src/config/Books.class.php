@@ -186,7 +186,7 @@ class Books
     public function UpdateBook()
     {
         $sql = "call BookUpdate(:StartDate,:StartAt,:BookID,:ServiceID,:ServiceTypeID,:Durtion);";
-        $sql2 = "SELECT StartDate FROM Books WHERE StartDate='$this->StartDate' And StartAt='$this->StartAt' LIMIT 1;";
+        $sql2 = "SELECT StartDate,CustomerID,StartAt FROM Books WHERE StartDate='$this->StartDate' And StartAt='$this->StartAt' LIMIT 1;";
         try {
             $mysqli = new db();
             $mysqli = $mysqli->connect();
@@ -194,9 +194,33 @@ class Books
             $mysqli->query("set character_set_results='utf8'");
             $result = $mysqli->query($sql2);
             $rowcount = mysqli_num_rows($result);
+            $row = cast_query_results($result);
             if ($rowcount > 0) {
+                foreach ($row as $key => $value) {
+                    if($value['StartAt']== $this->StartAt 
+                        && $value['CustomerID'] == $this->CustomerID){
+                            $db = new db();
+                            $db = $db->connect2();
+                            $smst = $db->prepare($sql);
+                            $smst->bindParam(':StartDate', $this->StartDate);
+                            $smst->bindParam(':StartAt', $this->StartAt);
+                            $smst->bindParam(':BookID', $this->BookID);
+                            $smst->bindParam(':ServiceID', $this->ServiceID);
+                            $smst->bindParam(':ServiceTypeID', $this->ServiceTypeID);
+                            $smst->bindParam(':Durtion', $this->Durtion);
+            
+                            $db->query("set character_set_client='utf8'");
+                            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                            $row = $smst->execute();
+                            $row = $smst->rowCount();
+                            $ro2 = $smst->fetchAll(PDO::FETCH_ASSOC);
+                            //$ro2 = cast_query_results($ro2);
+                            foreach ($ro2 as $value) {
+                                return $value;
+                            }
+                        }
+                }
                 return null;
-                $result->close();
             } else {
                 $db = new db();
                 $db = $db->connect2();
