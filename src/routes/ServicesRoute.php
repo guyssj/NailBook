@@ -47,43 +47,34 @@ $app->post('/api/AddServiceType', function (Request $request, Response $response
  * Return all Service Types by Service id
  */
 $app->get('/api/GetAllServiceTypeByService', function (Request $request, Response $response) {
-    $ServiceID = $request->getParam('ServiceID');
     $ServiceTypeObj = new ServiceTypes();
-
-    echo $ServiceTypeObj->GetServiceTypeByID($ServiceID, $response);
+    $resultObj = new ResultAPI();
+    try {
+        $ServiceID = $request->getParam('ServiceID');
+        $results = $ServiceTypeObj->GetServiceTypeByID($ServiceID);
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $resultObj->set_result(null);
+        $response = $response->withStatus(500);
+        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj->set_ErrorMessage($e->getMessage());
+        return $response->withJson($resultObj);
+    }
 });
 
 $app->get('/api/GetAllServiceTypes', function (Request $request, Response $response) {
-    $dbclass = new db();
+    $ServiceTypeObj = new ServiceTypes();
     $resultObj = new ResultAPI();
 
-    $connection = $dbclass->connect2();
-
-    $ServiceTypeObj = new ServiceTypes($connection);
-
-    $ServiceTypes = array();
-    try {
-        $stmt = $ServiceTypeObj->read();
-        $count = $stmt->rowCount();
-        if ($count > 0) {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                extract($row);
-
-                $p = array(
-                    "ServiceTypeID" => $ServiceTypeID,
-                    "ServiceTypeName" => $ServiceTypeName,
-                    "ServiceID" => $ServiceID,
-                    "Duration" => $Duration,
-                    "Price" => $Price,
-                    "Description" => $Description,
-                );
-
-                array_push($ServiceTypes, $p);
-            }
+    try{
+        $results = $ServiceTypeObj->GetServiceTypes();
+        $resultObj->set_result($results);
+        $resultObj->set_statusCode($response->getStatusCode());
+        return $response->withJson($resultObj);
         }
-        $resultObj->set_result($ServiceTypes);
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    } catch (Exception $e) {
+    catch (Exception $e) {
         //$resultObj->set_result($results);
         $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());

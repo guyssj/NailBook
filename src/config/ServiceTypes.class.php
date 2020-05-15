@@ -46,27 +46,42 @@ class ServiceTypes
         }
     }
 
-    public function GetServiceTypes($response)
+    public function GetServiceTypes()
     {
-        $resultObj = new ResultAPI();
-        $sql = "SELECT * FROM ServiceType";
+        $dbclass = new db();    
+        $this->connection = $dbclass->connect2();
+    
+        //$ServiceTypeObj = new ServiceTypes();
+    
+        $ServiceTypes = array();
         try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            $resultObj->set_result($row);
-            $resultObj->set_statusCode($response->getStatusCode());
-        } catch (PDOException $e) {
-            $resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+            $stmt = $this->read();
+            $count = $stmt->rowCount();
+            if ($count > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+    
+                    $p = array(
+                        "ServiceTypeID" => $ServiceTypeID,
+                        "ServiceTypeName" => $ServiceTypeName,
+                        "ServiceID" => $ServiceID,
+                        "Duration" => $Duration,
+                        "Price" => $Price,
+                        "Description" => $Description,
+                    );
+    
+                    array_push($ServiceTypes, $p);
+                }
+            }
+           return $ServiceTypes;
+            
         }
-        return json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        catch(Expetion $e){
+            throw $e;
+        }
     }
 
-    public function GetServiceTypeByID($ServiceID, $response)
+    public function GetServiceTypeByID($ServiceID)
     {
         $resultObj = new ResultAPI();
         $sql = "call ServiceTypeByServiceIDGet('$ServiceID');";
@@ -77,12 +92,9 @@ class ServiceTypes
             $mysqli->query("set character_set_results='utf8'");
             $result = $mysqli->query($sql);
             $row = cast_query_results($result);
-            $resultObj->set_result($row);
-            $resultObj->set_statusCode($response->getStatusCode());
-            return json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+            return $row;
         } catch (PDOException $e) {
-            $resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+           return $e;
         }
     }
 

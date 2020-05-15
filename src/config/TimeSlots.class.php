@@ -4,6 +4,7 @@ class TimeSlots
 
     public $id;
     public $timeSlot;
+    public $disabled;
 
     public static function RenderSlots($Date)
     {
@@ -27,14 +28,23 @@ class TimeSlots
         $DisableSlotsTimes = $TimeSlotsExist['DisableSlots'];
         $EndOfAppTimes = $TimeSlotsExist['End'];
 
+
         foreach ($AllSlotTimesList as $Single) {
             if (!in_array($Single, $DisableSlotsTimes)) {
                 $time = new TimeSlots();
                 $time->id = $Single;
                 $time->timeSlot = convertToHoursMins($Single, '%02d:%02d');
+                $time->disabled = false;
                 $TimeSlots[] = $time;
                 //$TimeSlots[] = ['id' => minutes($Single), 'timeSlot' => $Single];
 
+            }
+            else{
+                $time = new TimeSlots();
+                $time->id = $Single;
+                $time->timeSlot = convertToHoursMins($Single, '%02d:%02d');
+                $time->disabled = true;
+                $TimeSlots[] = $time;
             }
         }
 
