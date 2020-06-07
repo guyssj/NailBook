@@ -12,6 +12,12 @@
         var $StatusCode;
         var $ErrorMessage;
         
+
+        public function __construct($results = null,$statusCode = null,$error =null) {
+            $this->Result = $results;
+            $this->StatusCode = $statusCode;
+            $this->ErrorMessage = $error;
+        }
         /**
          * 
          * this method set a status code for response code

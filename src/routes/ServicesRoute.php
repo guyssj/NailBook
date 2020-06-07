@@ -31,11 +31,12 @@ $app->post('/api/AddServiceType', function (Request $request, Response $response
     $ServiceType = new ServiceTypes();
     $ServiceTypeBody = $request->getParsedBody();
 
-    $ServiceType->ServiceTypeName = $ServiceTypeBody['ServiceTypeName'];
-    $ServiceType->ServiceID = $ServiceTypeBody['ServiceID'];
-    $ServiceType->Price = $ServiceTypeBody['Price'];
-    $ServiceType->Duration = $ServiceTypeBody['Duration'];
-    $ServiceType->Description = $ServiceTypeBody['Description'];
+    // $ServiceType->ServiceTypeName = $ServiceTypeBody['ServiceTypeName'];
+    // $ServiceType->ServiceID = $ServiceTypeBody['ServiceID'];
+    // $ServiceType->Price = $ServiceTypeBody['Price'];
+    // $ServiceType->Duration = $ServiceTypeBody['Duration'];
+    // $ServiceType->Description = $ServiceTypeBody['Description'];
+    $ServiceType->from_array($ServiceTypeBody);
     $resultObj->set_result($ServiceType->Add());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);

@@ -34,7 +34,7 @@ class globalSMS
 
             return $result;
         } catch (Exception $e) {
-            return $e;
+            throw $e;
         }
     }
 }

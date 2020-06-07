@@ -9,7 +9,7 @@ $app->get('/api/GetSlotsExist', function (Request $request, Response $response) 
     $resultObj = new ResultAPI();
     try {
         $Date = $request->getParam('Date');
-        $results = $SlotsExist->GetSlotsExist($Date)['DisableSlots'];
+        $results = BookingService::get_slots_exists($Date)['DisableSlots'];
         $resultObj->set_result($results);
         $resultObj->set_statusCode($response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);

@@ -11,8 +11,7 @@ class TimeSlots
         $TimeSlots = array();
         $dayofweek = date('w', strtotime($Date));
         $WorkingHours = new WorkingHours();
-        $bookExist = new Books();
-    
+        
         $WorkingHours->get_hours_by_day($dayofweek);
         $start = $WorkingHours->openTime;
 
@@ -24,7 +23,8 @@ class TimeSlots
             $AllSlotTimesList[] = $i;
         }
         //Fetch All today's timeoff and calculate disable slots
-        $TimeSlotsExist = $bookExist->GetSlotsExist($Date);
+       
+        $TimeSlotsExist =  BookingService::get_slots_exists($Date);
         $DisableSlotsTimes = $TimeSlotsExist['DisableSlots'];
         $EndOfAppTimes = $TimeSlotsExist['End'];
 
@@ -83,7 +83,7 @@ class TimeSlots
             $AllSlotTimesList[] = $i;
         }
         //Fetch All today's timeoff and calculate disable slots
-        $TimeSlotsExist = $bookExist->GetSlotsExistForLock($Date);
+        $TimeSlotsExist = BookingService::get_slots_exists_for_lock($Date);
         $DisableSlotsTimes = $TimeSlotsExist['DisableSlots'];
         $EndOfAppTimes = $TimeSlotsExist['End'];
 

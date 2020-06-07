@@ -20,6 +20,8 @@ require __DIR__ . "/src/config/LockHours.class.php";
 require __DIR__ . "/src/config/TimeSlots.class.php";
 require __DIR__ . "/src/config/Holidays.class.php";
 require __DIR__ . "/src/config/Settings.class.php";
+require __DIR__ . "/src/services/booking.service.php";
+
 
 
 $app = new \Slim\App;
