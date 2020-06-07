@@ -81,6 +81,38 @@ class ServiceTypes
             throw $e;
         }
     }
+    public function get_service_type_by_id($ID)
+    {
+        $this->connection = $this->dbclass->connect2();
+        $ServiceTypes = array();
+        try {
+            $stmt = $this->read();
+            $count = $stmt->rowCount();
+            if ($count > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    if ((int) $ServiceTypeID == $ID) {
+
+                        $p = (object) array(
+                            "ServiceTypeID" => (int) $ServiceTypeID,
+                            "ServiceTypeName" => $ServiceTypeName,
+                            "ServiceID" => (int) $ServiceID,
+                            "Duration" => (int) $Duration,
+                            "Price" => $Price,
+                            "Description" => $Description,
+                        );
+
+                        return $p;
+                    }
+                }
+            }
+            return $ServiceTypes;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+
 
     public function GetServiceTypeByID($ID)
     {

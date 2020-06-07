@@ -80,7 +80,11 @@ class BookingService
             if ($count > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     extract($row);
-                    $p = (object) array(
+                    $Customer = new Customer();
+                    $ServiceType = new ServiceTypes();
+
+                    //Orignial book from db
+                    $Book = (object) array(
                         "BookID" => (int) $BookID,
                         "StartDate" => $StartDate,
                         "StartAt" => (int) $StartAt,
@@ -89,6 +93,30 @@ class BookingService
                         "Durtion" => (int) $Durtion,
                         "ServiceTypeID" => (int) $ServiceTypeID,
                         "Notes" => $Notes,
+                    );
+
+                    $Customer = $Customer->GetCustomerById($Book->CustomerID);
+                    $ServiceType = $ServiceType->get_service_type_by_id($Book->ServiceTypeID);
+                    
+                    //set the time for book
+                    $startTime = new DateTime($Book->StartDate,new DateTimeZone('Asia/Jerusalem'));
+                    $startTime->modify("+{$Book->StartAt} minutes");
+                    $endTime = new DateTime($Book->StartDate,new DateTimeZone('Asia/Jerusalem'));
+                    $totalTime = $Book->Durtion+$Book->StartAt;
+                    $endTime->modify("+{$totalTime} minutes");
+        
+                    $endTime = $endTime->format('c');
+                    $startTime = $startTime->format('c');
+
+                    //object for clendar ionic
+                    $p= (object) array(
+                        "title" => "{$Customer['FirstName']} {$Customer['LastName']} {$ServiceType->ServiceTypeName}",
+                        "allDay" => false,
+                        "endTime" => $endTime,
+                        "startTime" => $startTime,
+                        "meta" => (object) $Book,
+                        "customer" => (object) $Customer,
+                        "serviceType" => (object) $ServiceType,
                     );
                     array_push($Books, $p);
                 }
