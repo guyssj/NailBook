@@ -1,7 +1,5 @@
 <?php
 
-use Slim\Handlers\NotFound;
-
 class BookingService
 {
 
@@ -18,7 +16,9 @@ class BookingService
             //send SMS after booking set
             $SendSMS = Settings::get_Setting(Settings::SEND_SMS_APP)['SettingValue'];
             if ($SendSMS == "1") {
-                $customer = Customer::GetCustomerById($book->CustomerID);
+                $customer = CustomersService::find_customer_by_id($book->CustomerID);
+                $ServiceType = new ServiceTypes();
+                $ServiceType = $ServiceType->get_service_type_by_id($book->ServiceTypeID);
                 $globalSMS = new globalSMS();
                 $Date = strtotime($book->StartDate);
                 $NewDate = date("d/m/Y", $Date);
@@ -26,11 +26,13 @@ class BookingService
                 $newTime = hoursandmins($Time);
                 $message = Settings::get_Setting(Settings::SMS_TEMPLATE_APP)['SettingValue'];
                 $message = str_replace('\n', PHP_EOL, $message);
-                $message = str_replace('{FirstName}', $customer['FirstName'], $message);
-                $message = str_replace('{LastName}', $customer['LastName'], $message);
+                $message = str_replace('{FirstName}', $customer->FirstName, $message);
+                $message = str_replace('{LastName}', $customer->LastName, $message);
                 $message = str_replace('{Date}', $NewDate, $message);
                 $message = str_replace('{Time}', $newTime, $message);
-                $globalSMS->send_sms($customer['PhoneNumber'], $message);
+                $message = str_replace('{ServiceTypeName}', $ServiceType->ServiceTypeName, $message);
+
+                $globalSMS->send_sms($customer->PhoneNumber, $message);
             }
             return true;
         }
@@ -80,7 +82,6 @@ class BookingService
             if ($count > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     extract($row);
-                    $Customer = new Customer();
                     $ServiceType = new ServiceTypes();
 
                     //Orignial book from db
@@ -95,7 +96,7 @@ class BookingService
                         "Notes" => $Notes,
                     );
 
-                    $Customer = $Customer->GetCustomerById($Book->CustomerID);
+                    $Customer = CustomersService::find_customer_by_id($Book->CustomerID);
                     $ServiceType = $ServiceType->get_service_type_by_id($Book->ServiceTypeID);
                     
                     //set the time for book
@@ -110,7 +111,7 @@ class BookingService
 
                     //object for clendar ionic
                     $p= (object) array(
-                        "title" => "{$Customer['FirstName']} {$Customer['LastName']} {$ServiceType->ServiceTypeName}",
+                        "title" => "{$Customer->FirstName} {$Customer->LastName} - {$ServiceType->ServiceTypeName}",
                         "allDay" => false,
                         "endTime" => $endTime,
                         "startTime" => $startTime,

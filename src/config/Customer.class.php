@@ -7,6 +7,9 @@
  */
 class Customer
 {
+        //Connection
+        private $connection;
+        private $dbclass;
 
     /**
      * Properites
@@ -18,34 +21,42 @@ class Customer
     public $Color;
     public $Notes;
 
-    public function Add()
+    public function from_array($array)
+    {
+        foreach (get_object_vars($this) as $attrName => $attrValue) {
+            if (isset($array[$attrName]))
+                $this->{$attrName} = $array[$attrName];
+        }
+    }
+    
+    public function connectDB()
+    {
+        $this->dbclass = new db();
+        $this->connection = $this->dbclass->connect2();
+    }
+    
+
+    public function add()
     {
         try {
-            $this->FirstName = str_replace("׳", "'", $this->FirstName);
-            $this->LastName = str_replace("׳", "'", $this->LastName);
-            $sql = "call CustomerSave('$this->FirstName','$this->LastName','$this->PhoneNumber','$this->Notes',@l_CustomerID);";
-            $db = new db();
-            $db = $db->connect2();
-            $smst = $db->prepare($sql);
-            $smst->bindParam(':FirstName', $this->FirstName);
-            $smst->bindParam(':LastName', $this->LastName);
-            $smst->bindParam(':PhoneNumber', $this->PhoneNumber);
-            $smst->bindParam(':Notes', $this->Notes);
-            $db->query("set character_set_client='utf8'");
-            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-
-            $row = $smst->execute();
-            $rs2 = $db->query("SELECT @l_CustomerID as id");
+            $this->connectDB();
+            $this->FirstName = str_replace("'", "''", $this->FirstName);
+            $this->LastName = str_replace("'", "''", $this->LastName);
+            $this->FirstName = str_replace("׳", "''", $this->FirstName);
+            $this->LastName = str_replace("׳", "''", $this->LastName);
+            $sqlquery = "call CustomerSave(:FirstName,:LastName,:PhoneNumber,:Notes,@l_CustomerID);";
+            $stmt = $this->connection->prepare($sqlquery);
+            $stmt->bindParam(':FirstName', $this->FirstName);
+            $stmt->bindParam(':LastName', $this->LastName);
+            $stmt->bindParam(':PhoneNumber', $this->PhoneNumber);
+            $stmt->bindParam(':Notes', $this->Notes);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $rs2 = $this->connection->query("SELECT @l_CustomerID as id");
             $row2 = $rs2->fetchObject();
-
-            if ($row2->id == 501) {
-                $CustomerEx = $this->GetByPhoneNumber($this->PhoneNumber);
-                foreach ($CustomerEx as $key => $value) {
-                    $this->CustomerID = $value['CustomerID'];
-                    return $this->CustomerID;
-                }
-            }
-            return $row2->id;
+            $this->connection = null;
+            return (int)$row2->id;
 
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
@@ -53,122 +64,143 @@ class Customer
         }
     }
 
-    public function Update()
+    /**
+     * 
+     * read all customers from db
+     * 
+     * 
+     */
+    public function read()
+    {
+
+        try {
+            $this->connectDB();
+            $sqlquery = "SELECT * FROM Customers";
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
+            return $stmt;
+        } catch (PDOException $e) {
+            throw $e->getMessage();
+        }
+    }
+
+    public function update()
     {
 
         // $sql = "call CustomerUpdate('$this->CustomerID','$this->FirstName','$this->LastName','$this->PhoneNumber');";
         try {
-            $sql = "call CustomerUpdate(:CustomerID,:FirstName,:LastName,:PhoneNumber,:Color,:Notes);";
+            $this->connectDB();
 
-            $db = new db();
-            $db = $db->connect2();
-            $smst = $db->prepare($sql);
+            $sqlquery = "call CustomerUpdate(:CustomerID,:FirstName,:LastName,:PhoneNumber,:Color,:Notes);";
+
+            $stmt = $this->connection->prepare($sqlquery);
 
             //fix issue with quets
-            $this->FirstName = str_replace("׳", "'", $this->FirstName);
-            $this->LastName = str_replace("׳", "'", $this->LastName);
-            $smst->bindParam(':CustomerID', $this->CustomerID);
-            $smst->bindParam(':FirstName', $this->FirstName);
-            $smst->bindParam(':LastName', $this->LastName);
-            $smst->bindParam(':PhoneNumber', $this->PhoneNumber);
-            $smst->bindParam(':Color', $this->Color);
-            $smst->bindParam(':Notes', $this->Notes);
+            $this->FirstName = str_replace("'", "''", $this->FirstName);
+            $this->LastName = str_replace("'", "''", $this->LastName);
+            $this->FirstName = str_replace("׳", "''", $this->FirstName);
+            $this->LastName = str_replace("׳", "''", $this->LastName);
+            $stmt->bindParam(':CustomerID', $this->CustomerID);
+            $stmt->bindParam(':FirstName', $this->FirstName);
+            $stmt->bindParam(':LastName', $this->LastName);
+            $stmt->bindParam(':PhoneNumber', $this->PhoneNumber);
+            $stmt->bindParam(':Color', $this->Color);
+            $stmt->bindParam(':Notes', $this->Notes);
 
 
-            $db->query("set character_set_client='utf8'");
-            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-            $row = $smst->execute();
-            $row = $smst->rowCount();
-            if ($row > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            return $stmt;
+
 
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
             return $var;
         }
     }
-    public function GetByPhoneNumber($PhoneNumber)
-    {
-        $sql = "call CustomerGetByPhone('$PhoneNumber');";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            return $row;
-        } catch (PDOException $e) {
-            //$resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode('error', JSON_UNESCAPED_UNICODE);
-        }
+    // public function GetByPhoneNumber($PhoneNumber)
+    // {
+    //     $sql = "call CustomerGetByPhone('$PhoneNumber');";
+    //     try {
+    //         $mysqli = new db();
+    //         $mysqli = $mysqli->connect();
+    //         $mysqli->query("set character_set_client='utf8'");
+    //         $mysqli->query("set character_set_results='utf8'");
+    //         $result = $mysqli->query($sql);
+    //         $row = cast_query_results($result);
+    //         return $row;
+    //     } catch (PDOException $e) {
+    //         //$resultObj->set_ErrorMessage($e->getMessage());
+    //         return json_encode('error', JSON_UNESCAPED_UNICODE);
+    //     }
 
-    }
+    // }
 
-    public function GetByPhoneNumber2($PhoneNumber)
-    {
-        $sql = "call CustomerGetByPhone('$PhoneNumber');";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            foreach ($row as $key => $value) {
-                if ($value['PhoneNumber'] == $PhoneNumber) {
-                    return $value;
-                }
-            }
-            return "Customer not found";
-        } catch (PDOException $e) {
-            //$resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode('error', JSON_UNESCAPED_UNICODE);
-        }
+    // public function GetByPhoneNumber2($PhoneNumber)
+    // {
+    //     $sql = "call CustomerGetByPhone('$PhoneNumber');";
+    //     try {
+    //         $mysqli = new db();
+    //         $mysqli = $mysqli->connect();
+    //         $mysqli->query("set character_set_client='utf8'");
+    //         $mysqli->query("set character_set_results='utf8'");
+    //         $result = $mysqli->query($sql);
+    //         $row = cast_query_results($result);
+    //         foreach ($row as $key => $value) {
+    //             if ($value['PhoneNumber'] == $PhoneNumber) {
+    //                 return $value;
+    //             }
+    //         }
+    //         return "Customer not found";
+    //     } catch (PDOException $e) {
+    //         //$resultObj->set_ErrorMessage($e->getMessage());
+    //         return json_encode('error', JSON_UNESCAPED_UNICODE);
+    //     }
 
-    }
-    public function GetAllCustomers()
-    {
-        $sql = "call CustomerGetAll();";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            return $row;
-        } catch (PDOException $e) {
-            //$resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode('error', JSON_UNESCAPED_UNICODE);
-        }
+    // }
+    // public function GetAllCustomers()
+    // {
+    //     $sql = "call CustomerGetAll();";
+    //     try {
+    //         $mysqli = new db();
+    //         $mysqli = $mysqli->connect();
+    //         $mysqli->query("set character_set_client='utf8'");
+    //         $mysqli->query("set character_set_results='utf8'");
+    //         $result = $mysqli->query($sql);
+    //         $row = cast_query_results($result);
+    //         return $row;
+    //     } catch (PDOException $e) {
+    //         //$resultObj->set_ErrorMessage($e->getMessage());
+    //         return json_encode('error', JSON_UNESCAPED_UNICODE);
+    //     }
 
-    }
-    public static function GetCustomerById($ID)
-    {
-        $sql = "call CustomerGetAll();";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            foreach ($row as $key => $value) {
-                if ($value['CustomerID'] == $ID) {
-                    return $value;
-                }
-            }
-            return "Customer not found";
-        } catch (PDOException $e) {
-            //$resultObj->set_ErrorMessage($e->getMessage());
-            return json_encode('error', JSON_UNESCAPED_UNICODE);
-        }
+    // }
+    // public static function GetCustomerById($ID)
+    // {
+    //     $sql = "call CustomerGetAll();";
+    //     try {
+    //         $mysqli = new db();
+    //         $mysqli = $mysqli->connect();
+    //         $mysqli->query("set character_set_client='utf8'");
+    //         $mysqli->query("set character_set_results='utf8'");
+    //         $result = $mysqli->query($sql);
+    //         $row = cast_query_results($result);
+    //         foreach ($row as $key => $value) {
+    //             if ($value['CustomerID'] == $ID) {
+    //                 return $value;
+    //             }
+    //         }
+    //         return "Customer not found";
+    //     } catch (PDOException $e) {
+    //         //$resultObj->set_ErrorMessage($e->getMessage());
+    //         return json_encode('error', JSON_UNESCAPED_UNICODE);
+    //     }
 
-    }
+    // }
     //Cast the Fucking Result
     public function cast_query_results($rs)
     {

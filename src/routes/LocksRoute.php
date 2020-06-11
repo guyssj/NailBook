@@ -100,12 +100,13 @@ $app->post('/admin/AddLockHours', function (Request $request, Response $response
 });
 
 $app->get('/admin/GetAllLockHours', function (Request $request, Response $response) {
-    $LockObj = new LockHours();
-    $resultObj = new ResultAPI();
-
-    $resultObj->set_result($LockObj->get_all_lock_hours());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    try {
+        $resultObj = new ResultAPI(LockHoursService::get_lockHours(), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
 });
 
 $app->post('/admin/AddCloseDay', function (Request $request, Response $response) {

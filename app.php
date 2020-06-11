@@ -21,6 +21,10 @@ require __DIR__ . "/src/config/TimeSlots.class.php";
 require __DIR__ . "/src/config/Holidays.class.php";
 require __DIR__ . "/src/config/Settings.class.php";
 require __DIR__ . "/src/services/booking.service.php";
+require __DIR__ . "/src/services/lockhours.service.php";
+require __DIR__ . "/src/services/customers.service.php";
+
+
 
 
 
@@ -44,7 +48,7 @@ $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
     'http://localhost:4200' => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
     'http://192.168.1.34:8100' => 'GET, POST, DELETE, PUT',
-    'http://192.168.0.68:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.0.70:8100' => 'GET, POST, DELETE, PUT',
     'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
     'ionic://localhost' => 'GET, POST',
 ]));

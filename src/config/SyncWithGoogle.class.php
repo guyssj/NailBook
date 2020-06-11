@@ -32,7 +32,7 @@ class SyncGoogle
             $startTime = $startTime->format('c');
 
             //get all details from books
-            $Customer = Customer::GetCustomerById($books['CustomerID']);
+            //$Customer = Customer::GetCustomerById($books['CustomerID']);
             $ServiceType = ServiceTypes::GetServiceTypeByID2($books['ServiceID']);
             //build the Event class with all propirties
             $reminder->useDefault = true;
