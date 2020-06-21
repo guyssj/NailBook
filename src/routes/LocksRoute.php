@@ -75,28 +75,25 @@ $app->post('/admin/DeleteCloseDay', function (Request $request, Response $respon
 
 
 $app->post('/admin/DeleteLockHours', function (Request $request, Response $response) {
-    $resultObj = new ResultAPI();
-    $LockHours = $request->getParsedBody();
-    $LockID = $LockHours['idLockHours'];
-
-    $resultObj->set_result(LockHours::delete_lock_hours($LockID));
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    try {
+        $resultObj = new ResultAPI(LockHoursService::delete_lock_hours($request->getParsedBody()['idLockHours']), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
 });
 
 $app->post('/admin/AddLockHours', function (Request $request, Response $response) {
     $LockObj = new LockHours();
-    $resultObj = new ResultAPI();
-    $LockHours = $request->getParsedBody();
-    $LockObj->StartDate = $LockHours['StartDate'];
-    $LockObj->StartAt = $LockHours['StartAt'];
-    $LockObj->EndAt = $LockHours['EndAt'];
-    $LockObj->Notes = $LockHours['Notes'];
-
-
-    $resultObj->set_result($LockObj->add_new_lock_hours());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    $LockObj->from_array($request->getParsedBody());
+    try {
+        $resultObj = new ResultAPI(LockHoursService::add_new_lock_hours($LockObj), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
 });
 
 $app->get('/admin/GetAllLockHours', function (Request $request, Response $response) {

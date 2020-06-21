@@ -2,9 +2,7 @@
 BookNail API
 
 # TODO
-1. GetCustomerByPhone - Shuold be return a customer id only!!!!
-2. Need to check Change book in Website!!
-3. Change TodayBook.php page!!
+
 
 # Ver 6.0
 1. added new table BookCancel

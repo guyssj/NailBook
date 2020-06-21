@@ -32,7 +32,7 @@
             $message = str_replace('{LastName}',$LastName,$message);
             $message = str_replace('{Date}',$NewDate,$message);
             $message = str_replace('{Time}',$newTime,$message);
-            $message = str_replace('{ServiceTypeName}',$ServiceType,$message);
+            $message = str_replace('{ServiceType}',$ServiceType,$message);
             $message = str_replace('{Link}',$LinkWhatApp,$message);
 
            // $message ="שלום {$FirstName} {$LastName} ,\nזאת תזכורת לטיפול {$ServiceType} אצל מיריתוש\nבתאריך {$NewDate} בשעה {$newTime}\nלא לשכוח מסכה\n\nלאישור הגעה לחצ/י על הלינק: {$LinkWhatApp}";
@@ -43,7 +43,7 @@
         echo json_encode($row, JSON_UNESCAPED_UNICODE);
 
     } catch (PDOException $e) {
-        return $e->message();
+        return $e->getMessage();
     }
     /**
  * Casting result with current type and not only string

@@ -56,4 +56,23 @@ class LockHoursService
         }
     }
 
+    public static function add_new_lock_hours(LockHours $lockHour){
+        if ($lockHour->add()->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    public static function delete_lock_hours($lockHourID){
+
+        $lockHour = new LockHours();
+        if ($lockHour->delete($lockHourID)->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+
 }

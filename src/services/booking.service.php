@@ -17,8 +17,7 @@ class BookingService
             $SendSMS = Settings::get_Setting(Settings::SEND_SMS_APP)['SettingValue'];
             if ($SendSMS == "1") {
                 $customer = CustomersService::find_customer_by_id($book->CustomerID);
-                $ServiceType = new ServiceTypes();
-                $ServiceType = $ServiceType->get_service_type_by_id($book->ServiceTypeID);
+                $ServiceType = ServiceTypesService::get_service_type_by_id($book->ServiceTypeID);
                 $globalSMS = new globalSMS();
                 $Date = strtotime($book->StartDate);
                 $NewDate = date("d/m/Y", $Date);
@@ -30,7 +29,7 @@ class BookingService
                 $message = str_replace('{LastName}', $customer->LastName, $message);
                 $message = str_replace('{Date}', $NewDate, $message);
                 $message = str_replace('{Time}', $newTime, $message);
-                $message = str_replace('{ServiceTypeName}', $ServiceType->ServiceTypeName, $message);
+                $message = str_replace('{ServiceType}', $ServiceType->ServiceTypeName, $message);
 
                 $globalSMS->send_sms($customer->PhoneNumber, $message);
             }
@@ -97,7 +96,7 @@ class BookingService
                     );
 
                     $Customer = CustomersService::find_customer_by_id($Book->CustomerID);
-                    $ServiceType = $ServiceType->get_service_type_by_id($Book->ServiceTypeID);
+                    $ServiceType = ServiceTypesService::get_service_type_by_id($Book->ServiceTypeID);
                     
                     //set the time for book
                     $startTime = new DateTime($Book->StartDate,new DateTimeZone('Asia/Jerusalem'));

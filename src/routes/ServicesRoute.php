@@ -2,21 +2,19 @@
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
+require  "../src/services/servicetypes.service.php";
+require  "../src/services/services.service.php";
+
 /**
  * GET Method  /api/GetAllServices
  */
 $app->get('/api/GetAllServices', function (Request $request, Response $response) {
-    $Services = new Services();
     try {
-        $results = $Services->GetAllServices();
-        echo json_encode($results, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj = new ResultAPI();
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
+        $resultObj = new ResultAPI(ServicesService::get_services(), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
     }
 
 });
@@ -27,19 +25,15 @@ $app->get('/api/GetAllServices', function (Request $request, Response $response)
  * @param ServiceTypes in  request body
  */
 $app->post('/api/AddServiceType', function (Request $request, Response $response) {
-    $resultObj = new ResultAPI();
     $ServiceType = new ServiceTypes();
-    $ServiceTypeBody = $request->getParsedBody();
-
-    // $ServiceType->ServiceTypeName = $ServiceTypeBody['ServiceTypeName'];
-    // $ServiceType->ServiceID = $ServiceTypeBody['ServiceID'];
-    // $ServiceType->Price = $ServiceTypeBody['Price'];
-    // $ServiceType->Duration = $ServiceTypeBody['Duration'];
-    // $ServiceType->Description = $ServiceTypeBody['Description'];
-    $ServiceType->from_array($ServiceTypeBody);
-    $resultObj->set_result($ServiceType->Add());
-    $resultObj->set_statusCode($response->getStatusCode());
-    echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    $ServiceType->from_array($request->getParsedBody());
+    try {
+        $resultObj = new ResultAPI(ServiceTypesService::add_service_type($ServiceType), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
 });
 
 /**
@@ -48,39 +42,21 @@ $app->post('/api/AddServiceType', function (Request $request, Response $response
  * Return all Service Types by Service id
  */
 $app->get('/api/GetAllServiceTypeByService', function (Request $request, Response $response) {
-    $ServiceTypeObj = new ServiceTypes();
-    $resultObj = new ResultAPI();
     try {
-        $ServiceID = $request->getParam('ServiceID');
-        $results = $ServiceTypeObj->GetServiceTypeByID($ServiceID);
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
+        $resultObj = new ResultAPI(ServiceTypesService::find_service_type_by_service($request->getQueryParams()['ServiceID']), $response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
     } catch (Exception $e) {
-        $resultObj->set_result(null);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($e->getMessage());
-        return $response->withJson($resultObj);
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
     }
 });
 
 $app->get('/api/GetAllServiceTypes', function (Request $request, Response $response) {
-    $ServiceTypeObj = new ServiceTypes();
-    $resultObj = new ResultAPI();
-
-    try{
-        $results = $ServiceTypeObj->GetServiceTypes();
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        return $response->withJson($resultObj);
-        }
-    catch (Exception $e) {
-        //$resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($e->getMessage());
-        return $response->withJson($resultObj);
+    try {
+        $resultObj = new ResultAPI(ServiceTypesService::get_service_types(), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
     }
-//    echo $ServiceTypeObj->GetServiceTypes($response);
 });

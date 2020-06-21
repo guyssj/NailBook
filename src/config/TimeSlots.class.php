@@ -39,13 +39,13 @@ class TimeSlots
                 //$TimeSlots[] = ['id' => minutes($Single), 'timeSlot' => $Single];
 
             }
-            else{
-                $time = new TimeSlots();
-                $time->id = $Single;
-                $time->timeSlot = convertToHoursMins($Single, '%02d:%02d');
-                $time->disabled = true;
-                $TimeSlots[] = $time;
-            }
+            // else{
+            //     $time = new TimeSlots();
+            //     $time->id = $Single;
+            //     $time->timeSlot = convertToHoursMins($Single, '%02d:%02d');
+            //     $time->disabled = true;
+            //     $TimeSlots[] = $time;
+            // }
         }
 
         foreach ($EndOfAppTimes as $Single) {
