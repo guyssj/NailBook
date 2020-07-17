@@ -17,7 +17,6 @@ $app->post('/login', function (Request $request, Response $response) {
     $future = new DateTime("now +2 hours");
 
     //user auth with hash password
-    $options = ['cost' => 12];
     $user->userName = $input['userName'];
     $user->password = $input['key'];
     $auth = $user->sign_in();
@@ -37,22 +36,22 @@ $app->post('/login', function (Request $request, Response $response) {
         "exp" => $future->getTimeStamp(),
         "sub" => $auth,
     ];
-    $token = JWT::encode($payload, $_SERVER['Secret'], "HS256");
+    $token = JWT::encode($payload, $_SERVER['Secret'], "HS384");
 
-    //set a cookie
-    $cookie_name = "TokenApi";
-    $cookie_value = $token;
+    // //set a cookie
+    // $cookie_name = "TokenApi";
+    // $cookie_value = $token;
     //setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
     $_SESSION['TokenApi'] = $token;
 
     $user->token = $token;
+    $user->password = "";
 
     //return $response = $response->withHeader();
     $resultObj->set_result($user);
 
     return $response->withStatus(201)
     ->withHeader("Content-Type", "application/json")
-    ->withHeader('X-Token', $token)
     ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 });
 
