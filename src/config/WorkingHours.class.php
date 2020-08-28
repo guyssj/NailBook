@@ -45,7 +45,7 @@
                         return $value;
                     }
                 }
-                return "day not found";
+                return $this;
             } catch (PDOException $e) {
                 //$resultObj->set_ErrorMessage($e->getMessage());
                 return json_encode($e, JSON_UNESCAPED_UNICODE);

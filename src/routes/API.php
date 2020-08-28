@@ -1,4 +1,5 @@
 <?php
+
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -20,7 +21,6 @@ $app->get('/api/GetSlotsExist', function (Request $request, Response $response) 
         $resultObj->set_ErrorMessage($results);
         return $response->withJson($resultObj);
     }
-
 });
 
 
@@ -33,20 +33,22 @@ $app->get('/api/GetSlotsExist', function (Request $request, Response $response) 
  * From 8:00 - 18:00
  */
 $app->get('/api/GetTimeSlots', function (Request $request, Response $response) {
-
-    //     check the working hours in database
-    //     get day of the week for the date choosed
     $AppointmentDate = $request->getParam('Date');
     if ($AppointmentDate == null) {
         $AppointmentDate = date("Y-m-d"); //date("Y-m-d"); echo "<br>"; //assign selected date by user
     }
+    $duration = $request->getParam('Duration');
+    if ($duration == null)
+        $duration = 0;
+    $TimeSlots = TimeSlots::RenderSlots($AppointmentDate,$duration);
 
-    $TimeSlots = TimeSlots::RenderSlots($AppointmentDate);
     unset($DisableSlotsTimes);
     if (count($TimeSlots) > 0) {
         $TimeSlots = my_array_unique($TimeSlots);
         sort($TimeSlots);
     }
+
+
     echo json_encode($TimeSlots, JSON_UNESCAPED_UNICODE);
 });
 
@@ -84,7 +86,6 @@ function convertToHoursMins($time, $format = '%02d:%02d')
     $minutes = ($time % 60);
     return sprintf($format, $hours, $minutes);
 }
-
 function my_array_unique($array, $keep_key_assoc = false)
 {
     $duplicate_keys = array();
@@ -101,7 +102,6 @@ function my_array_unique($array, $keep_key_assoc = false)
         } else {
             $duplicate_keys[] = $key;
         }
-
     }
 
     foreach ($duplicate_keys as $key) {
