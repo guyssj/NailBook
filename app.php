@@ -23,6 +23,9 @@ require __DIR__ . "/src/config/Settings.class.php";
 require __DIR__ . "/src/services/booking.service.php";
 require __DIR__ . "/src/services/lockhours.service.php";
 require __DIR__ . "/src/services/customers.service.php";
+require __DIR__ . "/src/services/otp.service.php";
+require __DIR__ . "/src/config/otp.class.php";
+
 
 
 

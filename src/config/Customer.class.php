@@ -75,7 +75,7 @@ class Customer
 
         try {
             $this->connectDB();
-            $sqlquery = "SELECT * FROM Customers";
+            $sqlquery = "SELECT CustomerID,FirstName,LastName,PhoneNumber,Color,Notes FROM Customers";
             $stmt = $this->connection->prepare($sqlquery);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
