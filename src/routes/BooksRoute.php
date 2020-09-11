@@ -2,6 +2,7 @@
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Firebase\JWT\JWT;
 
 /**
  * GET admin/GetAllBook2
@@ -19,29 +20,17 @@ $app->get('/admin/GetAllBook2', function (Request $request, Response $response) 
 });
 
 
-$app->get('/api/GetBookByCustomer', function (Request $request, Response $response) {
-    $Book = new Books();
-    $resultObj = new ResultAPI();
-    try {
-        $CustomerID = $request->getQueryParams()['CustomerID'];
-        $results = $Book->GetBooksByCustomer($CustomerID);
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $e) {
-        $resultObj->set_result(null);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($e->getMessage());
-        return $response->withJson($resultObj);
-    }
-});
 //multipale books
 $app->get('/api/GetBooksByCustomer', function (Request $request, Response $response) {
-    $CustomerID = $request->getQueryParams()['CustomerID'];
+    $token = $request->getHeader('Authorization');
     try {
-        $resultObj = new ResultAPI(BookingService::get_books_by_customerId($CustomerID), $response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        $phoneNumber = OTPService::verfiy_token($token);
+        if ($phoneNumber) {
+            $resultObj = new ResultAPI(BookingService::get_books_by_phoneNumber($phoneNumber), $response->getStatusCode());
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        } else {
+            throw new Exception("Token is expired", 403);
+        }
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
         return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
@@ -67,13 +56,16 @@ $app->post('/api/SetBook', function (Request $request, Response $response) {
 });
 
 $app->put('/api/UpdateBook', function (Request $request, Response $response) {
-
     $BooksObj = new Books();
     $books = $request->getParsedBody();
     $BooksObj->from_array($books);
+    $token = $request->getHeader('Authorization');
     try {
-        $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        $phoneNumber = OTPService::verfiy_token($token);
+        if ($phoneNumber) {
+            $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        }
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
         return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));

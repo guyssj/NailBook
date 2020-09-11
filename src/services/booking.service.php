@@ -166,6 +166,48 @@ class BookingService
         }
     }
 
+        /**
+     * get books by Customer PhoneNumber
+     * 
+     * @return array[Books]
+     */
+    public static function get_books_by_phoneNumber($phoneNumber)
+    {
+        $cusId = CustomersService::find_customer_id_by_phone($phoneNumber);
+            if(!isset($cusId))
+                throw new Exception("Customer not found", 404);
+        $books = new Books();
+        $BooksCustomer = array();
+        try {
+            $stmt = $books->read();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                $date = date('Y-m-d', time());
+                if ((int) $CustomerID == $cusId && $StartDate >= $date) {
+                    $p = (object) array(
+                        "BookID" => (int) $BookID,
+                        "StartDate" => $StartDate,
+                        "StartAt" => (int) $StartAt,
+                        "CustomerID" => (int) $CustomerID,
+                        "ServiceID" => (int) $ServiceID,
+                        "Durtion" => (int) $Durtion,
+                        "ServiceTypeID" => (int) $ServiceTypeID,
+                        "Notes" => $Notes,
+                    );
+
+                    array_push($BooksCustomer, $p);
+                }
+            }
+            if (count($BooksCustomer) == 0)
+                throw new Exception("Book not found", 404);
+
+            BookingService::array_sort_by_column($BooksCustomer, 'StartDate');
+            return $BooksCustomer;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
     /**
      * Find books with date range
      * @return array[Books]

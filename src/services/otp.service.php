@@ -2,13 +2,12 @@
 use Firebase\JWT\JWT;
 
 class OTPService{
-    public static function verfiy_otp($otp,$customerId){
-        //$customer = CustomersService::find_customer_by_id($customerId);
+    public static function verfiy_otp($otp,$customerPhoneNumber){
         $otpClass = new OTP();
         $now = new DateTime();
         $future = new DateTime("now +10 minute");
         try {
-            $stmt = $otpClass->read($customerId);
+            $stmt = $otpClass->read($customerPhoneNumber);
             $count = $stmt->rowCount();
             if ($count > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -18,9 +17,15 @@ class OTPService{
                             "iat" => $now->getTimeStamp(),
                             "exp" => $future->getTimeStamp(),
                             "sub" => $otp,
+                            "auth" => $customerPhoneNumber,
+                            "scope" => ["read"]
                         ];
                         $token = JWT::encode($payload, $_SERVER['Secret'], "HS256");
-                        return true;
+                        $user = new Users();
+                        $user->userName = $customerPhoneNumber;
+                        $user->token = $token;
+                        $otpClass->add($customerPhoneNumber);
+                        return $user;
                     }
                 }
             }
@@ -29,48 +34,34 @@ class OTPService{
             throw $e;
         }
     }
-
-    public static function verfiy_reset_otp($otp,$customerId){
+    /**
+     * 
+     * add OTP to customer with PhoneNumber
+     */
+    public static function add_otp($customerPhoneNumber){
         $otpClass = new OTP();
-        $now = new DateTime();
-        $future = new DateTime("now +10 minute");
-        try {
-            $stmt = $otpClass->read($customerId);
-            $count = $stmt->rowCount();
-            if ($count > 0) {
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    extract($row);
-                    if ((int) $OTP == $otp) {
-                        $payload = [
-                            "iat" => $now->getTimeStamp(),
-                            "exp" => $future->getTimeStamp(),
-                            "sub" => $otp,
-                        ];
-                        $token = JWT::encode($payload, $_SERVER['Secret'], "HS256");
-                        $otpClass->add($customerId);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
-
-    public static function add_otp($customerId){
-        $otpClass = new OTP();
-        $customer = CustomersService::find_customer_by_id($customerId);
-        $otp = $otpClass->add($customerId);
+        $otp = $otpClass->add($customerPhoneNumber);
         if($otp > 0){
             $globalSMS = new globalSMS();
-            $message = "קוד אימות: $otp";
-            $globalSMS->send_sms($customer->PhoneNumber, $message);
-
+            $message = "$otp זה קוד האימות שלך";
+            $globalSMS->send_sms($customerPhoneNumber, $message);
             return true;
         }
         else
             return false;
+    }
+
+    /**
+     * Verfiy OTP and token
+     */
+    public static function verfiy_token($token){
+        $Test = str_replace("Bearer", "", $token[0]);
+        $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS256"]);
+        $phoneNumber = $decode->auth;
+        $now = new DateTime();
+        if ($decode->exp >= $now->getTimeStamp())
+            return $phoneNumber;
+        return false;
     }
 }
 

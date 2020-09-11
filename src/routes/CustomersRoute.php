@@ -1,6 +1,8 @@
 <?php
+
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Firebase\JWT\JWT;
 
 
 /**
@@ -8,10 +10,8 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
  * 
  * Get Customer By ID needed OTP
  */
-$app->get('/api/GetCustomerById', function (Request $request, Response $response) {
+$app->get('/admin/GetCustomerById', function (Request $request, Response $response) {
     try {
-        if(OTPService::verfiy_reset_otp($request->getQueryParams()['OTP'],$request->getQueryParams()['CustomerID']) == false)
-            throw new Exception("Unauthorized Invalid OTP", 403);
         $resultObj = new ResultAPI(CustomersService::find_customer_by_id($request->getQueryParams()['CustomerID']), $response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
     } catch (Exception $e) {
@@ -22,7 +22,7 @@ $app->get('/api/GetCustomerById', function (Request $request, Response $response
 
 $app->get('/api/GenerateToken', function (Request $request, Response $response) {
     try {
-        $resultObj = new ResultAPI(OTPService::add_otp($request->getQueryParams()['CustomerID']), $response->getStatusCode());
+        $resultObj = new ResultAPI(OTPService::add_otp($request->getQueryParams()['PhoneNumber']), $response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
@@ -32,7 +32,7 @@ $app->get('/api/GenerateToken', function (Request $request, Response $response) 
 
 $app->get('/api/VerfiyToken', function (Request $request, Response $response) {
     try {
-        $resultObj = new ResultAPI(OTPService::verfiy_otp($request->getQueryParams()['OTP'],$request->getQueryParams()['CustomerID']), $response->getStatusCode());
+        $resultObj = new ResultAPI(OTPService::verfiy_otp($request->getQueryParams()['OTP'], $request->getQueryParams()['PhoneNumber']), $response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
@@ -43,12 +43,16 @@ $app->get('/api/VerfiyToken', function (Request $request, Response $response) {
 /**
  * GET api/GetCustomerByPhone
  * 
- * get Customer by Phone number
+ * get Customer by Phone number needed JWT TOKEN
  */
 $app->get('/api/GetCustomerByPhone', function (Request $request, Response $response) {
+    $token = $request->getHeader('Authorization');
     try {
-        $resultObj = new ResultAPI(CustomersService::find_customer_id_by_phone($request->getQueryParams()['PhoneNumber']), $response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        $phoneNumber = OTPService::verfiy_token($token);
+        if ($phoneNumber) {
+            $resultObj = new ResultAPI(CustomersService::find_customer_by_phone($phoneNumber), $response->getStatusCode());
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        }
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
         return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));

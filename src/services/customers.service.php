@@ -84,6 +84,17 @@ class CustomersService
         throw new Exception("Customer not found", 404);
     }
 
+    public static function find_customer_by_phone($phoneNumber)
+    {
+        $customers = CustomersService::get_customers();
+
+        foreach ($customers as $customer) {
+            if ($customer->PhoneNumber == $phoneNumber)
+                return $customer;
+        }
+        throw new Exception("Customer not found", 404);
+    }
+
     public static function find_customer_by_id($ID)
     {
         $customers = CustomersService::get_customers();
