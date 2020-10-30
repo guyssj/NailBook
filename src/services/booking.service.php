@@ -30,7 +30,16 @@ class BookingService
                 $message = str_replace('{Date}', $NewDate, $message);
                 $message = str_replace('{Time}', $newTime, $message);
                 $message = str_replace('{ServiceType}', $ServiceType->ServiceTypeName, $message);
-
+                $regId ="cecrYc6AlOw:APA91bFYBm-llqxR5ZXQkyRjoK0GNrWM_PeCqdPpG511ei_JPowPUa9oKvkdy20zeRvlkqxt9KftTsYMgalWWUN4qbW_eEwVCMevK1abxqgKBVFlSfAQlh886G3VztOX0-3ZQiTJdGWB";
+                // Here, INCLUDE YOUR FCM FILE
+                $notification = array();
+                $arrNotification= array();
+                $arrData = array();
+                $arrNotification["body"] ="פגישה נקבעה ללקוח/ה $customer->FirstName $customer->LastName בתאריך $NewDate בשעה $newTime";
+                $arrNotification["title"] = "פגישה נקבעה";
+                $arrNotification["click_action"] = "FCM_PLUGIN_ACTIVITY";
+                $fcm = new FCM();
+                $result = $fcm->send_notification($regId, $arrNotification,"Android");
                 $globalSMS->send_sms($customer->PhoneNumber, $message);
             }
             return true;

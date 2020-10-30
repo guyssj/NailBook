@@ -56,8 +56,13 @@ class OTPService{
      */
     public static function verfiy_token($token){
         $Test = str_replace("Bearer", "", $token[0]);
-        $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS256"]);
-        $phoneNumber = $decode->auth;
+        try {
+            $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS256"]);
+            $phoneNumber = $decode->auth;
+        } catch (\Throwable $th) {
+            $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS384"]);
+            $phoneNumber = $decode->sub;
+        }
         $now = new DateTime();
         if ($decode->exp >= $now->getTimeStamp())
             return $phoneNumber;

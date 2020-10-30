@@ -71,6 +71,19 @@ $app->put('/api/UpdateBook', function (Request $request, Response $response) {
         return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
     }
 });
+$app->put('/admin/UpdateBook', function (Request $request, Response $response) {
+    $BooksObj = new Books();
+    $books = $request->getParsedBody();
+    $BooksObj->from_array($books);
+    //$token = $request->getHeader('Authorization');
+    try {
+            $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
+});
 
 
 $app->post('/admin/DeleteBook', function (Request $request, Response $response) {

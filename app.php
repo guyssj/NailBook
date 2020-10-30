@@ -25,6 +25,7 @@ require __DIR__ . "/src/services/lockhours.service.php";
 require __DIR__ . "/src/services/customers.service.php";
 require __DIR__ . "/src/services/otp.service.php";
 require __DIR__ . "/src/config/otp.class.php";
+require __DIR__ . "/src/config/fcm.class.php";
 
 
 
@@ -45,12 +46,12 @@ $app->add(function ($req, $res, $next) {
 });
 
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
-    'http://192.168.31.142:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.0.46:8100' => 'GET, POST, DELETE, PUT',
     'http://localhost:4200' => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
-    'http://192.168.1.34:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.0.46:4200' => 'GET, POST, DELETE, PUT',
     'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
-    'ionic://localhost' => 'GET, POST',
+    'ionic://localhost' => 'GET, POST, DELETE, PUT',
 ]));
 
 $container = $app->getContainer();
@@ -60,8 +61,6 @@ $container["token"] = function ($container) {
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path" => "/admin", /* or ["/api", "/admin"] */
     "attribute" => "decoded_token_data",
-    // "header" => "X-Token",
-    // "regexp" => "/(.*)/",
     "cookie" => "userToken",
     "secret" => $_SERVER['Secret'],
     "algorithm" => ["HS384"],
@@ -72,7 +71,7 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
         $resultObj->set_ErrorMessage($arguments["message"]);
         return $response
             ->withHeader("Content-Type", "application/json")
-            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:8100')
+            ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withStatus($response->getStatusCode())
             ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
