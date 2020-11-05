@@ -56,6 +56,17 @@ $app->post('/login', function (Request $request, Response $response) {
 });
 
 
+$app->post('/admin/AddRegistrationId', function (Request $request, Response $response) {
+    try {
+        $device = new Devices();
+        $device->from_array($request->getParsedBody());
+        $resultObj = new ResultAPI(DeviceService::add_regId($device),$response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
+});
 /**
  * GET AddUserName
  *

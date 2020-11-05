@@ -20,6 +20,7 @@ $app->get('/admin/GetCustomerById', function (Request $request, Response $respon
     }
 });
 
+
 $app->get('/api/GenerateToken', function (Request $request, Response $response) {
     try {
         $resultObj = new ResultAPI(OTPService::add_otp($request->getQueryParams()['PhoneNumber']), $response->getStatusCode());

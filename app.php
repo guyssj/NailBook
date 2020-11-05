@@ -26,6 +26,9 @@ require __DIR__ . "/src/services/customers.service.php";
 require __DIR__ . "/src/services/otp.service.php";
 require __DIR__ . "/src/config/otp.class.php";
 require __DIR__ . "/src/config/fcm.class.php";
+require __DIR__ . "/src/config/device.class.php";
+require __DIR__ . "/src/services/device.service.php";
+
 
 
 
@@ -46,9 +49,11 @@ $app->add(function ($req, $res, $next) {
 });
 
 $app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
-    'http://192.168.0.46:8100' => 'GET, POST, DELETE, PUT',
+    'http://192.168.1.18:8100' => 'GET, POST, DELETE, PUT',
     'http://localhost:4200' => 'GET, POST, DELETE, PUT',
     'http://localhost:8100' => 'GET, POST, DELETE, PUT',
+    'http://localhost' => 'GET, POST, DELETE, PUT',
+
     'http://192.168.0.46:4200' => 'GET, POST, DELETE, PUT',
     'http://172.20.10.3:8100' => 'GET, POST, DELETE, PUT',
     'ionic://localhost' => 'GET, POST, DELETE, PUT',
