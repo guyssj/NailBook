@@ -37,6 +37,17 @@ $app->get('/api/GetBooksByCustomer', function (Request $request, Response $respo
     }
 });
 
+$app->get('/admin/GetBooksByCustomer', function (Request $request, Response $response) {
+    $CustomerID = $request->getQueryParams()['CustomerID'];
+    try {
+        $resultObj = new ResultAPI(BookingService::get_books_by_customerId($CustomerID), $response->getStatusCode());
+        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+        return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+    }
+});
+
 /**
  * POST /api/SetBook
  *
