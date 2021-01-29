@@ -49,6 +49,28 @@ class Users
             }
         }
     }
+        /**
+     * 
+     * read all customers from db
+     * 
+     * 
+     */
+    public function read()
+    {
+
+        try {
+            $this->connectDB();
+            $sqlquery = "SELECT * FROM Users";
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
+            return $stmt;
+        } catch (PDOException $e) {
+            throw $e->getMessage();
+        }
+    }
 
     public function create_new_user()
     {

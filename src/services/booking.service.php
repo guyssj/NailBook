@@ -30,7 +30,7 @@ class BookingService
                 $message = str_replace('{Date}', $NewDate, $message);
                 $message = str_replace('{Time}', $newTime, $message);
                 $message = str_replace('{ServiceType}', $ServiceType->ServiceTypeName, $message);
-                $regId ="cecrYc6AlOw:APA91bFYBm-llqxR5ZXQkyRjoK0GNrWM_PeCqdPpG511ei_JPowPUa9oKvkdy20zeRvlkqxt9KftTsYMgalWWUN4qbW_eEwVCMevK1abxqgKBVFlSfAQlh886G3VztOX0-3ZQiTJdGWB";
+                $regId = DeviceService::get_regId_by_userName("mirit");
                 // Here, INCLUDE YOUR FCM FILE
                 $notification = array();
                 $arrNotification= array();

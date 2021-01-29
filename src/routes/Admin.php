@@ -67,6 +67,7 @@ $app->post('/admin/AddRegistrationId', function (Request $request, Response $res
         return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
     }
 });
+
 /**
  * GET AddUserName
  *
