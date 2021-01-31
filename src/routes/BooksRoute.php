@@ -62,10 +62,10 @@ $app->group('/admin/Book', function () use ($app) {
      * @param int BookID
      * @return bool
      */
-    $app->post('/DeleteBook', function (Request $request, Response $response) {
-        $books = $request->getParsedBody();
+    $app->post('/DeleteBook/{id}', function (Request $request, Response $response , array $args) {
+        $id = $args['id'];
         try {
-            $resultObj = new ResultAPI(BookingService::delete_book($books['id']), $response->getStatusCode());
+            $resultObj = new ResultAPI(BookingService::delete_book($id), $response->getStatusCode());
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
