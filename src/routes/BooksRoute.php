@@ -59,7 +59,7 @@ $app->group('/admin/Book', function () use ($app) {
     /**
      * POST admin/DeleteBook TODO: change to DELETE
      * Summery: Update book to database
-     * @param int BoodID
+     * @param int BookID
      * @return bool
      */
     $app->post('/DeleteBook', function (Request $request, Response $response) {
