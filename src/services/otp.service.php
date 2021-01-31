@@ -6,6 +6,7 @@ class OTPService{
         $otpClass = new OTP();
         $now = new DateTime();
         $future = new DateTime("now +10 minute");
+        $customer = CustomersService::find_customer_by_phone($customerPhoneNumber);
         try {
             $stmt = $otpClass->read($customerPhoneNumber);
             $count = $stmt->rowCount();
@@ -17,7 +18,7 @@ class OTPService{
                             "iat" => $now->getTimeStamp(),
                             "exp" => $future->getTimeStamp(),
                             "sub" => $otp,
-                            "auth" => $customerPhoneNumber,
+                            "auth" => $customer,
                             "scope" => ["read"]
                         ];
                         $token = JWT::encode($payload, $_SERVER['Secret'], "HS256");
@@ -58,11 +59,22 @@ class OTPService{
         $Test = str_replace("Bearer", "", $token[0]);
         try {
             $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS256"]);
-            $phoneNumber = $decode->auth;
+            $phoneNumber = new Token([
+                "iat" => $decode->iat,
+                "exp" => $decode->exp,
+                "sub" => $decode->sub,
+                "auth" => $decode->auth,
+                "scope" => $decode->scope
+            ]);    
         } catch (\Throwable $th) {
             $decode = JWT::decode(ltrim($Test, " "), $_SERVER['Secret'], ["HS384"]);
-            $phoneNumber = $decode->sub;
-        }
+            $phoneNumber = new Token([
+                "iat" => $decode->iat,
+                "exp" => $decode->exp,
+                "sub" => $decode->sub,
+                "auth" => null,
+                "scope" => $decode->scope
+            ]);            }
         $now = new DateTime();
         if ($decode->exp >= $now->getTimeStamp())
             return $phoneNumber;

@@ -86,6 +86,7 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     },
     "before" => function ($request, $arguments) use ($container) {
         $container["token"]->populate($arguments["decoded"]);
+        $container["User"] = $container["token"]->getUser();
     },
 ]));
 

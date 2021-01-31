@@ -15,4 +15,11 @@ class Token
     {
         return !!count(array_intersect($scope, $this->decoded["scope"]));
     }
+    public function getUser(){
+        return $this->decoded["sub"];
+    }
+    public function getAuth(){
+        if($this->decoded["auth"])
+            return $this->decoded["auth"];
+    }
 }

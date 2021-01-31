@@ -35,6 +35,7 @@ $app->post('/login', function (Request $request, Response $response) {
         "iat" => $now->getTimeStamp(),
         "exp" => $future->getTimeStamp(),
         "sub" => $auth,
+        "scope" => ["admin"]
     ];
     $token = JWT::encode($payload, $_SERVER['Secret'], "HS384");
 
@@ -57,7 +58,10 @@ $app->post('/login', function (Request $request, Response $response) {
 
 
 $app->post('/admin/AddRegistrationId', function (Request $request, Response $response) {
+   
     try {
+        $t = $this->User;
+        echo $t;
         $device = new Devices();
         $device->from_array($request->getParsedBody());
         $resultObj = new ResultAPI(DeviceService::add_regId($device),$response->getStatusCode());
