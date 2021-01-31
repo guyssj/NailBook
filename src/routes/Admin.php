@@ -24,7 +24,7 @@ $app->post('/login', function (Request $request, Response $response) {
     //if user name or password invalid return code 403 
     if (!$auth) {
         $resultObj->set_result("User name or password do not match our records");
-        $response = $response->withStatus(403);
+        $response = $response->withStatus(500);
         $resultObj->set_statusCode($response->getStatusCode());
         $resultObj->set_ErrorMessage("User name or password do not match our records");
         return $response->withJson($resultObj);
@@ -51,7 +51,7 @@ $app->post('/login', function (Request $request, Response $response) {
     //return $response = $response->withHeader();
     $resultObj->set_result($user);
 
-    return $response->withStatus(201)
+    return $response->withStatus(200)
     ->withHeader("Content-Type", "application/json")
     ->write(json_encode($resultObj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 });
@@ -60,8 +60,6 @@ $app->post('/login', function (Request $request, Response $response) {
 $app->post('/admin/AddRegistrationId', function (Request $request, Response $response) {
    
     try {
-        $t = $this->User;
-        echo $t;
         $device = new Devices();
         $device->from_array($request->getParsedBody());
         $resultObj = new ResultAPI(DeviceService::add_regId($device),$response->getStatusCode());

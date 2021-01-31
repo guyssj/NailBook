@@ -127,7 +127,8 @@ $app->group('/api/Customer', function () use ($app) {
         $CustomerObj->from_array($customer);
         try {
             $resultObj = new ResultAPI(CustomersService::add_customer($CustomerObj), $response->getStatusCode());
-            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+            $response = $response->withStatus(201);
+            return $response->withJson($resultObj);
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
