@@ -18,39 +18,42 @@
 class Google_Service_ContainerAnalysis_Note extends Google_Collection
 {
   protected $collection_key = 'relatedUrl';
-  protected $attestationAuthorityType = 'Google_Service_ContainerAnalysis_AttestationAuthority';
+  protected $attestationAuthorityType = 'Google_Service_ContainerAnalysis_Authority';
   protected $attestationAuthorityDataType = '';
   protected $baseImageType = 'Google_Service_ContainerAnalysis_Basis';
   protected $baseImageDataType = '';
-  protected $buildTypeType = 'Google_Service_ContainerAnalysis_BuildType';
-  protected $buildTypeDataType = '';
+  protected $buildType = 'Google_Service_ContainerAnalysis_Build';
+  protected $buildDataType = '';
   public $createTime;
   protected $deployableType = 'Google_Service_ContainerAnalysis_Deployable';
   protected $deployableDataType = '';
   protected $discoveryType = 'Google_Service_ContainerAnalysis_Discovery';
   protected $discoveryDataType = '';
   public $expirationTime;
+  protected $intotoType = 'Google_Service_ContainerAnalysis_InToto';
+  protected $intotoDataType = '';
   public $kind;
   public $longDescription;
   public $name;
   protected $packageType = 'Google_Service_ContainerAnalysis_Package';
   protected $packageDataType = '';
+  public $relatedNoteNames;
   protected $relatedUrlType = 'Google_Service_ContainerAnalysis_RelatedUrl';
   protected $relatedUrlDataType = 'array';
   public $shortDescription;
   public $updateTime;
-  protected $vulnerabilityTypeType = 'Google_Service_ContainerAnalysis_VulnerabilityType';
-  protected $vulnerabilityTypeDataType = '';
+  protected $vulnerabilityType = 'Google_Service_ContainerAnalysis_Vulnerability';
+  protected $vulnerabilityDataType = '';
 
   /**
-   * @param Google_Service_ContainerAnalysis_AttestationAuthority
+   * @param Google_Service_ContainerAnalysis_Authority
    */
-  public function setAttestationAuthority(Google_Service_ContainerAnalysis_AttestationAuthority $attestationAuthority)
+  public function setAttestationAuthority(Google_Service_ContainerAnalysis_Authority $attestationAuthority)
   {
     $this->attestationAuthority = $attestationAuthority;
   }
   /**
-   * @return Google_Service_ContainerAnalysis_AttestationAuthority
+   * @return Google_Service_ContainerAnalysis_Authority
    */
   public function getAttestationAuthority()
   {
@@ -71,18 +74,18 @@ class Google_Service_ContainerAnalysis_Note extends Google_Collection
     return $this->baseImage;
   }
   /**
-   * @param Google_Service_ContainerAnalysis_BuildType
+   * @param Google_Service_ContainerAnalysis_Build
    */
-  public function setBuildType(Google_Service_ContainerAnalysis_BuildType $buildType)
+  public function setBuild(Google_Service_ContainerAnalysis_Build $build)
   {
-    $this->buildType = $buildType;
+    $this->build = $build;
   }
   /**
-   * @return Google_Service_ContainerAnalysis_BuildType
+   * @return Google_Service_ContainerAnalysis_Build
    */
-  public function getBuildType()
+  public function getBuild()
   {
-    return $this->buildType;
+    return $this->build;
   }
   public function setCreateTime($createTime)
   {
@@ -128,6 +131,20 @@ class Google_Service_ContainerAnalysis_Note extends Google_Collection
   {
     return $this->expirationTime;
   }
+  /**
+   * @param Google_Service_ContainerAnalysis_InToto
+   */
+  public function setIntoto(Google_Service_ContainerAnalysis_InToto $intoto)
+  {
+    $this->intoto = $intoto;
+  }
+  /**
+   * @return Google_Service_ContainerAnalysis_InToto
+   */
+  public function getIntoto()
+  {
+    return $this->intoto;
+  }
   public function setKind($kind)
   {
     $this->kind = $kind;
@@ -166,15 +183,23 @@ class Google_Service_ContainerAnalysis_Note extends Google_Collection
   {
     return $this->package;
   }
+  public function setRelatedNoteNames($relatedNoteNames)
+  {
+    $this->relatedNoteNames = $relatedNoteNames;
+  }
+  public function getRelatedNoteNames()
+  {
+    return $this->relatedNoteNames;
+  }
   /**
-   * @param Google_Service_ContainerAnalysis_RelatedUrl
+   * @param Google_Service_ContainerAnalysis_RelatedUrl[]
    */
   public function setRelatedUrl($relatedUrl)
   {
     $this->relatedUrl = $relatedUrl;
   }
   /**
-   * @return Google_Service_ContainerAnalysis_RelatedUrl
+   * @return Google_Service_ContainerAnalysis_RelatedUrl[]
    */
   public function getRelatedUrl()
   {
@@ -197,17 +222,17 @@ class Google_Service_ContainerAnalysis_Note extends Google_Collection
     return $this->updateTime;
   }
   /**
-   * @param Google_Service_ContainerAnalysis_VulnerabilityType
+   * @param Google_Service_ContainerAnalysis_Vulnerability
    */
-  public function setVulnerabilityType(Google_Service_ContainerAnalysis_VulnerabilityType $vulnerabilityType)
+  public function setVulnerability(Google_Service_ContainerAnalysis_Vulnerability $vulnerability)
   {
-    $this->vulnerabilityType = $vulnerabilityType;
+    $this->vulnerability = $vulnerability;
   }
   /**
-   * @return Google_Service_ContainerAnalysis_VulnerabilityType
+   * @return Google_Service_ContainerAnalysis_Vulnerability
    */
-  public function getVulnerabilityType()
+  public function getVulnerability()
   {
-    return $this->vulnerabilityType;
+    return $this->vulnerability;
   }
 }

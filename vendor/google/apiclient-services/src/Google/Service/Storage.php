@@ -55,16 +55,17 @@ class Google_Service_Storage extends Google_Service
   public $objects;
   public $projects_hmacKeys;
   public $projects_serviceAccount;
-  
+
   /**
    * Constructs the internal representation of the Storage service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://www.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://storage.googleapis.com/';
     $this->servicePath = 'storage/v1/';
     $this->batchPath = 'batch/storage/v1';
     $this->version = 'v1';
@@ -278,6 +279,10 @@ class Google_Service_Storage extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+                'optionsRequestedPolicyVersion' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
                 'provisionalUserProject' => array(
                   'location' => 'query',
@@ -1010,6 +1015,10 @@ class Google_Service_Storage extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'destinationKmsKeyName' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'destinationPredefinedAcl' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -1247,6 +1256,10 @@ class Google_Service_Storage extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
+                'endOffset' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'includeTrailingDelimiter' => array(
                   'location' => 'query',
                   'type' => 'boolean',
@@ -1268,6 +1281,10 @@ class Google_Service_Storage extends Google_Service
                   'type' => 'string',
                 ),
                 'provisionalUserProject' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'startOffset' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -1544,6 +1561,10 @@ class Google_Service_Storage extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
+                'endOffset' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'includeTrailingDelimiter' => array(
                   'location' => 'query',
                   'type' => 'boolean',
@@ -1565,6 +1586,10 @@ class Google_Service_Storage extends Google_Service
                   'type' => 'string',
                 ),
                 'provisionalUserProject' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'startOffset' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

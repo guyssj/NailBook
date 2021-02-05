@@ -1,5 +1,9 @@
 <?php
 
+namespace BookNail;
+
+use Exception;
+use PDO;
 class CustomersService
 {
     /**

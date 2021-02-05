@@ -36,16 +36,17 @@ class Google_Service_FactCheckTools extends Google_Service
 
   public $claims;
   public $pages;
-  
+
   /**
    * Constructs the internal representation of the FactCheckTools service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://factchecktools.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://factchecktools.googleapis.com/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1alpha1';
@@ -61,26 +62,6 @@ class Google_Service_FactCheckTools extends Google_Service
               'path' => 'v1alpha1/claims:search',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'offset' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'reviewPublisherSiteFilter' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                'query' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'languageCode' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -88,6 +69,26 @@ class Google_Service_FactCheckTools extends Google_Service
                 'maxAgeDays' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'offset' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'query' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'reviewPublisherSiteFilter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),
@@ -128,6 +129,10 @@ class Google_Service_FactCheckTools extends Google_Service
               'path' => 'v1alpha1/pages',
               'httpMethod' => 'GET',
               'parameters' => array(
+                'offset' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
                 'organization' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -136,15 +141,11 @@ class Google_Service_FactCheckTools extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'url' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'offset' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                'pageToken' => array(
+                'url' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

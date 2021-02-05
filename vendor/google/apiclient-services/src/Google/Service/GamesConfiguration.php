@@ -19,11 +19,12 @@
  * Service definition for GamesConfiguration (v1configuration).
  *
  * <p>
- * The Publishing API for Google Play Game Services.</p>
+ * The Google Play Game Services Publishing API allows developers to configure
+ * their games in Game Services.</p>
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://developers.google.com/games/services" target="_blank">Documentation</a>
+ * <a href="https://developers.google.com/games/" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -37,18 +38,19 @@ class Google_Service_GamesConfiguration extends Google_Service
   public $achievementConfigurations;
   public $imageConfigurations;
   public $leaderboardConfigurations;
-  
+
   /**
    * Constructs the internal representation of the GamesConfiguration service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://www.googleapis.com/';
-    $this->servicePath = 'games/v1configuration/';
-    $this->batchPath = 'batch/gamesConfiguration/v1configuration';
+    $this->rootUrl = $rootUrl ?: 'https://gamesconfiguration.googleapis.com/';
+    $this->servicePath = '';
+    $this->batchPath = 'batch';
     $this->version = 'v1configuration';
     $this->serviceName = 'gamesConfiguration';
 
@@ -59,7 +61,7 @@ class Google_Service_GamesConfiguration extends Google_Service
         array(
           'methods' => array(
             'delete' => array(
-              'path' => 'achievements/{achievementId}',
+              'path' => 'games/v1configuration/achievements/{achievementId}',
               'httpMethod' => 'DELETE',
               'parameters' => array(
                 'achievementId' => array(
@@ -69,7 +71,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'get' => array(
-              'path' => 'achievements/{achievementId}',
+              'path' => 'games/v1configuration/achievements/{achievementId}',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'achievementId' => array(
@@ -79,7 +81,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'insert' => array(
-              'path' => 'applications/{applicationId}/achievements',
+              'path' => 'games/v1configuration/applications/{applicationId}/achievements',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'applicationId' => array(
@@ -89,7 +91,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'list' => array(
-              'path' => 'applications/{applicationId}/achievements',
+              'path' => 'games/v1configuration/applications/{applicationId}/achievements',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'applicationId' => array(
@@ -106,18 +108,8 @@ class Google_Service_GamesConfiguration extends Google_Service
                   'type' => 'string',
                 ),
               ),
-            ),'patch' => array(
-              'path' => 'achievements/{achievementId}',
-              'httpMethod' => 'PATCH',
-              'parameters' => array(
-                'achievementId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
             ),'update' => array(
-              'path' => 'achievements/{achievementId}',
+              'path' => 'games/v1configuration/achievements/{achievementId}',
               'httpMethod' => 'PUT',
               'parameters' => array(
                 'achievementId' => array(
@@ -137,7 +129,7 @@ class Google_Service_GamesConfiguration extends Google_Service
         array(
           'methods' => array(
             'upload' => array(
-              'path' => 'images/{resourceId}/imageType/{imageType}',
+              'path' => 'games/v1configuration/images/{resourceId}/imageType/{imageType}',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'resourceId' => array(
@@ -162,7 +154,7 @@ class Google_Service_GamesConfiguration extends Google_Service
         array(
           'methods' => array(
             'delete' => array(
-              'path' => 'leaderboards/{leaderboardId}',
+              'path' => 'games/v1configuration/leaderboards/{leaderboardId}',
               'httpMethod' => 'DELETE',
               'parameters' => array(
                 'leaderboardId' => array(
@@ -172,7 +164,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'get' => array(
-              'path' => 'leaderboards/{leaderboardId}',
+              'path' => 'games/v1configuration/leaderboards/{leaderboardId}',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'leaderboardId' => array(
@@ -182,7 +174,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'insert' => array(
-              'path' => 'applications/{applicationId}/leaderboards',
+              'path' => 'games/v1configuration/applications/{applicationId}/leaderboards',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'applicationId' => array(
@@ -192,7 +184,7 @@ class Google_Service_GamesConfiguration extends Google_Service
                 ),
               ),
             ),'list' => array(
-              'path' => 'applications/{applicationId}/leaderboards',
+              'path' => 'games/v1configuration/applications/{applicationId}/leaderboards',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'applicationId' => array(
@@ -209,18 +201,8 @@ class Google_Service_GamesConfiguration extends Google_Service
                   'type' => 'string',
                 ),
               ),
-            ),'patch' => array(
-              'path' => 'leaderboards/{leaderboardId}',
-              'httpMethod' => 'PATCH',
-              'parameters' => array(
-                'leaderboardId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
             ),'update' => array(
-              'path' => 'leaderboards/{leaderboardId}',
+              'path' => 'games/v1configuration/leaderboards/{leaderboardId}',
               'httpMethod' => 'PUT',
               'parameters' => array(
                 'leaderboardId' => array(

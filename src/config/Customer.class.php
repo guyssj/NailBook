@@ -5,6 +5,13 @@
  *
  * Created by Guy Gold. 16/12/2018
  */
+
+
+namespace BookNail;
+
+use PDOException;
+use Exception;
+
 class Customer
 {
         //Connection

@@ -5,6 +5,12 @@
      * 
      * Created by Guy Gold. 06/11/2019
      */
+
+
+    namespace BookNail;
+
+    use PDOException;
+
     class WorkingHours{
 
         public $dayOfWeek;

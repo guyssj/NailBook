@@ -15,10 +15,17 @@
  * the License.
  */
 
-class Google_Service_Logging_LogSink extends Google_Model
+class Google_Service_Logging_LogSink extends Google_Collection
 {
+  protected $collection_key = 'exclusions';
+  protected $bigqueryOptionsType = 'Google_Service_Logging_BigQueryOptions';
+  protected $bigqueryOptionsDataType = '';
   public $createTime;
+  public $description;
   public $destination;
+  public $disabled;
+  protected $exclusionsType = 'Google_Service_Logging_LogExclusion';
+  protected $exclusionsDataType = 'array';
   public $filter;
   public $includeChildren;
   public $name;
@@ -26,6 +33,20 @@ class Google_Service_Logging_LogSink extends Google_Model
   public $updateTime;
   public $writerIdentity;
 
+  /**
+   * @param Google_Service_Logging_BigQueryOptions
+   */
+  public function setBigqueryOptions(Google_Service_Logging_BigQueryOptions $bigqueryOptions)
+  {
+    $this->bigqueryOptions = $bigqueryOptions;
+  }
+  /**
+   * @return Google_Service_Logging_BigQueryOptions
+   */
+  public function getBigqueryOptions()
+  {
+    return $this->bigqueryOptions;
+  }
   public function setCreateTime($createTime)
   {
     $this->createTime = $createTime;
@@ -34,6 +55,14 @@ class Google_Service_Logging_LogSink extends Google_Model
   {
     return $this->createTime;
   }
+  public function setDescription($description)
+  {
+    $this->description = $description;
+  }
+  public function getDescription()
+  {
+    return $this->description;
+  }
   public function setDestination($destination)
   {
     $this->destination = $destination;
@@ -41,6 +70,28 @@ class Google_Service_Logging_LogSink extends Google_Model
   public function getDestination()
   {
     return $this->destination;
+  }
+  public function setDisabled($disabled)
+  {
+    $this->disabled = $disabled;
+  }
+  public function getDisabled()
+  {
+    return $this->disabled;
+  }
+  /**
+   * @param Google_Service_Logging_LogExclusion[]
+   */
+  public function setExclusions($exclusions)
+  {
+    $this->exclusions = $exclusions;
+  }
+  /**
+   * @return Google_Service_Logging_LogExclusion[]
+   */
+  public function getExclusions()
+  {
+    return $this->exclusions;
   }
   public function setFilter($filter)
   {

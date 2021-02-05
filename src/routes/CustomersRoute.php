@@ -1,9 +1,11 @@
 <?php
 
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use Firebase\JWT\JWT;
-
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
+use BookNail\ResultAPI;
+use BookNail\Customer;
+use BookNail\CustomersService;
+use BookNail\OTPService;
 
 // $adminMiddleware = function ($request, $response, $next) {
 //     $request = $request->withAttribute('role', 'admin');

@@ -5,5 +5,10 @@
         "google/apiclient": "^2.0",
         "tuupola/slim-jwt-auth": "^3.3",
         "eko3alpha/slim-cors-middleware": "^1.1"
-    }
+    },
+        "autoload": {
+            "psr-4": {"BookNail\\": "src/config"},
+            "psr-0": {"BookNail": "src/services"}
+
+        }
 }

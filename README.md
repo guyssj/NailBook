@@ -1,6 +1,9 @@
 # NailBook
 BookNail API
 
+Updated 
+php composer.phar dumpautoload -o
+
 # TODO
 1. Add to Users table colums RegId
 ALTER TABLE `Users` ADD `RegId` VARCHAR(1000) NOT NULL AFTER `UserName`; 

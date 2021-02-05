@@ -1,9 +1,16 @@
 <?php
 
+namespace BookNail;
+
+use PDO;
+use Exception;
+use DateTime;
+use DateTimeZone;
+
 class LockHoursService
 {
 
-       /**
+    /**
      * 
      * get all book
      * 
@@ -28,18 +35,18 @@ class LockHoursService
                         "EndAt" => $EndAt,
                         "Notes" => $Notes,
                     );
-                    
+
                     //set the time for book
-                    $startTime = new DateTime($Lock->StartDate,new DateTimeZone('Asia/Jerusalem'));
+                    $startTime = new DateTime($Lock->StartDate, new DateTimeZone('Asia/Jerusalem'));
                     $startTime->modify("+{$Lock->StartAt} minutes");
-                    $endTime = new DateTime($Lock->StartDate,new DateTimeZone('Asia/Jerusalem'));
+                    $endTime = new DateTime($Lock->StartDate, new DateTimeZone('Asia/Jerusalem'));
                     $endTime->modify("+{$Lock->EndAt} minutes");
-        
+
                     $endTime = $endTime->format('c');
                     $startTime = $startTime->format('c');
 
                     //object for clendar ionic
-                    $p= (object) array(
+                    $p = (object) array(
                         "title" => "זמן נעול",
                         "allDay" => false,
                         "endTime" => $endTime,
@@ -56,15 +63,16 @@ class LockHoursService
         }
     }
 
-    public static function add_new_lock_hours(LockHours $lockHour){
+    public static function add_new_lock_hours(LockHours $lockHour)
+    {
         if ($lockHour->add()->rowCount() > 0) {
             return true;
         } else {
             return false;
         }
-        
     }
-    public static function delete_lock_hours($lockHourID){
+    public static function delete_lock_hours($lockHourID)
+    {
 
         $lockHour = new LockHours();
         if ($lockHour->delete($lockHourID)->rowCount() > 0) {
@@ -72,7 +80,5 @@ class LockHoursService
         } else {
             return false;
         }
-        
     }
-
 }

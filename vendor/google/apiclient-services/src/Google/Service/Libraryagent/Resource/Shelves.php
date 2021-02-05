@@ -28,7 +28,7 @@ class Google_Service_Libraryagent_Resource_Shelves extends Google_Service_Resour
   /**
    * Gets a shelf. Returns NOT_FOUND if the shelf does not exist. (shelves.get)
    *
-   * @param string $name The name of the shelf to retrieve.
+   * @param string $name Required. The name of the shelf to retrieve.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Libraryagent_GoogleExampleLibraryagentV1Shelf
    */

@@ -19,6 +19,8 @@ class Google_Service_Speech_RecognitionConfig extends Google_Collection
 {
   protected $collection_key = 'speechContexts';
   public $audioChannelCount;
+  protected $diarizationConfigType = 'Google_Service_Speech_SpeakerDiarizationConfig';
+  protected $diarizationConfigDataType = '';
   public $enableAutomaticPunctuation;
   public $enableSeparateRecognitionPerChannel;
   public $enableWordTimeOffsets;
@@ -41,6 +43,20 @@ class Google_Service_Speech_RecognitionConfig extends Google_Collection
   public function getAudioChannelCount()
   {
     return $this->audioChannelCount;
+  }
+  /**
+   * @param Google_Service_Speech_SpeakerDiarizationConfig
+   */
+  public function setDiarizationConfig(Google_Service_Speech_SpeakerDiarizationConfig $diarizationConfig)
+  {
+    $this->diarizationConfig = $diarizationConfig;
+  }
+  /**
+   * @return Google_Service_Speech_SpeakerDiarizationConfig
+   */
+  public function getDiarizationConfig()
+  {
+    return $this->diarizationConfig;
   }
   public function setEnableAutomaticPunctuation($enableAutomaticPunctuation)
   {
@@ -129,14 +145,14 @@ class Google_Service_Speech_RecognitionConfig extends Google_Collection
     return $this->sampleRateHertz;
   }
   /**
-   * @param Google_Service_Speech_SpeechContext
+   * @param Google_Service_Speech_SpeechContext[]
    */
   public function setSpeechContexts($speechContexts)
   {
     $this->speechContexts = $speechContexts;
   }
   /**
-   * @return Google_Service_Speech_SpeechContext
+   * @return Google_Service_Speech_SpeechContext[]
    */
   public function getSpeechContexts()
   {

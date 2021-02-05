@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
 
-Copyright (c) 2017-2019 Mika Tuupola
+Copyright (c) 2017-2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,9 @@ use Nyholm\Psr7\ServerRequest as NyholmServerRequest;
 use Slim\Http\Request as SlimServerRequest;
 use Slim\Http\Uri as SlimUri;
 use Slim\Http\Headers as SlimHeaders;
-use Slim\Http\Environment as SlimEnvironment;
-use Zend\Diactoros\ServerRequest as DiactorosServerRequest;
-use Zend\Diactoros\ServerRequestFactory as DiactorosServerRequestFactory;
+use Slim\Psr7\Factory\ServerRequestFactory as SlimPsr7ServerRequestFactory;
+use Zend\Diactoros\ServerRequest as ZendDiactorosServerRequest;
+use Laminas\Diactoros\ServerRequest as LaminasDiactorosServerRequest;
 
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,12 +52,16 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
-        if (class_exists(DiactorosServerRequest::class)) {
-            return new DiactorosServerRequest($serverParams, [], $uri, $method);
+        if (class_exists(LaminasDiactorosServerRequest::class)) {
+            return new LaminasDiactorosServerRequest($serverParams, [], $uri, $method);
         }
 
         if (class_exists(NyholmServerRequest::class)) {
             return new NyholmServerRequest($method, $uri, [], null, "1.1", $serverParams);
+        }
+
+        if (class_exists(SlimPsr7ServerRequestFactory::class)) {
+            return (new SlimPsr7ServerRequestFactory)->createServerRequest($method, $uri, $serverParams);
         }
 
         if (class_exists(SlimServerRequest::class)) {
@@ -69,6 +73,10 @@ final class ServerRequestFactory implements ServerRequestFactoryInterface
 
         if (class_exists(GuzzleServerRequest::class)) {
             return new GuzzleServerRequest($method, $uri, [], null, "1.1", $serverParams);
+        }
+
+        if (class_exists(ZendDiactorosServerRequest::class)) {
+            return new ZendDiactorosServerRequest($serverParams, [], $uri, $method);
         }
 
         throw new \RuntimeException("No PSR-7 implementation available");

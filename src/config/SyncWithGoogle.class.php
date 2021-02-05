@@ -1,5 +1,14 @@
 <?php
 
+
+namespace BookNail;
+
+use Google_Service_Calendar;
+use Google_Service_Calendar_Event;
+use Google_Service_Calendar_EventReminders;
+use Google_Service_Calendar_EventDateTime;
+use DateTime;
+
 class SyncGoogle
 {
 

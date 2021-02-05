@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
 
-Copyright (c) 2017-2019 Mika Tuupola
+Copyright (c) 2017-2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,9 @@ use Nyholm\Psr7\Request as NyholmRequest;
 use Slim\Http\Request as SlimRequest;
 use Slim\Http\Uri as SlimUri;
 use Slim\Http\Headers as SlimHeaders;
-use Zend\Diactoros\Request as DiactorosRequest;
+use Slim\Psr7\Factory\RequestFactory as SlimPsr7RequestFactory;
+use Zend\Diactoros\Request as ZendDiactorosRequest;
+use Laminas\Diactoros\Request as LaminasDiactorosRequest;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -50,12 +52,16 @@ final class RequestFactory implements RequestFactoryInterface
      */
     public function createRequest(string $method, $uri): RequestInterface
     {
-        if (class_exists(DiactorosRequest::class)) {
-            return new DiactorosRequest($uri, $method);
+        if (class_exists(LaminasDiactorosRequest::class)) {
+            return new LaminasDiactorosRequest($uri, $method);
         }
 
         if (class_exists(NyholmRequest::class)) {
             return new NyholmRequest($method, $uri);
+        }
+
+        if (class_exists(SlimPsr7RequestFactory::class)) {
+            return (new SlimPsr7RequestFactory)->createRequest($method, $uri);
         }
 
         if (class_exists(SlimRequest::class)) {
@@ -67,6 +73,10 @@ final class RequestFactory implements RequestFactoryInterface
 
         if (class_exists(GuzzleRequest::class)) {
             return new GuzzleRequest($method, $uri);
+        }
+
+        if (class_exists(ZendDiactorosRequest::class)) {
+            return new ZendDiactorosRequest($uri, $method);
         }
 
         throw new \RuntimeException("No PSR-7 implementation available");

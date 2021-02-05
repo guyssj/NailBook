@@ -1,4 +1,9 @@
 <?php
+
+
+namespace BookNail;
+
+
 class FCM
 {
     function __construct()

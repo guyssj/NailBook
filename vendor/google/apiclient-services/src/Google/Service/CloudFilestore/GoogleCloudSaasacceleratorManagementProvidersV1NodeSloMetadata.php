@@ -20,21 +20,30 @@ class Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvider
   protected $collection_key = 'exclusions';
   protected $exclusionsType = 'Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion';
   protected $exclusionsDataType = 'array';
+  public $location;
   public $nodeId;
 
   /**
-   * @param Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion
+   * @param Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion[]
    */
   public function setExclusions($exclusions)
   {
     $this->exclusions = $exclusions;
   }
   /**
-   * @return Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion
+   * @return Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion[]
    */
   public function getExclusions()
   {
     return $this->exclusions;
+  }
+  public function setLocation($location)
+  {
+    $this->location = $location;
+  }
+  public function getLocation()
+  {
+    return $this->location;
   }
   public function setNodeId($nodeId)
   {

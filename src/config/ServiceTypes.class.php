@@ -1,5 +1,11 @@
 <?php
 
+
+namespace BookNail;
+
+use PDOException;
+
+
 class ServiceTypes
 {
 
@@ -55,18 +61,18 @@ class ServiceTypes
     }
 
     public function add()
-    {          
+    {
 
         try {
             $this->connectDB();
 
-            $sqlquery = "call ServiceTypeSet(:ServiceTypeName,:ServiceID,:Duration,:Price,:Description,@l_serviceTypeId);";            
+            $sqlquery = "call ServiceTypeSet(:ServiceTypeName,:ServiceID,:Duration,:Price,:Description,@l_serviceTypeId);";
             $stmt = $this->connection->prepare($sqlquery);
             $stmt->bindParam(':ServiceTypeName', $this->ServiceTypeName);
             $stmt->bindParam(':ServiceID', $this->ServiceID);
             $stmt->bindParam(':Duration', $this->Duration);
             $stmt->bindParam(':Price', $this->Price);
-            $stmt->bindParam(':Description',$this->Description);
+            $stmt->bindParam(':Description', $this->Description);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
             $stmt->execute();

@@ -1,28 +1,10 @@
 <?php
 
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-
-
-
-$app->get('/api/GetSlotsExist', function (Request $request, Response $response) {
-    $SlotsExist = new Books();
-    $resultObj = new ResultAPI();
-    try {
-        $Date = $request->getParam('Date');
-        $results = BookingService::get_slots_exists($Date)['DisableSlots'];
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
-    }
-});
-
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
+use BookNail\TimeSlots;
+use BookNail\ResultAPI;
+use BookNail\SyncGoogle;
 
 
 /**

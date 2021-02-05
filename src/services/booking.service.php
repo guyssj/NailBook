@@ -1,5 +1,12 @@
 <?php
 
+namespace BookNail;
+
+use Exception;
+use PDO;
+use DateTime;
+use DateTimeZone;
+
 class BookingService
 {
 
@@ -33,13 +40,13 @@ class BookingService
                 $regId = DeviceService::get_regId_by_userName("mirit");
                 // Here, INCLUDE YOUR FCM FILE
                 $notification = array();
-                $arrNotification= array();
+                $arrNotification = array();
                 $arrData = array();
-                $arrNotification["body"] ="פגישה נקבעה ללקוח/ה $customer->FirstName $customer->LastName בתאריך $NewDate בשעה $newTime";
+                $arrNotification["body"] = "פגישה נקבעה ללקוח/ה $customer->FirstName $customer->LastName בתאריך $NewDate בשעה $newTime";
                 $arrNotification["title"] = "פגישה נקבעה";
                 $arrNotification["click_action"] = "FCM_PLUGIN_ACTIVITY";
                 $fcm = new FCM();
-                $result = $fcm->send_notification($regId, $arrNotification,"Android");
+                $result = $fcm->send_notification($regId, $arrNotification, "Android");
                 $globalSMS->send_sms($customer->PhoneNumber, $message);
             }
             return true;
@@ -106,19 +113,19 @@ class BookingService
 
                     $Customer = CustomersService::find_customer_by_id($Book->CustomerID);
                     $ServiceType = ServiceTypesService::get_service_type_by_id($Book->ServiceTypeID);
-                    
+
                     //set the time for book
-                    $startTime = new DateTime($Book->StartDate,new DateTimeZone('Asia/Jerusalem'));
+                    $startTime = new DateTime($Book->StartDate, new DateTimeZone('Asia/Jerusalem'));
                     $startTime->modify("+{$Book->StartAt} minutes");
-                    $endTime = new DateTime($Book->StartDate,new DateTimeZone('Asia/Jerusalem'));
-                    $totalTime = $Book->Durtion+$Book->StartAt;
+                    $endTime = new DateTime($Book->StartDate, new DateTimeZone('Asia/Jerusalem'));
+                    $totalTime = $Book->Durtion + $Book->StartAt;
                     $endTime->modify("+{$totalTime} minutes");
-        
+
                     $endTime = $endTime->format('c');
                     $startTime = $startTime->format('c');
 
                     //object for clendar ionic
-                    $p= (object) array(
+                    $p = (object) array(
                         "title" => "{$Customer->FirstName} {$Customer->LastName} - {$ServiceType->ServiceTypeName}",
                         "allDay" => false,
                         "endTime" => $endTime,
@@ -175,7 +182,7 @@ class BookingService
         }
     }
 
-        /**
+    /**
      * get books by Customer PhoneNumber
      * 
      * @return array[Books]
@@ -183,8 +190,8 @@ class BookingService
     public static function get_books_by_phoneNumber($phoneNumber)
     {
         $cusId = CustomersService::find_customer_id_by_phone($phoneNumber);
-            if(!isset($cusId))
-                throw new Exception("Customer not found", 404);
+        if (!isset($cusId))
+            throw new Exception("Customer not found", 404);
         $books = new Books();
         $BooksCustomer = array();
         try {
@@ -336,7 +343,7 @@ class BookingService
                 $startWeek = date("Y-m-d", strtotime('sunday last week'));
                 $endWeek = date("Y-m-d", strtotime('friday this week'));
             }
-           return count( BookingService::find_books_by_date_range($startWeek, $endWeek));
+            return count(BookingService::find_books_by_date_range($startWeek, $endWeek));
         } catch (Exception $e) {
             if ($e->getCode() == 404)
                 return 0;
@@ -344,7 +351,7 @@ class BookingService
         }
     }
 
-        /**
+    /**
      *   Fetch All today's appointments and calculate disable slots
      */
     public static function get_slots_exists($Date)
@@ -367,10 +374,10 @@ class BookingService
         for ($i = $start; $i <= $end; $i += 30) {
             $AllSlotTimesList[] = $i;
         }
-        try{
+        try {
             $AllAppointmentsData = BookingService::find_books_by_date($Date);
-        } catch (Exception $e){
-            if($e->getCode() == 404)
+        } catch (Exception $e) {
+            if ($e->getCode() == 404)
                 $AllAppointmentsData = [];
         }
 
@@ -472,10 +479,10 @@ class BookingService
         for ($i = $start; $i <= $end; $i += 30) {
             $AllSlotTimesList[] = $i;
         }
-        try{
+        try {
             $AllAppointmentsData = BookingService::find_books_by_date($Date);
-        } catch (Exception $e){
-            if($e->getCode() == 404)
+        } catch (Exception $e) {
+            if ($e->getCode() == 404)
                 $AllAppointmentsData = [];
         }
         if ($AllAppointmentsData) {

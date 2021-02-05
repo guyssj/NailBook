@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
 
-Copyright (c) 2017-2019 Mika Tuupola
+Copyright (c) 2017-2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,9 @@ namespace Tuupola\Http\Factory;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Nyholm\Psr7\Response as NyholmResponse;
 use Slim\Http\Response as SlimResponse;
-use Zend\Diactoros\Response as DiactorosResponse;
+use Slim\Psr7\Factory\ResponseFactory as SlimPsr7ResponseFactory;
+use Zend\Diactoros\Response as ZendDiactorosResponse;
+use Laminas\Diactoros\Response as LaminasDiactorosResponse;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -48,12 +50,16 @@ final class ResponseFactory implements ResponseFactoryInterface
      */
     public function createResponse(int $code = 200, string $reason = ""): ResponseInterface
     {
-        if (class_exists(DiactorosResponse::class)) {
-            return (new DiactorosResponse)->withStatus($code, $reason);
+        if (class_exists(LaminasDiactorosResponse::class)) {
+            return (new LaminasDiactorosResponse)->withStatus($code, $reason);
         }
 
         if (class_exists(NyholmResponse::class)) {
             return new NyholmResponse($code, [], null, "1.1", $reason);
+        }
+
+        if (class_exists(SlimPsr7ResponseFactory::class)) {
+            return (new SlimPsr7ResponseFactory)->createResponse($code, $reason);
         }
 
         if (class_exists(SlimResponse::class)) {
@@ -62,6 +68,10 @@ final class ResponseFactory implements ResponseFactoryInterface
 
         if (class_exists(GuzzleResponse::class)) {
             return new GuzzleResponse($code, [], null, "1.1", $reason);
+        }
+
+        if (class_exists(ZendDiactorosResponse::class)) {
+            return (new ZendDiactorosResponse)->withStatus($code, $reason);
         }
 
         throw new \RuntimeException("No PSR-7 implementation available");

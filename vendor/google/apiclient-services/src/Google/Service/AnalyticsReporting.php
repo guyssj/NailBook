@@ -33,22 +33,23 @@ class Google_Service_AnalyticsReporting extends Google_Service
   /** View and manage your Google Analytics data. */
   const ANALYTICS =
       "https://www.googleapis.com/auth/analytics";
-  /** View your Google Analytics data. */
+  /** See and download your Google Analytics data. */
   const ANALYTICS_READONLY =
       "https://www.googleapis.com/auth/analytics.readonly";
 
   public $reports;
   public $userActivity;
-  
+
   /**
    * Constructs the internal representation of the AnalyticsReporting service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://analyticsreporting.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://analyticsreporting.googleapis.com/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v4';

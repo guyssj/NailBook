@@ -1,7 +1,13 @@
 <?php
 
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
+
+use BookNail\ResultAPI;
+use BookNail\Books;
+use BookNail\BookingService;
+use BookNail\OTPService;
+
 
 $app->group('/admin/Book', function () use ($app) {
     /**
@@ -54,7 +60,7 @@ $app->group('/admin/Book', function () use ($app) {
         }
     });
     /**
-     * POST admin/DeleteBook TODO: change to DELETE
+     * DELETE admin/DeleteBook TODO: change to DELETE
      * Summery: Update book to database
      * @param int BookID
      * @return bool

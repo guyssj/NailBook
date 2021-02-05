@@ -25,13 +25,20 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   public $iPAddress;
   public $iPProtocol;
   public $allPorts;
+  public $allowGlobalAccess;
   public $backendService;
   public $creationTimestamp;
   public $description;
+  public $fingerprint;
   public $id;
   public $ipVersion;
+  public $isMirroringCollector;
   public $kind;
+  public $labelFingerprint;
+  public $labels;
   public $loadBalancingScheme;
+  protected $metadataFiltersType = 'Google_Service_Compute_MetadataFilter';
+  protected $metadataFiltersDataType = 'array';
   public $name;
   public $network;
   public $networkTier;
@@ -68,6 +75,14 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   {
     return $this->allPorts;
   }
+  public function setAllowGlobalAccess($allowGlobalAccess)
+  {
+    $this->allowGlobalAccess = $allowGlobalAccess;
+  }
+  public function getAllowGlobalAccess()
+  {
+    return $this->allowGlobalAccess;
+  }
   public function setBackendService($backendService)
   {
     $this->backendService = $backendService;
@@ -92,6 +107,14 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   {
     return $this->description;
   }
+  public function setFingerprint($fingerprint)
+  {
+    $this->fingerprint = $fingerprint;
+  }
+  public function getFingerprint()
+  {
+    return $this->fingerprint;
+  }
   public function setId($id)
   {
     $this->id = $id;
@@ -108,6 +131,14 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   {
     return $this->ipVersion;
   }
+  public function setIsMirroringCollector($isMirroringCollector)
+  {
+    $this->isMirroringCollector = $isMirroringCollector;
+  }
+  public function getIsMirroringCollector()
+  {
+    return $this->isMirroringCollector;
+  }
   public function setKind($kind)
   {
     $this->kind = $kind;
@@ -116,6 +147,22 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   {
     return $this->kind;
   }
+  public function setLabelFingerprint($labelFingerprint)
+  {
+    $this->labelFingerprint = $labelFingerprint;
+  }
+  public function getLabelFingerprint()
+  {
+    return $this->labelFingerprint;
+  }
+  public function setLabels($labels)
+  {
+    $this->labels = $labels;
+  }
+  public function getLabels()
+  {
+    return $this->labels;
+  }
   public function setLoadBalancingScheme($loadBalancingScheme)
   {
     $this->loadBalancingScheme = $loadBalancingScheme;
@@ -123,6 +170,20 @@ class Google_Service_Compute_ForwardingRule extends Google_Collection
   public function getLoadBalancingScheme()
   {
     return $this->loadBalancingScheme;
+  }
+  /**
+   * @param Google_Service_Compute_MetadataFilter[]
+   */
+  public function setMetadataFilters($metadataFilters)
+  {
+    $this->metadataFilters = $metadataFilters;
+  }
+  /**
+   * @return Google_Service_Compute_MetadataFilter[]
+   */
+  public function getMetadataFilters()
+  {
+    return $this->metadataFilters;
   }
   public function setName($name)
   {

@@ -7,6 +7,11 @@
  * Create by Guy Gold 28/08/2020
  * 
  */
+
+namespace BookNail;
+
+use PDOException;
+
 class OTP
 {
 

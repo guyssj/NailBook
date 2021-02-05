@@ -1,6 +1,10 @@
 <?php
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
+
+
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
+use BookNail\ResultAPI;
+use BookNail\WorkingHours;
 
 /**
  * GET api/GetWorkHoursByDay?dayOfWeek={dayOfWeek}

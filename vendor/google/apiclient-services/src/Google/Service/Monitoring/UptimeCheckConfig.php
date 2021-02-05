@@ -25,6 +25,7 @@ class Google_Service_Monitoring_UptimeCheckConfig extends Google_Collection
   protected $httpCheckDataType = '';
   protected $internalCheckersType = 'Google_Service_Monitoring_InternalChecker';
   protected $internalCheckersDataType = 'array';
+  public $isInternal;
   protected $monitoredResourceType = 'Google_Service_Monitoring_MonitoredResource';
   protected $monitoredResourceDataType = '';
   public $name;
@@ -37,14 +38,14 @@ class Google_Service_Monitoring_UptimeCheckConfig extends Google_Collection
   public $timeout;
 
   /**
-   * @param Google_Service_Monitoring_ContentMatcher
+   * @param Google_Service_Monitoring_ContentMatcher[]
    */
   public function setContentMatchers($contentMatchers)
   {
     $this->contentMatchers = $contentMatchers;
   }
   /**
-   * @return Google_Service_Monitoring_ContentMatcher
+   * @return Google_Service_Monitoring_ContentMatcher[]
    */
   public function getContentMatchers()
   {
@@ -73,18 +74,26 @@ class Google_Service_Monitoring_UptimeCheckConfig extends Google_Collection
     return $this->httpCheck;
   }
   /**
-   * @param Google_Service_Monitoring_InternalChecker
+   * @param Google_Service_Monitoring_InternalChecker[]
    */
   public function setInternalCheckers($internalCheckers)
   {
     $this->internalCheckers = $internalCheckers;
   }
   /**
-   * @return Google_Service_Monitoring_InternalChecker
+   * @return Google_Service_Monitoring_InternalChecker[]
    */
   public function getInternalCheckers()
   {
     return $this->internalCheckers;
+  }
+  public function setIsInternal($isInternal)
+  {
+    $this->isInternal = $isInternal;
+  }
+  public function getIsInternal()
+  {
+    return $this->isInternal;
   }
   /**
    * @param Google_Service_Monitoring_MonitoredResource

@@ -1,4 +1,10 @@
 <?php
+
+
+namespace BookNail;
+
+use PDOException;
+
 class LockHours
 {
 
@@ -100,7 +106,7 @@ class LockHours
             $row = cast_query_results($result);
             return $row;
         } catch (PDOException $e) {
-            return $e->message();
+            return $e->getMessage();
         }
     }
 

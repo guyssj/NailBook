@@ -19,6 +19,8 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
 {
   protected $collection_key = 'shipments';
   public $acknowledged;
+  protected $annotationsType = 'Google_Service_ShoppingContent_OrderOrderAnnotation';
+  protected $annotationsDataType = 'array';
   protected $billingAddressType = 'Google_Service_ShoppingContent_OrderAddress';
   protected $billingAddressDataType = '';
   protected $customerType = 'Google_Service_ShoppingContent_OrderCustomer';
@@ -36,6 +38,8 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   protected $netTaxAmountType = 'Google_Service_ShoppingContent_Price';
   protected $netTaxAmountDataType = '';
   public $paymentStatus;
+  protected $pickupDetailsType = 'Google_Service_ShoppingContent_OrderPickupDetails';
+  protected $pickupDetailsDataType = '';
   public $placedDate;
   protected $promotionsType = 'Google_Service_ShoppingContent_OrderPromotion';
   protected $promotionsDataType = 'array';
@@ -57,6 +61,20 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   public function getAcknowledged()
   {
     return $this->acknowledged;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_OrderOrderAnnotation[]
+   */
+  public function setAnnotations($annotations)
+  {
+    $this->annotations = $annotations;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_OrderOrderAnnotation[]
+   */
+  public function getAnnotations()
+  {
+    return $this->annotations;
   }
   /**
    * @param Google_Service_ShoppingContent_OrderAddress
@@ -117,14 +135,14 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
     return $this->kind;
   }
   /**
-   * @param Google_Service_ShoppingContent_OrderLineItem
+   * @param Google_Service_ShoppingContent_OrderLineItem[]
    */
   public function setLineItems($lineItems)
   {
     $this->lineItems = $lineItems;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderLineItem
+   * @return Google_Service_ShoppingContent_OrderLineItem[]
    */
   public function getLineItems()
   {
@@ -182,6 +200,20 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   {
     return $this->paymentStatus;
   }
+  /**
+   * @param Google_Service_ShoppingContent_OrderPickupDetails
+   */
+  public function setPickupDetails(Google_Service_ShoppingContent_OrderPickupDetails $pickupDetails)
+  {
+    $this->pickupDetails = $pickupDetails;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_OrderPickupDetails
+   */
+  public function getPickupDetails()
+  {
+    return $this->pickupDetails;
+  }
   public function setPlacedDate($placedDate)
   {
     $this->placedDate = $placedDate;
@@ -191,42 +223,42 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
     return $this->placedDate;
   }
   /**
-   * @param Google_Service_ShoppingContent_OrderPromotion
+   * @param Google_Service_ShoppingContent_OrderPromotion[]
    */
   public function setPromotions($promotions)
   {
     $this->promotions = $promotions;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderPromotion
+   * @return Google_Service_ShoppingContent_OrderPromotion[]
    */
   public function getPromotions()
   {
     return $this->promotions;
   }
   /**
-   * @param Google_Service_ShoppingContent_OrderRefund
+   * @param Google_Service_ShoppingContent_OrderRefund[]
    */
   public function setRefunds($refunds)
   {
     $this->refunds = $refunds;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderRefund
+   * @return Google_Service_ShoppingContent_OrderRefund[]
    */
   public function getRefunds()
   {
     return $this->refunds;
   }
   /**
-   * @param Google_Service_ShoppingContent_OrderShipment
+   * @param Google_Service_ShoppingContent_OrderShipment[]
    */
   public function setShipments($shipments)
   {
     $this->shipments = $shipments;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderShipment
+   * @return Google_Service_ShoppingContent_OrderShipment[]
    */
   public function getShipments()
   {

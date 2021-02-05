@@ -1,4 +1,7 @@
 <?php
+namespace BookNail;
+use mysqli;
+use PDO;
     class db{
         //Prop
         private $dbhost = 'localhost';

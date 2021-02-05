@@ -17,6 +17,7 @@
 
 class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
 {
+  public $acknowledgementState;
   public $autoRenewing;
   public $autoResumeTimeMillis;
   public $cancelReason;
@@ -26,10 +27,15 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   public $developerPayload;
   public $emailAddress;
   public $expiryTimeMillis;
+  public $externalAccountId;
   public $familyName;
   public $givenName;
+  protected $introductoryPriceInfoType = 'Google_Service_AndroidPublisher_IntroductoryPriceInfo';
+  protected $introductoryPriceInfoDataType = '';
   public $kind;
   public $linkedPurchaseToken;
+  public $obfuscatedExternalAccountId;
+  public $obfuscatedExternalProfileId;
   public $orderId;
   public $paymentState;
   public $priceAmountMicros;
@@ -38,10 +44,20 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   public $priceCurrencyCode;
   public $profileId;
   public $profileName;
+  public $promotionCode;
+  public $promotionType;
   public $purchaseType;
   public $startTimeMillis;
   public $userCancellationTimeMillis;
 
+  public function setAcknowledgementState($acknowledgementState)
+  {
+    $this->acknowledgementState = $acknowledgementState;
+  }
+  public function getAcknowledgementState()
+  {
+    return $this->acknowledgementState;
+  }
   public function setAutoRenewing($autoRenewing)
   {
     $this->autoRenewing = $autoRenewing;
@@ -112,6 +128,14 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   {
     return $this->expiryTimeMillis;
   }
+  public function setExternalAccountId($externalAccountId)
+  {
+    $this->externalAccountId = $externalAccountId;
+  }
+  public function getExternalAccountId()
+  {
+    return $this->externalAccountId;
+  }
   public function setFamilyName($familyName)
   {
     $this->familyName = $familyName;
@@ -128,6 +152,20 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   {
     return $this->givenName;
   }
+  /**
+   * @param Google_Service_AndroidPublisher_IntroductoryPriceInfo
+   */
+  public function setIntroductoryPriceInfo(Google_Service_AndroidPublisher_IntroductoryPriceInfo $introductoryPriceInfo)
+  {
+    $this->introductoryPriceInfo = $introductoryPriceInfo;
+  }
+  /**
+   * @return Google_Service_AndroidPublisher_IntroductoryPriceInfo
+   */
+  public function getIntroductoryPriceInfo()
+  {
+    return $this->introductoryPriceInfo;
+  }
   public function setKind($kind)
   {
     $this->kind = $kind;
@@ -143,6 +181,22 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   public function getLinkedPurchaseToken()
   {
     return $this->linkedPurchaseToken;
+  }
+  public function setObfuscatedExternalAccountId($obfuscatedExternalAccountId)
+  {
+    $this->obfuscatedExternalAccountId = $obfuscatedExternalAccountId;
+  }
+  public function getObfuscatedExternalAccountId()
+  {
+    return $this->obfuscatedExternalAccountId;
+  }
+  public function setObfuscatedExternalProfileId($obfuscatedExternalProfileId)
+  {
+    $this->obfuscatedExternalProfileId = $obfuscatedExternalProfileId;
+  }
+  public function getObfuscatedExternalProfileId()
+  {
+    return $this->obfuscatedExternalProfileId;
   }
   public function setOrderId($orderId)
   {
@@ -205,6 +259,22 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   public function getProfileName()
   {
     return $this->profileName;
+  }
+  public function setPromotionCode($promotionCode)
+  {
+    $this->promotionCode = $promotionCode;
+  }
+  public function getPromotionCode()
+  {
+    return $this->promotionCode;
+  }
+  public function setPromotionType($promotionType)
+  {
+    $this->promotionType = $promotionType;
+  }
+  public function getPromotionType()
+  {
+    return $this->promotionType;
   }
   public function setPurchaseType($purchaseType)
   {

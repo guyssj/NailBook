@@ -18,18 +18,34 @@
 class Google_Service_Container_GetJSONWebKeysResponse extends Google_Collection
 {
   protected $collection_key = 'keys';
+  protected $cacheHeaderType = 'Google_Service_Container_HttpCacheControlResponseHeader';
+  protected $cacheHeaderDataType = '';
   protected $keysType = 'Google_Service_Container_Jwk';
   protected $keysDataType = 'array';
 
   /**
-   * @param Google_Service_Container_Jwk
+   * @param Google_Service_Container_HttpCacheControlResponseHeader
+   */
+  public function setCacheHeader(Google_Service_Container_HttpCacheControlResponseHeader $cacheHeader)
+  {
+    $this->cacheHeader = $cacheHeader;
+  }
+  /**
+   * @return Google_Service_Container_HttpCacheControlResponseHeader
+   */
+  public function getCacheHeader()
+  {
+    return $this->cacheHeader;
+  }
+  /**
+   * @param Google_Service_Container_Jwk[]
    */
   public function setKeys($keys)
   {
     $this->keys = $keys;
   }
   /**
-   * @return Google_Service_Container_Jwk
+   * @return Google_Service_Container_Jwk[]
    */
   public function getKeys()
   {

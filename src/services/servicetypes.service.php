@@ -1,4 +1,8 @@
 <?php
+namespace BookNail;
+
+use PDO;
+use Exception;
 
 class ServiceTypesService{
 

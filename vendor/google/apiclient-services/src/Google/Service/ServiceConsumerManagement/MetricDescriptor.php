@@ -17,7 +17,7 @@
 
 class Google_Service_ServiceConsumerManagement_MetricDescriptor extends Google_Collection
 {
-  protected $collection_key = 'labels';
+  protected $collection_key = 'monitoredResourceTypes';
   public $description;
   public $displayName;
   protected $labelsType = 'Google_Service_ServiceConsumerManagement_LabelDescriptor';
@@ -26,6 +26,7 @@ class Google_Service_ServiceConsumerManagement_MetricDescriptor extends Google_C
   protected $metadataType = 'Google_Service_ServiceConsumerManagement_MetricDescriptorMetadata';
   protected $metadataDataType = '';
   public $metricKind;
+  public $monitoredResourceTypes;
   public $name;
   public $type;
   public $unit;
@@ -48,14 +49,14 @@ class Google_Service_ServiceConsumerManagement_MetricDescriptor extends Google_C
     return $this->displayName;
   }
   /**
-   * @param Google_Service_ServiceConsumerManagement_LabelDescriptor
+   * @param Google_Service_ServiceConsumerManagement_LabelDescriptor[]
    */
   public function setLabels($labels)
   {
     $this->labels = $labels;
   }
   /**
-   * @return Google_Service_ServiceConsumerManagement_LabelDescriptor
+   * @return Google_Service_ServiceConsumerManagement_LabelDescriptor[]
    */
   public function getLabels()
   {
@@ -90,6 +91,14 @@ class Google_Service_ServiceConsumerManagement_MetricDescriptor extends Google_C
   public function getMetricKind()
   {
     return $this->metricKind;
+  }
+  public function setMonitoredResourceTypes($monitoredResourceTypes)
+  {
+    $this->monitoredResourceTypes = $monitoredResourceTypes;
+  }
+  public function getMonitoredResourceTypes()
+  {
+    return $this->monitoredResourceTypes;
   }
   public function setName($name)
   {

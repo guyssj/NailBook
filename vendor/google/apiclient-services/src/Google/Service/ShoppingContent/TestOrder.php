@@ -18,20 +18,39 @@
 class Google_Service_ShoppingContent_TestOrder extends Google_Collection
 {
   protected $collection_key = 'promotions';
+  protected $deliveryDetailsType = 'Google_Service_ShoppingContent_TestOrderDeliveryDetails';
+  protected $deliveryDetailsDataType = '';
   public $enableOrderinvoices;
   public $kind;
   protected $lineItemsType = 'Google_Service_ShoppingContent_TestOrderLineItem';
   protected $lineItemsDataType = 'array';
   public $notificationMode;
+  protected $pickupDetailsType = 'Google_Service_ShoppingContent_TestOrderPickupDetails';
+  protected $pickupDetailsDataType = '';
   public $predefinedBillingAddress;
   public $predefinedDeliveryAddress;
   public $predefinedEmail;
+  public $predefinedPickupDetails;
   protected $promotionsType = 'Google_Service_ShoppingContent_OrderPromotion';
   protected $promotionsDataType = 'array';
   protected $shippingCostType = 'Google_Service_ShoppingContent_Price';
   protected $shippingCostDataType = '';
   public $shippingOption;
 
+  /**
+   * @param Google_Service_ShoppingContent_TestOrderDeliveryDetails
+   */
+  public function setDeliveryDetails(Google_Service_ShoppingContent_TestOrderDeliveryDetails $deliveryDetails)
+  {
+    $this->deliveryDetails = $deliveryDetails;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_TestOrderDeliveryDetails
+   */
+  public function getDeliveryDetails()
+  {
+    return $this->deliveryDetails;
+  }
   public function setEnableOrderinvoices($enableOrderinvoices)
   {
     $this->enableOrderinvoices = $enableOrderinvoices;
@@ -49,14 +68,14 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
     return $this->kind;
   }
   /**
-   * @param Google_Service_ShoppingContent_TestOrderLineItem
+   * @param Google_Service_ShoppingContent_TestOrderLineItem[]
    */
   public function setLineItems($lineItems)
   {
     $this->lineItems = $lineItems;
   }
   /**
-   * @return Google_Service_ShoppingContent_TestOrderLineItem
+   * @return Google_Service_ShoppingContent_TestOrderLineItem[]
    */
   public function getLineItems()
   {
@@ -69,6 +88,20 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
   public function getNotificationMode()
   {
     return $this->notificationMode;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_TestOrderPickupDetails
+   */
+  public function setPickupDetails(Google_Service_ShoppingContent_TestOrderPickupDetails $pickupDetails)
+  {
+    $this->pickupDetails = $pickupDetails;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_TestOrderPickupDetails
+   */
+  public function getPickupDetails()
+  {
+    return $this->pickupDetails;
   }
   public function setPredefinedBillingAddress($predefinedBillingAddress)
   {
@@ -94,15 +127,23 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
   {
     return $this->predefinedEmail;
   }
+  public function setPredefinedPickupDetails($predefinedPickupDetails)
+  {
+    $this->predefinedPickupDetails = $predefinedPickupDetails;
+  }
+  public function getPredefinedPickupDetails()
+  {
+    return $this->predefinedPickupDetails;
+  }
   /**
-   * @param Google_Service_ShoppingContent_OrderPromotion
+   * @param Google_Service_ShoppingContent_OrderPromotion[]
    */
   public function setPromotions($promotions)
   {
     $this->promotions = $promotions;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderPromotion
+   * @return Google_Service_ShoppingContent_OrderPromotion[]
    */
   public function getPromotions()
   {

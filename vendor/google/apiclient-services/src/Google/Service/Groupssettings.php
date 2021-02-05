@@ -35,16 +35,17 @@ class Google_Service_Groupssettings extends Google_Service
       "https://www.googleapis.com/auth/apps.groups.settings";
 
   public $groups;
-  
+
   /**
    * Constructs the internal representation of the Groupssettings service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://www.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://www.googleapis.com/';
     $this->servicePath = 'groups/v1/groups/';
     $this->batchPath = 'batch/groupssettings/v1';
     $this->version = 'v1';

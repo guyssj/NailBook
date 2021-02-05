@@ -21,10 +21,16 @@ class Google_Service_AndroidPublisher_ProductPurchase extends Google_Model
   public $consumptionState;
   public $developerPayload;
   public $kind;
+  public $obfuscatedExternalAccountId;
+  public $obfuscatedExternalProfileId;
   public $orderId;
+  public $productId;
   public $purchaseState;
   public $purchaseTimeMillis;
+  public $purchaseToken;
   public $purchaseType;
+  public $quantity;
+  public $regionCode;
 
   public function setAcknowledgementState($acknowledgementState)
   {
@@ -58,6 +64,22 @@ class Google_Service_AndroidPublisher_ProductPurchase extends Google_Model
   {
     return $this->kind;
   }
+  public function setObfuscatedExternalAccountId($obfuscatedExternalAccountId)
+  {
+    $this->obfuscatedExternalAccountId = $obfuscatedExternalAccountId;
+  }
+  public function getObfuscatedExternalAccountId()
+  {
+    return $this->obfuscatedExternalAccountId;
+  }
+  public function setObfuscatedExternalProfileId($obfuscatedExternalProfileId)
+  {
+    $this->obfuscatedExternalProfileId = $obfuscatedExternalProfileId;
+  }
+  public function getObfuscatedExternalProfileId()
+  {
+    return $this->obfuscatedExternalProfileId;
+  }
   public function setOrderId($orderId)
   {
     $this->orderId = $orderId;
@@ -65,6 +87,14 @@ class Google_Service_AndroidPublisher_ProductPurchase extends Google_Model
   public function getOrderId()
   {
     return $this->orderId;
+  }
+  public function setProductId($productId)
+  {
+    $this->productId = $productId;
+  }
+  public function getProductId()
+  {
+    return $this->productId;
   }
   public function setPurchaseState($purchaseState)
   {
@@ -82,6 +112,14 @@ class Google_Service_AndroidPublisher_ProductPurchase extends Google_Model
   {
     return $this->purchaseTimeMillis;
   }
+  public function setPurchaseToken($purchaseToken)
+  {
+    $this->purchaseToken = $purchaseToken;
+  }
+  public function getPurchaseToken()
+  {
+    return $this->purchaseToken;
+  }
   public function setPurchaseType($purchaseType)
   {
     $this->purchaseType = $purchaseType;
@@ -89,5 +127,21 @@ class Google_Service_AndroidPublisher_ProductPurchase extends Google_Model
   public function getPurchaseType()
   {
     return $this->purchaseType;
+  }
+  public function setQuantity($quantity)
+  {
+    $this->quantity = $quantity;
+  }
+  public function getQuantity()
+  {
+    return $this->quantity;
+  }
+  public function setRegionCode($regionCode)
+  {
+    $this->regionCode = $regionCode;
+  }
+  public function getRegionCode()
+  {
+    return $this->regionCode;
   }
 }

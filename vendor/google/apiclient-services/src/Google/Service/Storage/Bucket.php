@@ -17,7 +17,7 @@
 
 class Google_Service_Storage_Bucket extends Google_Collection
 {
-  protected $collection_key = 'defaultObjectAcl';
+  protected $collection_key = 'zoneAffinity';
   protected $aclType = 'Google_Service_Storage_BucketAccessControl';
   protected $aclDataType = 'array';
   protected $billingType = 'Google_Service_Storage_BucketBilling';
@@ -56,16 +56,17 @@ class Google_Service_Storage_Bucket extends Google_Collection
   protected $versioningDataType = '';
   protected $websiteType = 'Google_Service_Storage_BucketWebsite';
   protected $websiteDataType = '';
+  public $zoneAffinity;
 
   /**
-   * @param Google_Service_Storage_BucketAccessControl
+   * @param Google_Service_Storage_BucketAccessControl[]
    */
   public function setAcl($acl)
   {
     $this->acl = $acl;
   }
   /**
-   * @return Google_Service_Storage_BucketAccessControl
+   * @return Google_Service_Storage_BucketAccessControl[]
    */
   public function getAcl()
   {
@@ -86,14 +87,14 @@ class Google_Service_Storage_Bucket extends Google_Collection
     return $this->billing;
   }
   /**
-   * @param Google_Service_Storage_BucketCors
+   * @param Google_Service_Storage_BucketCors[]
    */
   public function setCors($cors)
   {
     $this->cors = $cors;
   }
   /**
-   * @return Google_Service_Storage_BucketCors
+   * @return Google_Service_Storage_BucketCors[]
    */
   public function getCors()
   {
@@ -108,14 +109,14 @@ class Google_Service_Storage_Bucket extends Google_Collection
     return $this->defaultEventBasedHold;
   }
   /**
-   * @param Google_Service_Storage_ObjectAccessControl
+   * @param Google_Service_Storage_ObjectAccessControl[]
    */
   public function setDefaultObjectAcl($defaultObjectAcl)
   {
     $this->defaultObjectAcl = $defaultObjectAcl;
   }
   /**
-   * @return Google_Service_Storage_ObjectAccessControl
+   * @return Google_Service_Storage_ObjectAccessControl[]
    */
   public function getDefaultObjectAcl()
   {
@@ -336,5 +337,13 @@ class Google_Service_Storage_Bucket extends Google_Collection
   public function getWebsite()
   {
     return $this->website;
+  }
+  public function setZoneAffinity($zoneAffinity)
+  {
+    $this->zoneAffinity = $zoneAffinity;
+  }
+  public function getZoneAffinity()
+  {
+    return $this->zoneAffinity;
   }
 }

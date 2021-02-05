@@ -1,4 +1,11 @@
 <?php
+
+
+namespace BookNail;
+
+use SoapClient;
+use Exception;
+
 class globalSMS
 {
     private $un = "guyssj@gmail.com";

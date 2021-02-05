@@ -1,5 +1,8 @@
 <?php
+namespace BookNail;
 
+use PDO;
+use Exception;
 class ServicesService{
         /**
      * get all service s

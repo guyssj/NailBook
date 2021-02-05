@@ -1,6 +1,10 @@
 <?php
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
+
+
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
+use BookNail\ResultAPI;
+use BookNail\Settings;
 
 $app->get('/admin/GetAllSettings', function (Request $request, Response $response) {
     $Settings = new Settings();
@@ -17,7 +21,6 @@ $app->get('/admin/GetAllSettings', function (Request $request, Response $respons
         $resultObj->set_ErrorMessage($results);
         return $response->withJson($resultObj);
     }
-
 });
 
 $app->get('/api/GetSetting', function (Request $request, Response $response) {
@@ -37,7 +40,6 @@ $app->get('/api/GetSetting', function (Request $request, Response $response) {
         $resultObj->set_ErrorMessage($results);
         return $response->withJson($resultObj);
     }
-
 });
 
 $app->put('/admin/UpdateSetting', function (Request $request, Response $response) {
@@ -46,7 +48,7 @@ $app->put('/admin/UpdateSetting', function (Request $request, Response $response
 
     try {
         foreach ($settings as $key => $value) {
-            if($value['SettingValue'] == true && $value['SettingName'] == Settings::SEND_SMS_APP)
+            if ($value['SettingValue'] == true && $value['SettingName'] == Settings::SEND_SMS_APP)
                 $value['SettingValue'] = "1";
             else if ($value['SettingValue'] == false)
                 $value['SettingValue'] = "0";
@@ -64,5 +66,4 @@ $app->put('/admin/UpdateSetting', function (Request $request, Response $response
         $resultObj->set_ErrorMessage($th->getMessage());
         return $response->withJson($resultObj);
     }
-
 });

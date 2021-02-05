@@ -42,16 +42,17 @@ class Google_Service_YouTubeReporting extends Google_Service
   public $jobs_reports;
   public $media;
   public $reportTypes;
-  
+
   /**
    * Constructs the internal representation of the YouTubeReporting service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://youtubereporting.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://youtubereporting.googleapis.com/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -104,19 +105,19 @@ class Google_Service_YouTubeReporting extends Google_Service
               'path' => 'v1/jobs',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'includeSystemManaged' => array(
                   'location' => 'query',
                   'type' => 'boolean',
+                ),
+                'onBehalfOfContentOwner' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'onBehalfOfContentOwner' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -163,11 +164,7 @@ class Google_Service_YouTubeReporting extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'startTimeAtOrAfter' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'pageToken' => array(
+                'onBehalfOfContentOwner' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -175,7 +172,11 @@ class Google_Service_YouTubeReporting extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'onBehalfOfContentOwner' => array(
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'startTimeAtOrAfter' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -218,21 +219,21 @@ class Google_Service_YouTubeReporting extends Google_Service
               'path' => 'v1/reportTypes',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'pageSize' => array(
+                'includeSystemManaged' => array(
                   'location' => 'query',
-                  'type' => 'integer',
+                  'type' => 'boolean',
                 ),
                 'onBehalfOfContentOwner' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'includeSystemManaged' => array(
-                  'location' => 'query',
-                  'type' => 'boolean',
                 ),
               ),
             ),

@@ -1,5 +1,11 @@
 <?php
+
+namespace BookNail;
 use Firebase\JWT\JWT;
+
+use PDO;
+use Exception;
+use DateTime;
 
 class OTPService{
     public static function verfiy_otp($otp,$customerPhoneNumber){
@@ -81,5 +87,3 @@ class OTPService{
         return false;
     }
 }
-
-?>

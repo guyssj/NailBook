@@ -6,6 +6,12 @@
  * 
  * Created by Guy Gold. 16/12/2018
  */
+
+
+namespace BookNail;
+
+use PDOException;
+
 class Users
 {
 
@@ -51,7 +57,7 @@ class Users
     }
         /**
      * 
-     * read all customers from db
+     * read all users from db
      * 
      * 
      */

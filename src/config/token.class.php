@@ -1,5 +1,8 @@
 <?php
 
+namespace BookNail;
+
+
 class Token
 {
     private $decoded;

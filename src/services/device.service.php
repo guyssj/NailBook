@@ -1,5 +1,6 @@
 <?php
-
+namespace BookNail;
+use Exception;
 class DeviceService
 {
   public static function add_regId(Devices $device)

@@ -17,26 +17,18 @@
 
 class Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion extends Google_Model
 {
-  public $exclusionDuration;
-  public $exclusionStartTime;
+  public $duration;
   public $reason;
-  public $sloName;
+  public $sliName;
+  public $startTime;
 
-  public function setExclusionDuration($exclusionDuration)
+  public function setDuration($duration)
   {
-    $this->exclusionDuration = $exclusionDuration;
+    $this->duration = $duration;
   }
-  public function getExclusionDuration()
+  public function getDuration()
   {
-    return $this->exclusionDuration;
-  }
-  public function setExclusionStartTime($exclusionStartTime)
-  {
-    $this->exclusionStartTime = $exclusionStartTime;
-  }
-  public function getExclusionStartTime()
-  {
-    return $this->exclusionStartTime;
+    return $this->duration;
   }
   public function setReason($reason)
   {
@@ -46,12 +38,20 @@ class Google_Service_CloudFilestore_GoogleCloudSaasacceleratorManagementProvider
   {
     return $this->reason;
   }
-  public function setSloName($sloName)
+  public function setSliName($sliName)
   {
-    $this->sloName = $sloName;
+    $this->sliName = $sliName;
   }
-  public function getSloName()
+  public function getSliName()
   {
-    return $this->sloName;
+    return $this->sliName;
+  }
+  public function setStartTime($startTime)
+  {
+    $this->startTime = $startTime;
+  }
+  public function getStartTime()
+  {
+    return $this->startTime;
   }
 }

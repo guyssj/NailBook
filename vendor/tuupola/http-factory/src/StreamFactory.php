@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
 
-Copyright (c) 2017-2019 Mika Tuupola
+Copyright (c) 2017-2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,10 +36,15 @@ namespace Tuupola\Http\Factory;
 use GuzzleHttp\Psr7\Stream as GuzzleStream;
 use Nyholm\Psr7\Stream as NyholmStream;
 use Slim\Http\Stream as SlimStream;
-use Zend\Diactoros\Stream as DiactorosStream;
+use Slim\Psr7\Factory\StreamFactory as SlimPsr7StreamFactory;
+use Zend\Diactoros\Stream as ZendDiactorosStream;
+use Laminas\Diactoros\Stream as LaminasDiactorosStream;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+
+use InvalidArgumentException;
+use RuntimeException;
 
 class StreamFactory implements StreamFactoryInterface
 {
@@ -48,6 +53,10 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStream(string $content = ""): StreamInterface
     {
+        if (class_exists(SlimPsr7StreamFactory::class)) {
+            return (new SlimPsr7StreamFactory)->createStream($content);
+        }
+
         $resource = fopen("php://temp", "r+");
         $stream = $this->createStreamFromResource($resource);
         $stream->write($content);
@@ -60,7 +69,27 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromFile(string $filename, string $mode = "r"): StreamInterface
     {
-        $resource = fopen($filename, $mode);
+        if ("" === $mode || false === in_array($mode[0], ["r", "w", "a", "x", "c"])) {
+            throw new InvalidArgumentException(
+                sprintf("The mode %s is invalid.", $mode)
+            );
+        }
+
+        if (empty($filename)) {
+            throw new RuntimeException("Filename cannot be empty");
+        }
+
+        if (class_exists(SlimPsr7StreamFactory::class)) {
+            return (new SlimPsr7StreamFactory)->createStreamFromFile($filename, $mode);
+        }
+
+        $resource = @fopen($filename, $mode);
+        if (false === $resource) {
+            throw new RuntimeException(
+                sprintf("The file %s cannot be opened.", $filename)
+            );
+        }
+
         return $this->createStreamFromResource($resource);
     }
 
@@ -69,12 +98,16 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromResource($resource): StreamInterface
     {
-        if (class_exists(DiactorosStream::class)) {
-            return new DiactorosStream($resource);
+        if (class_exists(LaminasDiactorosStream::class)) {
+            return new LaminasDiactorosStream($resource);
         }
 
         if (class_exists(NyholmStream::class)) {
             return NyholmStream::create($resource);
+        }
+
+        if (class_exists(SlimPsr7StreamFactory::class)) {
+            return (new SlimPsr7StreamFactory)->createStreamFromResource($resource);
         }
 
         if (class_exists(SlimStream::class)) {
@@ -85,6 +118,10 @@ class StreamFactory implements StreamFactoryInterface
             return new GuzzleStream($resource);
         }
 
-        throw new \RuntimeException("No PSR-7 implementation available");
+        if (class_exists(ZendDiactorosStream::class)) {
+            return new ZendDiactorosStream($resource);
+        }
+
+        throw new RuntimeException("No PSR-7 implementation available");
     }
 }

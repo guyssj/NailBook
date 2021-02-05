@@ -31,6 +31,8 @@ class Google_Service_Dataflow_Environment extends Google_Collection
   public $version;
   protected $workerPoolsType = 'Google_Service_Dataflow_WorkerPool';
   protected $workerPoolsDataType = 'array';
+  public $workerRegion;
+  public $workerZone;
 
   public function setClusterManagerApiService($clusterManagerApiService)
   {
@@ -121,17 +123,33 @@ class Google_Service_Dataflow_Environment extends Google_Collection
     return $this->version;
   }
   /**
-   * @param Google_Service_Dataflow_WorkerPool
+   * @param Google_Service_Dataflow_WorkerPool[]
    */
   public function setWorkerPools($workerPools)
   {
     $this->workerPools = $workerPools;
   }
   /**
-   * @return Google_Service_Dataflow_WorkerPool
+   * @return Google_Service_Dataflow_WorkerPool[]
    */
   public function getWorkerPools()
   {
     return $this->workerPools;
+  }
+  public function setWorkerRegion($workerRegion)
+  {
+    $this->workerRegion = $workerRegion;
+  }
+  public function getWorkerRegion()
+  {
+    return $this->workerRegion;
+  }
+  public function setWorkerZone($workerZone)
+  {
+    $this->workerZone = $workerZone;
+  }
+  public function getWorkerZone()
+  {
+    return $this->workerZone;
   }
 }

@@ -20,6 +20,8 @@ class Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsGroupe
   protected $collection_key = 'results';
   protected $boundingPolyType = 'Google_Service_Vision_GoogleCloudVisionV1p1beta1BoundingPoly';
   protected $boundingPolyDataType = '';
+  protected $objectAnnotationsType = 'Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsObjectAnnotation';
+  protected $objectAnnotationsDataType = 'array';
   protected $resultsType = 'Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsResult';
   protected $resultsDataType = 'array';
 
@@ -38,14 +40,28 @@ class Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsGroupe
     return $this->boundingPoly;
   }
   /**
-   * @param Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsResult
+   * @param Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsObjectAnnotation[]
+   */
+  public function setObjectAnnotations($objectAnnotations)
+  {
+    $this->objectAnnotations = $objectAnnotations;
+  }
+  /**
+   * @return Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsObjectAnnotation[]
+   */
+  public function getObjectAnnotations()
+  {
+    return $this->objectAnnotations;
+  }
+  /**
+   * @param Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsResult[]
    */
   public function setResults($results)
   {
     $this->results = $results;
   }
   /**
-   * @return Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsResult
+   * @return Google_Service_Vision_GoogleCloudVisionV1p1beta1ProductSearchResultsResult[]
    */
   public function getResults()
   {

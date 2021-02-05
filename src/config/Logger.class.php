@@ -1,5 +1,9 @@
 <?php
 
+
+namespace BookNail;
+
+
 class Logger
 {
 

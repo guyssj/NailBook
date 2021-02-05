@@ -18,7 +18,11 @@
 class Google_Service_Compute_RouterNat extends Google_Collection
 {
   protected $collection_key = 'subnetworks';
+  public $drainNatIps;
+  public $enableEndpointIndependentMapping;
   public $icmpIdleTimeoutSec;
+  protected $logConfigType = 'Google_Service_Compute_RouterNatLogConfig';
+  protected $logConfigDataType = '';
   public $minPortsPerVm;
   public $name;
   public $natIpAllocateOption;
@@ -30,6 +34,22 @@ class Google_Service_Compute_RouterNat extends Google_Collection
   public $tcpTransitoryIdleTimeoutSec;
   public $udpIdleTimeoutSec;
 
+  public function setDrainNatIps($drainNatIps)
+  {
+    $this->drainNatIps = $drainNatIps;
+  }
+  public function getDrainNatIps()
+  {
+    return $this->drainNatIps;
+  }
+  public function setEnableEndpointIndependentMapping($enableEndpointIndependentMapping)
+  {
+    $this->enableEndpointIndependentMapping = $enableEndpointIndependentMapping;
+  }
+  public function getEnableEndpointIndependentMapping()
+  {
+    return $this->enableEndpointIndependentMapping;
+  }
   public function setIcmpIdleTimeoutSec($icmpIdleTimeoutSec)
   {
     $this->icmpIdleTimeoutSec = $icmpIdleTimeoutSec;
@@ -37,6 +57,20 @@ class Google_Service_Compute_RouterNat extends Google_Collection
   public function getIcmpIdleTimeoutSec()
   {
     return $this->icmpIdleTimeoutSec;
+  }
+  /**
+   * @param Google_Service_Compute_RouterNatLogConfig
+   */
+  public function setLogConfig(Google_Service_Compute_RouterNatLogConfig $logConfig)
+  {
+    $this->logConfig = $logConfig;
+  }
+  /**
+   * @return Google_Service_Compute_RouterNatLogConfig
+   */
+  public function getLogConfig()
+  {
+    return $this->logConfig;
   }
   public function setMinPortsPerVm($minPortsPerVm)
   {
@@ -79,14 +113,14 @@ class Google_Service_Compute_RouterNat extends Google_Collection
     return $this->sourceSubnetworkIpRangesToNat;
   }
   /**
-   * @param Google_Service_Compute_RouterNatSubnetworkToNat
+   * @param Google_Service_Compute_RouterNatSubnetworkToNat[]
    */
   public function setSubnetworks($subnetworks)
   {
     $this->subnetworks = $subnetworks;
   }
   /**
-   * @return Google_Service_Compute_RouterNatSubnetworkToNat
+   * @return Google_Service_Compute_RouterNatSubnetworkToNat[]
    */
   public function getSubnetworks()
   {

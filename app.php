@@ -3,38 +3,8 @@
 header('Content-Type: application/json');
 require __DIR__ . "/vendor/autoload.php";
 
-require __DIR__ . "/src/config/db.php";
-require __DIR__ . "/src/config/Books.class.php";
-require __DIR__ . "/src/config/ServiceTypes.class.php";
-require __DIR__ . "/src/config/Users.class.php";
-require __DIR__ . "/src/config/Customer.class.php";
-require __DIR__ . "/src/config/Service.class.php";
-require __DIR__ . "/src/config/token.class.php";
-require __DIR__ . "/src/config/ResultsApi.class.php";
-require __DIR__ . "/src/config/SyncWithGoogle.class.php";
-require __DIR__ . "/src/config/globalSMS.class.php";
-require __DIR__ . "/src/config/WorkingHours.class.php";
-require __DIR__ . "/src/config/Logger.class.php";
-require __DIR__ . "/src/config/CloseDays.class.php";
-require __DIR__ . "/src/config/LockHours.class.php";
-require __DIR__ . "/src/config/TimeSlots.class.php";
-require __DIR__ . "/src/config/Holidays.class.php";
-require __DIR__ . "/src/config/Settings.class.php";
-require __DIR__ . "/src/services/booking.service.php";
-require __DIR__ . "/src/services/lockhours.service.php";
-require __DIR__ . "/src/services/customers.service.php";
-require __DIR__ . "/src/services/otp.service.php";
-require __DIR__ . "/src/config/otp.class.php";
-require __DIR__ . "/src/config/fcm.class.php";
-require __DIR__ . "/src/config/device.class.php";
-require __DIR__ . "/src/services/device.service.php";
-require __DIR__ . "/src/services/users.service.php";
-
-
-
-
-
-
+use BookNail\ResultAPI;
+use BookNail\Token;
 $app = new \Slim\App;
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
@@ -42,11 +12,9 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-       // ->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Origin, Authorization');
-    //->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
 });
 
@@ -91,14 +59,15 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
 ]));
 
 require __DIR__ . "/src/routes/API.php";
-require __DIR__ . "/src/routes/Admin.php";
+require __DIR__ . "/src/routes/UsersRoute.php";
 require __DIR__ . "/src/routes/CustomersRoute.php";
 require __DIR__ . "/src/routes/ServicesRoute.php";
 require __DIR__ . "/src/routes/BooksRoute.php";
-require __DIR__ . "/src/routes/LocksRoute.php";
 require __DIR__ . "/src/routes/WorkdayRoute.php";
 require __DIR__ . "/src/routes/HolidayRoute.php";
 require __DIR__ . "/src/routes/SettingsRoute.php";
+require __DIR__ . "/src/routes/CalendarRoute.php";
+require __DIR__ . "/src/routes/AuthRoute.php";
 
 
 

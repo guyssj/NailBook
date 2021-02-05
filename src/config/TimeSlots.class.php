@@ -1,4 +1,8 @@
 <?php
+
+
+namespace BookNail;
+
 class TimeSlots
 {
 

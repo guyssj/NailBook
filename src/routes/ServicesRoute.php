@@ -1,12 +1,12 @@
 <?php
 
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Http\Response as Response;
+use Slim\Http\Request as Request;
 
-require  "../src/services/servicetypes.service.php";
-require  "../src/services/services.service.php";
-
-
+use BookNail\ResultAPI;
+use BookNail\ServiceTypes;
+use BookNail\ServicesService;
+use BookNail\ServiceTypesService;
 
 $app->group('/api/Service', function () use ($app) {
     /**

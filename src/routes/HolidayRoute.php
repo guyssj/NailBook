@@ -1,21 +1,16 @@
 <?php
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
 
-$app->get('/api/GetHolidays', function (Request $request, Response $response) {
-    $Holiday = new Holidays();
-    $resultObj = new ResultAPI();
-    try {
-        $results = $Holiday->get_holidays();
-        $resultObj->set_result($results);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-    } catch (Exception $th) {
-        $resultObj->set_result($results);
-        $response = $response->withStatus(500);
-        $resultObj->set_statusCode($response->getStatusCode());
-        $resultObj->set_ErrorMessage($results);
-        return $response->withJson($resultObj);
-    }
+use Slim\Http\Response as Response;
+use BookNail\ResultAPI;
+use BookNail\HolidayService;
 
+$app->group('/api/Holiday', function () use ($app) {
+    $app->get('/GetHolidays', function ($request, Response $response) {
+        try {
+            return $response->withJson(new ResultAPI(HolidayService::get_holidays(), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
+    });
 });

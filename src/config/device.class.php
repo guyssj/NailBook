@@ -1,4 +1,11 @@
 <?php
+
+
+namespace BookNail;
+
+use PDOException;
+use Exception;
+
 class Devices {
 
     //Connection

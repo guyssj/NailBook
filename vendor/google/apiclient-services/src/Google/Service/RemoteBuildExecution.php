@@ -39,16 +39,17 @@ class Google_Service_RemoteBuildExecution extends Google_Service
   public $blobs;
   public $operations;
   public $v2;
-  
+
   /**
    * Constructs the internal representation of the RemoteBuildExecution service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://remotebuildexecution.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://remotebuildexecution.googleapis.com/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v2';
@@ -78,6 +79,19 @@ class Google_Service_RemoteBuildExecution extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+                'inlineOutputFiles' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
+                ),
+                'inlineStderr' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'inlineStdout' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ),
               ),
             ),'update' => array(
@@ -183,13 +197,13 @@ class Google_Service_RemoteBuildExecution extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),
