@@ -19,7 +19,7 @@ $app->group('/admin/Customer', function () use ($app) {
      * Summery: Return all customers list
      * @return Customer[]
      */
-    $app->get('/GetAllCustomers', function (Request $request, Response $response) {
+    $app->get('/GetAll', function (Request $request, Response $response) {
         try {
             $resultObj = new ResultAPI(CustomersService::get_customers(), $response->getStatusCode());
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);

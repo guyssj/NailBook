@@ -42,7 +42,7 @@ class LockHours
     {
         try {
             $this->connectDB();
-            $sqlquery = "SELECT * FROM LockHours";
+            $sqlquery = "SELECT * FROM LockHours WHERE StartDate > DATE(NOW()-INTERVAL 6 Month)";
             $stmt = $this->connection->prepare($sqlquery);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
@@ -53,22 +53,6 @@ class LockHours
             throw $e->getMessage();
         }
     }
-
-    // public function get_all_lock_hours()
-    // {
-    //     $sql = "SELECT * FROM LockHours";
-    //     try {
-    //         $mysqli = new db();
-    //         $mysqli = $mysqli->connect();
-    //         $mysqli->query("set character_set_client='utf8'");
-    //         $mysqli->query("set character_set_results='utf8'");
-    //         $result = $mysqli->query($sql);
-    //         $row = cast_query_results($result);
-    //         return $row;
-    //     } catch (PDOException $e) {
-    //         return $e->message();
-    //     }
-    // }
 
     public function add()
     {

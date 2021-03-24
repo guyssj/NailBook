@@ -46,7 +46,7 @@ class BookingService
                 $arrNotification["title"] = "פגישה נקבעה";
                 $arrNotification["click_action"] = "FCM_PLUGIN_ACTIVITY";
                 $fcm = new FCM();
-                $result = $fcm->send_notification($regId, $arrNotification, "Android");
+                //$result = $fcm->send_notification($regId, $arrNotification, "Android");
                 $globalSMS->send_sms($customer->PhoneNumber, $message);
             }
             return true;
@@ -568,5 +568,71 @@ class BookingService
         }
 
         array_multisort($reference_array, $direction, $array);
+    }
+
+    /**
+     * 
+     * adding new note to book
+     * @return bool
+     */
+    public static function add_note(Books $book){
+        if ($book->AddNotes()->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * 
+     * return price number for all month by spacfic month
+     * @param string $month
+     * @param string $year
+     * @return int
+     */
+    public static function get_price_for_book_month($month,$year){
+        $first_day_this_month = date($year . '-' . $month . '-01'); // hard-coded '01' for first day
+        $last_day_this_month  = date($year . '-' . $month . '-t', strtotime($first_day_this_month));
+
+        $books = new Books();
+        try {
+            $stmt = $books->get_price_by_month($first_day_this_month,$last_day_this_month);
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                    $p = (object) array(
+                        "PriceForAllMonth" => (int) $PriceForAllMonth
+                    );
+            }
+
+            return $p->PriceForAllMonth;
+        } catch (Exception $e) {
+            throw $e;
+        }
+
+    }
+
+        /**
+     * 
+     * return price number for current month
+     * @return int
+     */
+    public static function get_price_for_book_thismonth(){
+        $first_day_this_month = date('Y-m-01'); // hard-coded '01' for first day
+        $last_day_this_month  = date('Y-m-t');
+
+        $books = new Books();
+        try {
+            $stmt = $books->get_price_by_month($first_day_this_month,$last_day_this_month);
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                    $p = (object) array(
+                        "PriceForAllMonth" => (int) $PriceForAllMonth
+                    );
+            }
+
+            return $p->PriceForAllMonth;
+        } catch (Exception $e) {
+            throw $e;
+        }
+
     }
 }

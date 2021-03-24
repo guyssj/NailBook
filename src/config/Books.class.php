@@ -63,7 +63,7 @@ class Books
     {
         try {
             $this->connectDB();
-            $sqlquery = "SELECT * FROM Books";
+            $sqlquery = "SELECT BookID,StartDate,StartAt,CustomerID,ServiceID,Durtion,ServiceTypeID,Notes From Books WHERE StartDate > DATE(NOW()-INTERVAL 6 Month)";
             $stmt = $this->connection->prepare($sqlquery);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
@@ -83,7 +83,7 @@ class Books
 
         try {
             $this->connectDB();
-            $sqlquery = "SELECT * FROM Books WHERE BookID='$this->BookID'; ";
+            $sqlquery = "SELECT BookID,StartDate,StartAt,CustomerID,ServiceID,Durtion,ServiceTypeID,Notes FROM Books WHERE BookID='$this->BookID'; ";
             $stmt = $this->connection->prepare($sqlquery);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
@@ -183,7 +183,7 @@ class Books
     }
     public function range($start, $end, $column)
     {
-        $sqlquery = "SELECT * FROM Books WHERE $column BETWEEN '$start' AND '$end' ;";
+        $sqlquery = "SELECT BookID,StartDate,StartAt,CustomerID,ServiceID,Durtion,ServiceTypeID,Notes FROM Books WHERE $column BETWEEN '$start' AND '$end' ;";
         try {
             $this->connectDB();
             $stmt = $this->connection->prepare($sqlquery);
@@ -197,130 +197,44 @@ class Books
         }
     }
 
-    public function GetBooksByCustomer($CustomerId)
-    {
-        $sql = "SELECT * FROM Books WHERE CustomerID='$CustomerId';";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            //return $row;
-            $date = date('Y-m-d', time());
-            $arrayt = [];
-            foreach ($row as $key => $value) {
-                $strtTime = $value['StartDate'];
-                if ($strtTime >= $date) {
-                    return $value;
-                }
-            }
-            throw new Exception("Book not Found");
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function GetBookByCustomer($CustomerId)
-    {
-        $sql = "SELECT * FROM Books WHERE CustomerID='$CustomerId' ORDER BY StartDate ASC;";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            //return $row;
-            $date = date('Y-m-d', time());
-            $arrayt = [];
-            foreach ($row as $key => $value) {
-                $strtTime = $value['StartDate'];
-                if ($strtTime >= $date) {
-                    array_push($arrayt, $value);
-                }
-            }
-            if (count($arrayt) > 0) {
-                return $arrayt;
-            }
-
-            throw new Exception("Book not Found");
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
 
 
-    public function AddNotes(Books $Books)
+    public function AddNotes()
     {
         $sql = "call BookAddNote(:BookID,:Notes);";
-        //$sql2 = "SELECT StartDate FROM Books WHERE StartDate='$Books->StartDate' And StartAt='$Books->StartAt' LIMIT 1;";
         try {
-            $db = new db();
-            $db = $db->connect2();
-            $smst = $db->prepare($sql);
-            $smst->bindParam(':BookID', $Books->BookID);
-            $smst->bindParam(':Notes', $Books->Notes);
-            $db->query("set character_set_client='utf8'");
-            $db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-            $row = $smst->execute(['BookID' => $Books->BookID, 'Notes' => $Books->Notes]);
-            $count = $smst->rowCount();
-            if ($count > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            $this->connectDB();
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':BookID', $this->BookID);
+            $stmt->bindParam(':Notes', $this->Notes);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute(['BookID' => $this->BookID, 'Notes' => $this->Notes]);
+            $this->connection = null;
+            return $stmt;
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
             return $var;
         }
     }
 
+    public function get_price_by_month($first_day_this_month, $last_day_this_month)
+    {
 
-    public function get_price_month()
-    {
-        $first_day_this_month = date('Y-m-01'); // hard-coded '01' for first day
-        $last_day_this_month  = date('Y-m-t');
-        $sql = "SELECT sum(st.Price) as PriceForAllMonth from Books bk
+        $sqlquery = "SELECT sum(st.Price) as PriceForAllMonth from Books bk
         JOIN ServiceType st ON bk.ServiceTypeID = st.ServiceTypeID
         WHERE bk.StartDate BETWEEN '$first_day_this_month' AND '$last_day_this_month';";
         // $sql = "SELECT * FROM Books WHERE StartDate BETWEEN '$startWeek' AND '$endWeek' ;";
         try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            $PriceForAllMonth = (object) $row[0];
-            if (empty($PriceForAllMonth->PriceForAllMonth)) {
-                $PriceForAllMonth->PriceForAllMonth = 0;
-            }
-            return $PriceForAllMonth;
+            $this->connectDB();
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
+            return $stmt;
         } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-    public function get_price_by_month($month, $year)
-    {
-        $first_day_this_month = date($year . '-' . $month . '-01'); // hard-coded '01' for first day
-        $last_day_this_month  = date($year . '-' . $month . '-t', strtotime($first_day_this_month));
-        $sql = "SELECT sum(st.Price) as PriceForAllMonth from Books bk
-        JOIN ServiceType st ON bk.ServiceTypeID = st.ServiceTypeID
-        WHERE bk.StartDate BETWEEN '$first_day_this_month' AND '$last_day_this_month';";
-        // $sql = "SELECT * FROM Books WHERE StartDate BETWEEN '$startWeek' AND '$endWeek' ;";
-        try {
-            $mysqli = new db();
-            $mysqli = $mysqli->connect();
-            $mysqli->query("set character_set_client='utf8'");
-            $mysqli->query("set character_set_results='utf8'");
-            $result = $mysqli->query($sql);
-            $row = cast_query_results($result);
-            $PriceForAllMonth = (object) $row[0];
-            return $PriceForAllMonth;
-        } catch (PDOException $e) {
-            return $e->getMessage();
+            throw $e->getMessage();
         }
     }
 }

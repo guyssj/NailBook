@@ -34,8 +34,10 @@ class ServiceTypes
     }
     public function from_array($array)
     {
-        foreach (get_object_vars($this) as $attrName => $attrValue)
-            $this->{$attrName} = $array[$attrName];
+        foreach (get_object_vars($this) as $attrName => $attrValue) {
+            if (isset($array[$attrName]))
+                $this->{$attrName} = $array[$attrName];
+        }
     }
 
     public function connectDB()

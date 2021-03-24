@@ -111,11 +111,12 @@ $app->group('/admin/Book', function () use ($app) {
      * @return int
      */
     $app->get('/GetPriceMonth', function (Request $request, Response $response) {
-        $resultObj = new ResultAPI();
-        $BooksObj = new Books();
-        $resultObj->set_result($BooksObj->get_price_month()->PriceForAllMonth);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        try {
+            return $response->withJson(new ResultAPI(BookingService::get_price_for_book_thismonth(), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
     });
 
     /**
@@ -125,13 +126,15 @@ $app->group('/admin/Book', function () use ($app) {
      * @return int
      */
     $app->get('/GetPriceByMonth', function (Request $request, Response $response) {
-        $resultObj = new ResultAPI();
-        $BooksObj = new Books();
         $year = $request->getParam('Year');
         $month = $request->getParam('Month');
-        $resultObj->set_result($BooksObj->get_price_by_month($month, $year)->PriceForAllMonth);
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+
+        try {
+            return $response->withJson(new ResultAPI(BookingService::get_price_for_book_month($month,$year), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
     });
 
     /**
@@ -142,14 +145,15 @@ $app->group('/admin/Book', function () use ($app) {
      */
     $app->put('/AddNote', function (Request $request, Response $response) {
         $BooksObj = new Books();
-        $resultObj = new ResultAPI();
         $books = $request->getParsedBody();
         $BooksObj->BookID = $books['BookID'];
         $BooksObj->Notes = $books['Notes'];
-
-        $resultObj->set_result($BooksObj->AddNotes($BooksObj));
-        $resultObj->set_statusCode($response->getStatusCode());
-        echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        try {
+            return $response->withJson(new ResultAPI(BookingService::add_note($BooksObj), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
     });
 });
 
@@ -198,7 +202,7 @@ $app->group('/api/Book', function () use ($app) {
         }
     });
         /**
-     * GET api/UpdateBook
+     * PUT api/UpdateBook
      * Summery: Updated books for customer context
      * @return <Books></Books>
      */
