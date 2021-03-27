@@ -19,9 +19,11 @@ class Users
     private $connection;
     private $dbclass;
 
+    public $id;
     public $userName;
     public $password;
     public $token;
+    public $regId;
 
 
     public function from_array($array)
@@ -98,6 +100,42 @@ class Users
             } else {
                 return false;
             }
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
+
+    public function add_regId()
+    {
+        try {
+            $this->connectDB();
+            $sqlquery = "UPDATE Users SET RegId='$this->regId' WHERE UserName='$this->userName'";
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            if ($stmt->rowCount() > 0)
+                return true;
+            return false;
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
+
+    public function get_regId()
+    {
+        try {
+            $this->connectDB();
+            $sqlquery = "UPDATE Users SET RegId='$this->regId' WHERE UserName='$this->userName'";
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            if ($stmt->rowCount() > 0)
+                return true;
+            return false;
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
             return $var;

@@ -1,10 +1,8 @@
 <?php
 
 use BookNail\ResultAPI;
-use BookNail\Devices;
 use BookNail\Users;
-use BookNail\DeviceService;
-
+use BookNail\UsersService;
 use Slim\Http\Response as Response;
 use Slim\Http\Request as Request;
 
@@ -15,12 +13,12 @@ $app->group('/admin/Users', function () use ($app) {
      * Summery: Add regstration id from device to user
      * @return bool
      */
-    $app->post('/AddRegistrationId', function (Request $request, Response $response) {
+    $app->post('/AddRegistrationId', function (Request $request,Response $response) {
 
         try {
-            $device = new Devices();
-            $device->from_array($request->getParsedBody());
-            $resultObj = new ResultAPI(DeviceService::add_regId($device), $response->getStatusCode()); //TODO MOVE regID to users service
+            $user = $this->get("User");
+            $user->regId = $request->getParsedBody()["regId"];
+            $resultObj = new ResultAPI(UsersService::add_regId($user), $response->getStatusCode()); //TODO MOVE regID to users service
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
