@@ -60,4 +60,20 @@ class UsersService
 
         return $user;
     }
+
+    public static function add_regId(Users $user)
+    {
+      return $user->add_regId();
+    }
+  
+    public static function get_regId_by_userName($userName)
+    {
+      $users = UsersService::get_users();
+  
+      foreach ($users as $user) {
+        if ($user->UserName == $userName)
+          return $user->RegId;
+      }
+      throw new Exception("User not found", 404);
+    }
 }

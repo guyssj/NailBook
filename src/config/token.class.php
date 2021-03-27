@@ -18,11 +18,21 @@ class Token
     {
         return !!count(array_intersect($scope, $this->decoded["scope"]));
     }
-    public function getUser(){
-        return $this->decoded["sub"];
+    public function getUser():Users
+    {
+        $user = new Users();
+        if ($this->decoded["sub"]) {
+            $dalUser = $this->decoded["sub"];
+            $user->userName = $dalUser->UserName;
+            $user->password = $dalUser->Password;
+            $user->regId = $dalUser->RegId;
+            $user->id = $dalUser->id;
+        }
+        return $user;
     }
-    public function getAuth(){
-        if($this->decoded["auth"])
+    public function getAuth()
+    {
+        if ($this->decoded["auth"])
             return $this->decoded["auth"];
     }
 }
