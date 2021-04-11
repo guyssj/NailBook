@@ -112,6 +112,11 @@ $app->group('/api/Customer', function () use ($app) {
                 $resultObj = new ResultAPI(CustomersService::find_customer_by_phone($customer->PhoneNumber), $response->getStatusCode());
                 echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
             }
+            else if($decodeToken->hasScope(["admin"])){
+                
+                $resultObj = new ResultAPI(CustomersService::find_customer_by_phone($request->getQueryParams()['PhoneNumber']), $response->getStatusCode());
+                echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+            }
 
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
