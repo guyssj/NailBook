@@ -12,12 +12,13 @@ class FCM
     /*
 For Sending Push Notification
 */
-    public function send_notification($registatoin_ids, $notification, $device_type)
+    public function send_notification($registatoin_ids, $notification,$dataParams, $device_type)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
         if ($device_type == "Android") {
             $fields = array(
                 'notification' => $notification,
+                'data' => $dataParams,
                 'to' => $registatoin_ids,
                 'priority' => 'high',
 
