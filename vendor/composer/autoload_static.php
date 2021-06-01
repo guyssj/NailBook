@@ -13,6 +13,9 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
     );
 
@@ -29,6 +32,9 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -39,6 +45,7 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'PhpOption\\' => 10,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
         'M' => 
@@ -50,6 +57,7 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'GrahamCampbell\\ResultType\\' => 26,
             'Google\\Auth\\' => 12,
             'Google\\' => 7,
         ),
@@ -61,6 +69,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'E' => 
         array (
             'Eko3alpha\\Slim\\Middleware\\' => 26,
+        ),
+        'D' => 
+        array (
+            'Dotenv\\' => 7,
         ),
         'B' => 
         array (
@@ -85,6 +97,18 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'Tuupola\\Http\\Factory\\' => 
         array (
             0 => __DIR__ . '/..' . '/tuupola/http-factory/src',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
         'Slim\\' => 
         array (
@@ -116,6 +140,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+        'PhpOption\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
         'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
@@ -135,6 +163,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'GrahamCampbell\\ResultType\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
         ),
         'Google\\Auth\\' => 
         array (
@@ -156,9 +188,14 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         array (
             0 => __DIR__ . '/..' . '/eko3alpha/slim-cors-middleware/src',
         ),
+        'Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
         'BookNail\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/config',
+            1 => __DIR__ . '/../..' . '/src/extensions',
         ),
     );
 
@@ -187,20 +224,25 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'BookNail\\BookingService' => __DIR__ . '/../..' . '/src/services/booking.service.php',
         'BookNail\\Books' => __DIR__ . '/../..' . '/src/config/Books.class.php',
         'BookNail\\CalendarService' => __DIR__ . '/../..' . '/src/services/calendar.service.php',
         'BookNail\\CloseDays' => __DIR__ . '/../..' . '/src/config/CloseDays.class.php',
+        'BookNail\\ConflictException' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\Customer' => __DIR__ . '/../..' . '/src/config/Customer.class.php',
         'BookNail\\CustomersService' => __DIR__ . '/../..' . '/src/services/customers.service.php',
         'BookNail\\DeviceService' => __DIR__ . '/../..' . '/src/services/device.service.php',
         'BookNail\\Devices' => __DIR__ . '/../..' . '/src/config/device.class.php',
         'BookNail\\FCM' => __DIR__ . '/../..' . '/src/config/fcm.class.php',
+        'BookNail\\ForbiddenException' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\HolidayService' => __DIR__ . '/../..' . '/src/services/holiday.service.php',
         'BookNail\\Holidays' => __DIR__ . '/../..' . '/src/config/Holidays.class.php',
+        'BookNail\\InternalServerErrorException' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\LockHours' => __DIR__ . '/../..' . '/src/config/LockHours.class.php',
         'BookNail\\LockHoursService' => __DIR__ . '/../..' . '/src/services/lockhours.service.php',
         'BookNail\\Logger' => __DIR__ . '/../..' . '/src/config/Logger.class.php',
+        'BookNail\\NotFoundException' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\OTP' => __DIR__ . '/../..' . '/src/config/otp.class.php',
         'BookNail\\OTPService' => __DIR__ . '/../..' . '/src/services/otp.service.php',
         'BookNail\\ResultAPI' => __DIR__ . '/../..' . '/src/config/ResultsApi.class.php',
@@ -210,14 +252,58 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'BookNail\\ServicesService' => __DIR__ . '/../..' . '/src/services/services.service.php',
         'BookNail\\SettingName' => __DIR__ . '/../..' . '/src/config/Settings.class.php',
         'BookNail\\Settings' => __DIR__ . '/../..' . '/src/config/Settings.class.php',
+        'BookNail\\SlimV3' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\SyncGoogle' => __DIR__ . '/../..' . '/src/config/SyncWithGoogle.class.php',
         'BookNail\\TimeSlots' => __DIR__ . '/../..' . '/src/config/TimeSlots.class.php',
         'BookNail\\Token' => __DIR__ . '/../..' . '/src/config/token.class.php',
+        'BookNail\\UnauthorizedException' => __DIR__ . '/../..' . '/src/extensions/Exceptions.php',
         'BookNail\\Users' => __DIR__ . '/../..' . '/src/config/Users.class.php',
         'BookNail\\UsersService' => __DIR__ . '/../..' . '/src/services/users.service.php',
         'BookNail\\WorkingHours' => __DIR__ . '/../..' . '/src/config/WorkingHours.class.php',
+        'BookNail\\contextMiddleware' => __DIR__ . '/../..' . '/src/extensions/contextMiddleware.php',
         'BookNail\\db' => __DIR__ . '/../..' . '/src/config/db.php',
         'BookNail\\globalSMS' => __DIR__ . '/../..' . '/src/config/globalSMS.class.php',
+        'Dotenv\\Dotenv' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Dotenv.php',
+        'Dotenv\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/ExceptionInterface.php',
+        'Dotenv\\Exception\\InvalidEncodingException' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/InvalidEncodingException.php',
+        'Dotenv\\Exception\\InvalidFileException' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/InvalidFileException.php',
+        'Dotenv\\Exception\\InvalidPathException' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/InvalidPathException.php',
+        'Dotenv\\Exception\\ValidationException' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/ValidationException.php',
+        'Dotenv\\Loader\\Loader' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Loader/Loader.php',
+        'Dotenv\\Loader\\LoaderInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Loader/LoaderInterface.php',
+        'Dotenv\\Loader\\Resolver' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Loader/Resolver.php',
+        'Dotenv\\Parser\\Entry' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Entry.php',
+        'Dotenv\\Parser\\EntryParser' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/EntryParser.php',
+        'Dotenv\\Parser\\Lexer' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Lexer.php',
+        'Dotenv\\Parser\\Lines' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Lines.php',
+        'Dotenv\\Parser\\Parser' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Parser.php',
+        'Dotenv\\Parser\\ParserInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/ParserInterface.php',
+        'Dotenv\\Parser\\Value' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Parser/Value.php',
+        'Dotenv\\Repository\\AdapterRepository' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/AdapterRepository.php',
+        'Dotenv\\Repository\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/AdapterInterface.php',
+        'Dotenv\\Repository\\Adapter\\ApacheAdapter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ApacheAdapter.php',
+        'Dotenv\\Repository\\Adapter\\ArrayAdapter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ArrayAdapter.php',
+        'Dotenv\\Repository\\Adapter\\EnvConstAdapter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/EnvConstAdapter.php',
+        'Dotenv\\Repository\\Adapter\\GuardedWriter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/GuardedWriter.php',
+        'Dotenv\\Repository\\Adapter\\ImmutableWriter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ImmutableWriter.php',
+        'Dotenv\\Repository\\Adapter\\MultiReader' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/MultiReader.php',
+        'Dotenv\\Repository\\Adapter\\MultiWriter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/MultiWriter.php',
+        'Dotenv\\Repository\\Adapter\\PutenvAdapter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/PutenvAdapter.php',
+        'Dotenv\\Repository\\Adapter\\ReaderInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ReaderInterface.php',
+        'Dotenv\\Repository\\Adapter\\ReplacingWriter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ReplacingWriter.php',
+        'Dotenv\\Repository\\Adapter\\ServerConstAdapter' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/ServerConstAdapter.php',
+        'Dotenv\\Repository\\Adapter\\WriterInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/Adapter/WriterInterface.php',
+        'Dotenv\\Repository\\RepositoryBuilder' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/RepositoryBuilder.php',
+        'Dotenv\\Repository\\RepositoryInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Repository/RepositoryInterface.php',
+        'Dotenv\\Store\\FileStore' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/FileStore.php',
+        'Dotenv\\Store\\File\\Paths' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/File/Paths.php',
+        'Dotenv\\Store\\File\\Reader' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/File/Reader.php',
+        'Dotenv\\Store\\StoreBuilder' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/StoreBuilder.php',
+        'Dotenv\\Store\\StoreInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/StoreInterface.php',
+        'Dotenv\\Store\\StringStore' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Store/StringStore.php',
+        'Dotenv\\Util\\Regex' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Util/Regex.php',
+        'Dotenv\\Util\\Str' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Util/Str.php',
+        'Dotenv\\Validator' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Validator.php',
         'Eko3alpha\\Slim\\Middleware\\CorsMiddleware' => __DIR__ . '/..' . '/eko3alpha/slim-cors-middleware/src/CorsMiddleware.php',
         'FastRoute\\BadRouteException' => __DIR__ . '/..' . '/nikic/fast-route/src/BadRouteException.php',
         'FastRoute\\DataGenerator' => __DIR__ . '/..' . '/nikic/fast-route/src/DataGenerator.php',
@@ -14268,6 +14354,9 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'Google_Task_Retryable' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Task_Runner' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Utils_UriTemplate' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
+        'GrahamCampbell\\ResultType\\Error' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Error.php',
+        'GrahamCampbell\\ResultType\\Result' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Result.php',
+        'GrahamCampbell\\ResultType\\Success' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Success.php',
         'GuzzleHttp\\BodySummarizer' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/BodySummarizer.php',
         'GuzzleHttp\\BodySummarizerInterface' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/BodySummarizerInterface.php',
         'GuzzleHttp\\Client' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Client.php',
@@ -14472,6 +14561,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'ParagonIE\\ConstantTime\\Encoding' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Encoding.php',
         'ParagonIE\\ConstantTime\\Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Hex.php',
         'ParagonIE\\ConstantTime\\RFC4648' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/RFC4648.php',
+        'PhpOption\\LazyOption' => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption/LazyOption.php',
+        'PhpOption\\None' => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption/None.php',
+        'PhpOption\\Option' => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption/Option.php',
+        'PhpOption\\Some' => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption/Some.php',
         'Pimple\\Container' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Container.php',
         'Pimple\\Exception\\ExpectedInvokableException' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Exception/ExpectedInvokableException.php',
         'Pimple\\Exception\\FrozenServiceException' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Exception/FrozenServiceException.php',
@@ -14575,6 +14668,10 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'Slim\\Route' => __DIR__ . '/..' . '/slim/slim/Slim/Route.php',
         'Slim\\RouteGroup' => __DIR__ . '/..' . '/slim/slim/Slim/RouteGroup.php',
         'Slim\\Router' => __DIR__ . '/..' . '/slim/slim/Slim/Router.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
+        'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
+        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'Tuupola\\Http\\Factory\\RequestFactory' => __DIR__ . '/..' . '/tuupola/http-factory/src/RequestFactory.php',
         'Tuupola\\Http\\Factory\\ResponseFactory' => __DIR__ . '/..' . '/tuupola/http-factory/src/ResponseFactory.php',
         'Tuupola\\Http\\Factory\\ServerRequestFactory' => __DIR__ . '/..' . '/tuupola/http-factory/src/ServerRequestFactory.php',
@@ -16691,6 +16788,8 @@ class ComposerStaticInit58de9c5685502a9f67f5dbb92604cf7e
         'Twilio\\Values' => __DIR__ . '/..' . '/twilio/sdk/src/Twilio/Values.php',
         'Twilio\\Version' => __DIR__ . '/..' . '/twilio/sdk/src/Twilio/Version.php',
         'Twilio\\VersionInfo' => __DIR__ . '/..' . '/twilio/sdk/src/Twilio/VersionInfo.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'phpseclib3\\Common\\Functions\\Strings' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Common/Functions/Strings.php',
         'phpseclib3\\Crypt\\AES' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Crypt/AES.php',
         'phpseclib3\\Crypt\\Blowfish' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Crypt/Blowfish.php',

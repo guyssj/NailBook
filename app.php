@@ -2,37 +2,40 @@
 
 header('Content-Type: application/json');
 require __DIR__ . "/vendor/autoload.php";
+require __DIR__ . "/src/config/ExceptionHandler.class.php";
+
 
 use BookNail\ResultAPI;
 use BookNail\Token;
-$app = new \Slim\App;
+
+$app = new Slim\App();
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
         ->withHeader('Content-Type', 'application/json')
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Origin, Authorization');
-
 });
+$allowHosts = str_replace("\s", " ", $_SERVER['ALLOWHOST']);
+$corsArray = json_decode($allowHosts, true);
 
-$app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware([
-    'http://192.168.1.18:8100' => 'GET, POST, DELETE, PUT',
-    'http://localhost:4200' => 'GET, POST, DELETE, PUT',
-    'http://localhost:8100' => 'GET, POST, DELETE, PUT',
-    'http://localhost' => 'GET, POST, DELETE, PUT',
-    'http://miritush.app' => 'GET, POST, DELETE, PUT',
-
-    'http://192.168.0.46:4200' => 'GET, POST, DELETE, PUT',
-    'http://172.20.10.2:8100' => 'GET, POST, DELETE, PUT',
-    'ionic://localhost' => 'GET, POST, DELETE, PUT',
-]));
+$app->add(new \Eko3alpha\Slim\Middleware\CorsMiddleware($corsArray));
 
 $container = $app->getContainer();
 $container["token"] = function ($container) {
     return new Token([]);
+};
+$container['errorHandler'] = function ($container) {
+    return new ExceptionHandler();
+};
+$container['notFoundHandler'] = function ($container) {
+    return new ExceptionHandler();
 };
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path" => "/admin", /* or ["/api", "/admin"] */
@@ -58,6 +61,8 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     },
 ]));
 
+$app->add(new BookNail\contextMiddleware($container));
+
 require __DIR__ . "/src/routes/API.php";
 require __DIR__ . "/src/routes/UsersRoute.php";
 require __DIR__ . "/src/routes/CustomersRoute.php";
@@ -68,6 +73,7 @@ require __DIR__ . "/src/routes/HolidayRoute.php";
 require __DIR__ . "/src/routes/SettingsRoute.php";
 require __DIR__ . "/src/routes/CalendarRoute.php";
 require __DIR__ . "/src/routes/AuthRoute.php";
+
 
 
 

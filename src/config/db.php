@@ -4,11 +4,17 @@ use mysqli;
 use PDO;
     class db{
         //Prop
-        private $dbhost = 'localhost';
-        private $dbuser = 'root';
-        private $dbpass = 'guygoldi';
-        private $dbname = 'reptouch_bookNail';
-
+        private $dbhost;
+        private $dbuser;
+        private $dbpass;
+        private $dbname;
+        
+        public function __construct() {
+            $this->dbhost = $_SERVER['DB_HOST_NAME'];
+            $this->dbuser =$_SERVER['DB_USER'];
+            $this->dbpass = $_SERVER['DB_PASS'];
+            $this->dbname = $_SERVER['DB_NAME'];
+        }
 
         //Connect to Database (mySQL)
 

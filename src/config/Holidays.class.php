@@ -56,4 +56,25 @@ class Holidays
             throw $e->getMessage();
         }
     }
+    public function add()
+    {
+        $sql = "INSERT INTO Holidays (Date,Notes) VALUES (:Date,:Notes);";
+        try {
+            $this->connectDB();
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':Date', $this->Date);
+            $stmt->bindParam(':Notes', $this->Notes);
+
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
+            return $stmt;
+
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
 }
