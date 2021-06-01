@@ -118,7 +118,22 @@ class Books
             throw $e->getMessage();
         }
     }
+    public function today_books()
+    {
+        try {
+            $this->connectDB();
+            $sqlquery = "call TodayBooks();";
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
 
+            return $stmt;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
     public function add()
     {
         try {
