@@ -1,5 +1,6 @@
 <?php
 
+use BookNail\NotFoundException as BookNailNotFoundException;
 use Slim\Http\Response as Response;
 use Slim\Http\Request as Request;
 
@@ -19,8 +20,6 @@ $app->group('/api/Service', function () use ($app) {
             $resultObj = new ResultAPI(ServicesService::get_services(), $response->getStatusCode());
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
-            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
-            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
     /**

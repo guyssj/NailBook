@@ -6,6 +6,7 @@ use Exception;
 use PDO;
 use DateTime;
 use DateTimeZone;
+use Slim\Http\Request as Request;
 
 class BookingService
 {
@@ -48,7 +49,7 @@ class BookingService
                 $arrNotification["title"] = "פגישה נקבעה";
                 $arrNotification["click_action"] = "FCM_PLUGIN_ACTIVITY";
                 $fcm = new FCM();
-                $result = $fcm->send_notification($regId, $arrNotification,$arrData, "Android");
+                $result = $fcm->send_notification($regId, $arrNotification, $arrData, "Android");
             }
             return true;
         }
@@ -69,19 +70,22 @@ class BookingService
                     $value['StartAt'] == $book->StartAt
                     && $value['CustomerID'] == $book->CustomerID
                 ) {
-                    if ($book->update()->rowCount() > 0)
+                    if ($book->update()->rowCount() > 0) {
+                        self::generate_message($book, Settings::SMS_TEMPLATE_UPAPP, "עידכון פגישה");
                         return true;
-                    else
+                    } else
                         return false;
                 }
             }
         } else {
-            if ($book->update()->rowCount() > 0)
+            if ($book->update()->rowCount() > 0) {
+                self::generate_message($book, Settings::SMS_TEMPLATE_UPAPP, "עידכון פגישה");
                 return true;
-            else
+            } else
                 return false;
         }
     }
+
     /**
      * 
      * get all book
@@ -576,7 +580,8 @@ class BookingService
      * adding new note to book
      * @return bool
      */
-    public static function add_note(Books $book){
+    public static function add_note(Books $book)
+    {
         if ($book->AddNotes()->rowCount() > 0) {
             return true;
         } else {
@@ -590,50 +595,169 @@ class BookingService
      * @param string $year
      * @return int
      */
-    public static function get_price_for_book_month($month,$year){
+    public static function get_price_for_book_month($month, $year)
+    {
         $first_day_this_month = date($year . '-' . $month . '-01'); // hard-coded '01' for first day
         $last_day_this_month  = date($year . '-' . $month . '-t', strtotime($first_day_this_month));
 
         $books = new Books();
         try {
-            $stmt = $books->get_price_by_month($first_day_this_month,$last_day_this_month);
+            $stmt = $books->get_price_by_month($first_day_this_month, $last_day_this_month);
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
-                    $p = (object) array(
-                        "PriceForAllMonth" => (int) $PriceForAllMonth
-                    );
+                $p = (object) array(
+                    "PriceForAllMonth" => (int) $PriceForAllMonth
+                );
             }
 
             return $p->PriceForAllMonth;
         } catch (Exception $e) {
             throw $e;
         }
-
     }
 
-        /**
+    /**
      * 
      * return price number for current month
      * @return int
      */
-    public static function get_price_for_book_thismonth(){
+    public static function get_price_for_book_thismonth()
+    {
         $first_day_this_month = date('Y-m-01'); // hard-coded '01' for first day
         $last_day_this_month  = date('Y-m-t');
 
         $books = new Books();
         try {
-            $stmt = $books->get_price_by_month($first_day_this_month,$last_day_this_month);
+            $stmt = $books->get_price_by_month($first_day_this_month, $last_day_this_month);
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
-                    $p = (object) array(
-                        "PriceForAllMonth" => (int) $PriceForAllMonth
-                    );
+                $p = (object) array(
+                    "PriceForAllMonth" => (int) $PriceForAllMonth
+                );
             }
 
             return $p->PriceForAllMonth;
         } catch (Exception $e) {
             throw $e;
         }
+    }
+    /**
+     * Send Remainder to customer when books tommorow
+     */
+    public static function send_remainder()
+    {
+        $books = new Books();
+        $stmt = $books->today_books();
+        $BooksTodaySend = array();
 
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $p = (object) array(
+                "PhoneNumber" => $PhoneNumber,
+                "FirstName" => $FirstName,
+                "LastName" => $LastName,
+                "ServiceTypeName" => $ServiceTypeName,
+                "StartDate" => $StartDate,
+                "StartAt" => (int)$StartAt
+            );
+            array_push($BooksTodaySend, $p);
+        }
+        foreach ($BooksTodaySend as $key => $value) {
+            $Date = strtotime($value->StartDate);
+            $NewDate = date("d/m/Y", $Date);
+            $decodeText = "היי מירית\nאני מאשר/ת הגעה,\n{$value->FirstName}";
+            $encodeText = urlencode($decodeText);
+
+            $LinkWhatApp = "https://wa.me/9720525533979/?text={$encodeText}";
+            $link = BookingService::shotlink($LinkWhatApp)->shortUrl;
+
+            $Time = $value->StartAt;
+            $newTime = hoursandmins($Time);
+            $message = Settings::get_Setting(Settings::SMS_TEMPLATE_REMINDER)['SettingValue'];
+            $message = str_replace('\n', PHP_EOL, $message);
+            $message = str_replace('{FirstName}', $value->FirstName, $message);
+            $message = str_replace('{LastName}', $value->LastName, $message);
+            $message = str_replace('{Date}', $NewDate, $message);
+            $message = str_replace('{Time}', $newTime, $message);
+            $message = str_replace('{ServiceType}', $value->ServiceTypeName, $message);
+            $message = str_replace('{Link}', $link, $message);
+
+            $globalSMS = new globalSMS();
+            $globalSMS->send_sms($value->PhoneNumber, $message);
+        }
+        return true;
+    }
+    static function shotlink($link)
+    {
+        $arrData = array();
+        $arrData['fullName'] = "rebrand.ly";
+        $url = 'https://api.rebrandly.com/v1/links';
+        $fields = array(
+            'domain' => $arrData,
+            'destination' => $link
+        );
+        // Firebase API Key
+        $serverKey = 'apikey:895faa9f2e4046ae9f57db94bf8ca9e3';
+        $workSpace = 'workspace:20f29af8f1e646b7ad6055f43f50056a';
+        $headers = array($serverKey, $workSpace, 'Content-Type:application/json');
+        // Open connection
+        $ch = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        $PreityResult = json_decode($result);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
+        return $PreityResult;
+    }
+    /**
+     * 
+     * @return string $message
+     */
+    private static function generate_message($book, string $type, $title)
+    {
+        $regId = UsersService::get_regId_by_userName("mirit");
+        // Here, INCLUDE YOUR FCM FILE
+        $arrNotification = array();
+        $arrData = array();
+        $Date = strtotime($book->StartDate);
+        $customer = CustomersService::find_customer_by_id($book->CustomerID);
+        $ServiceType = ServiceTypesService::get_service_type_by_id($book->ServiceTypeID);
+
+        $NewDate = date("d/m/Y", $Date);
+        $newTime = hoursandmins($book->StartAt);
+
+        //generate message updated
+        $message = Settings::get_Setting($type)['SettingValue'];
+        $message = str_replace('\n', PHP_EOL, $message);
+        $message = str_replace('{FirstName}', $customer->FirstName, $message);
+        $message = str_replace('{LastName}', $customer->LastName, $message);
+        $message = str_replace('{Date}', $NewDate, $message);
+        $message = str_replace('{Time}', $newTime, $message);
+        $message = str_replace('{ServiceType}', $ServiceType->ServiceTypeName, $message);
+
+        //Generated a FCM Message to android app
+        $arrData["StartDate"] = $Date;
+        $arrNotification["body"] = $message;
+        $arrNotification["title"] = $title;
+        $arrNotification["click_action"] = "FCM_PLUGIN_ACTIVITY";
+        //send all sms and FCM 
+        FCM::send_notification($regId, $arrNotification, $arrData, "Android");
+        $decodeToken = $GLOBALS['tokenGlobal'];
+        if (!$decodeToken->hasScope(["admin"])) {
+            //write to log
+            $log = new Logger();
+            $log->putLog("$customer->FirstName $customer->LastName change the book to $NewDate and $newTime");
+            $globalSMS = new globalSMS();
+            $globalSMS->send_sms($customer->PhoneNumber, $message);
+        }
     }
 }

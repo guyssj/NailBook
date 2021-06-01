@@ -13,7 +13,7 @@ class HolidayService
      * 
      * get all holidays from now
      * 
-     * @return array[holidays]
+     * @return array
      */
     public static function get_holidays()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace BookNail;
 
 use PDO;
@@ -35,17 +36,18 @@ class UsersService
         }
     }
 
-    public static function sign_in(Users $user){
+    public static function sign_in(Users $user)
+    {
 
         $now = new DateTime();
         $future = new DateTime("now +2 hours");
-    
+
         $auth = $user->sign_in();
-    
-        if(!$auth) throw new Exception("User name or password do not match our records",500);
+
+        if (!$auth) throw new UnauthorizedException("User name or password do not match our records");
 
         session_start();
-    
+
         $payload = [
             "iat" => $now->getTimeStamp(),
             "exp" => $future->getTimeStamp(),
@@ -54,7 +56,9 @@ class UsersService
         ];
         $token = JWT::encode($payload, $_SERVER['Secret'], "HS384");
         $_SESSION['TokenApi'] = $token;
-    
+
+        $tt = $_SERVER['Secret'];
+
         $user->token = $token;
         $user->password = "";
 
@@ -63,17 +67,17 @@ class UsersService
 
     public static function add_regId(Users $user)
     {
-      return $user->add_regId();
+        return $user->add_regId();
     }
-  
+
     public static function get_regId_by_userName($userName)
     {
-      $users = UsersService::get_users();
-  
-      foreach ($users as $user) {
-        if ($user->UserName == $userName)
-          return $user->RegId;
-      }
-      throw new Exception("User not found", 404);
+        $users = UsersService::get_users();
+
+        foreach ($users as $user) {
+            if ($user->UserName == $userName)
+                return $user->RegId;
+        }
+        throw new Exception("User not found", 404);
     }
 }

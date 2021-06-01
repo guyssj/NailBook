@@ -10,9 +10,9 @@ class FCM
     {
     }
     /*
-For Sending Push Notification
+For Sending Push Notification dsdsd
 */
-    public function send_notification($registatoin_ids, $notification,$dataParams, $device_type)
+    public static function send_notification($registatoin_ids, $notification, $dataParams, $device_type)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
         if ($device_type == "Android") {
