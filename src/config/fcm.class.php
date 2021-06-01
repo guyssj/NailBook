@@ -10,7 +10,7 @@ class FCM
     {
     }
     /*
-For Sending Push Notification
+For Sending Push Notification dsdsd
 */
     public static function send_notification($registatoin_ids, $notification, $dataParams, $device_type)
     {
