@@ -8,7 +8,7 @@ use BookNail\Books;
 use BookNail\BookingService;
 use BookNail\OTPService;
 
-
+$container = $app->getContainer();
 $app->group('/admin/Book', function () use ($app) {
     /**
      * GET admin/GetAllBook2
@@ -52,6 +52,7 @@ $app->group('/admin/Book', function () use ($app) {
         $books = $request->getParsedBody();
         $BooksObj->from_array($books);
         try {
+
             $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
@@ -130,7 +131,7 @@ $app->group('/admin/Book', function () use ($app) {
         $month = $request->getParam('Month');
 
         try {
-            return $response->withJson(new ResultAPI(BookingService::get_price_for_book_month($month,$year), $response->getStatusCode()));
+            return $response->withJson(new ResultAPI(BookingService::get_price_for_book_month($month, $year), $response->getStatusCode()));
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
@@ -159,6 +160,20 @@ $app->group('/admin/Book', function () use ($app) {
 
 
 $app->group('/api/Book', function () use ($app) {
+    /**
+     * GET api/SendRemainder
+     * Summery: Send remainder to books tommorow
+     * @return <Books></Books>
+     */
+    $app->get('/SendRemainder', function (Request $request, Response $response) {
+        try {
+            $resultObj = new ResultAPI(BookingService::send_remainder(), $response->getStatusCode());
+            return $response->withJson($resultObj);
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
+    });
     /**
      * GET api/GetBooksByCustomer
      * Summery: Return Books for customer from context
@@ -195,13 +210,12 @@ $app->group('/api/Book', function () use ($app) {
             $resultObj = new ResultAPI(BookingService::SetBook($BooksObj), $response->getStatusCode());
             $response = $response->withStatus(201);
             return $response->withJson($resultObj);
-
         } catch (Exception $e) {
             $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
-        /**
+    /**
      * PUT api/UpdateBook
      * Summery: Updated books for customer context
      * @return <Books></Books>
@@ -212,13 +226,13 @@ $app->group('/api/Book', function () use ($app) {
         $BooksObj->from_array($books);
         $token = $request->getHeader('Authorization');
         try {
-            $decodeToken = OTPService::verfiy_token($token);
+            //$decodeToken = OTPService::verfiy_token($token);
+            $decodeToken = $GLOBALS['tokenGlobal'];
             $customer = $decodeToken->getAuth();
             if ($decodeToken->hasScope(["read"]) && $customer->CustomerID == $BooksObj->CustomerID) {
                 $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
                 echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
-            }
-            elseif($decodeToken->hasScope(["admin"])){
+            } elseif ($decodeToken->hasScope(["admin"])) {
                 $resultObj = new ResultAPI(BookingService::update_book($BooksObj), $response->getStatusCode());
                 echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
             }
@@ -228,7 +242,3 @@ $app->group('/api/Book', function () use ($app) {
         }
     });
 });
-
-
-
-

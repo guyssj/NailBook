@@ -38,6 +38,19 @@ $app->group('/api/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
+        /**
+     * GET api/RefreshHoliday
+     * Summery: Save all new Holiday in DB
+     * @return mixed
+     */
+    $app->get('/RefreshHoliday', function (Request $request, Response $response) {
+        try {
+            return $response->withJson(new ResultAPI(CalendarService::refresh_holiday(), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
+    });
 
     /**
      * GET api/GetLockHoursByDate

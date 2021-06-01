@@ -23,6 +23,8 @@ class Settings
     public const MIN_AFTER_WORK = "MIN_AFTER_WORK";
     public const SMS_TEMPLATE_APP = "SMS_TEMPLATE_APP";
     public const SMS_TEMPLATE_REMINDER = "SMS_TEMPLATE_REMINDER";
+    public const SMS_TEMPLATE_UPAPP = "SMS_TEMPLATE_UPAPP";
+
 
     public function from_array($array)
     {
