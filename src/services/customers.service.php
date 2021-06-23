@@ -4,6 +4,7 @@ namespace BookNail;
 
 use Exception;
 use PDO;
+
 class CustomersService
 {
     /**
@@ -23,7 +24,7 @@ class CustomersService
                 }
                 return $cusId;
             } else {
-                return 0;
+                throw new ConflictException($cusId);
             }
         } catch (Exception $e) {
             throw $e;
