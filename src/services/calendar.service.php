@@ -40,6 +40,24 @@ class CalendarService
         }
     }
 
+    public static function is_close_day($date)
+    {
+        $closeDay = new CloseDays();
+        try {
+            $stmt = $closeDay->read();
+            $count = $stmt->rowCount();
+            if ($count > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    if ($date == $Date) return true;
+                }
+            }
+            return false;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
     /**
      * 
      * get all CloseDays and holidays from now
@@ -52,6 +70,34 @@ class CalendarService
         $holiday = HolidayService::get_holidays();
 
         return array_merge($closeDays, $holiday);
+    }
+    /**
+     * 
+     * get all CloseDays and holidays from now
+     * 
+     * @return 
+     */
+    public static function get_unfree_days($startDate, $Duration)
+    {
+        $month = date("m", strtotime($startDate));
+        $year = date("Y", strtotime($startDate));
+
+        $endDate  = date($year . '-' . $month . '-t', strtotime($startDate));
+        $unfreeDays = array();
+        while (strtotime($startDate) <= strtotime($endDate)) {
+            $dayofweek = date('w', strtotime($startDate));
+            if ($dayofweek == 6) {
+                $startDate = date("Y-m-d", strtotime("+1 day", strtotime($startDate)));
+                continue;
+            }
+            $results = TimeSlots::RenderSlots($startDate, $Duration);
+            if (count($results) == 0)
+                array_push($unfreeDays, $startDate);
+            $startDate = date("Y-m-d", strtotime("+1 day", strtotime($startDate)));
+        }
+        //if slots count return add the date to array
+        //for etch to all date in month when startDate
+        return $unfreeDays;
     }
 
     /**

@@ -24,6 +24,21 @@ $app->group('/api/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
+    /**
+     * GET api/GetFreeDays
+     * Summery: Return all closedays list
+     * @return Date[]
+     */
+    $app->get('/GetUnFreeDays', function (Request $request, Response $response) {
+        try {
+            $date = $request->getParam('Date');
+            $duration = $request->getParam('Duration');
+            return $response->withJson(new ResultAPI(CalendarService::get_unfree_days($date, $duration), $response->getStatusCode()));
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
+    });
 
     /**
      * GET api/GetHolidayClosed
@@ -38,7 +53,7 @@ $app->group('/api/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
-        /**
+    /**
      * GET api/RefreshHoliday
      * Summery: Save all new Holiday in DB
      * @return mixed
@@ -79,7 +94,7 @@ $app->group('/api/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(BookingService::get_slots_exists($request->getParam('Date'))['DisableSlots']));
         } catch (Exception $e) {
             return $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode())
-                            ->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+                ->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
 });
@@ -121,12 +136,12 @@ $app->group('/admin/Calendar', function () use ($app) {
         }
     });
 
-     /**
+    /**
      * DELETE admin/DeleteLockHours
      * Summery: Delete lock day
      * @return mixed
      */
-    $app->delete('/DeleteLockHours/{id}', function (Request $request, Response $response,array $args) {
+    $app->delete('/DeleteLockHours/{id}', function (Request $request, Response $response, array $args) {
         try {
             $resultObj = new ResultAPI(LockHoursService::delete_lock_hours($args['id']), $response->getStatusCode());
             echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
@@ -135,8 +150,8 @@ $app->group('/admin/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
-    
-     /**
+
+    /**
      * POST admin/AddLockHours
      * Summery: Add lock Hours
      * @return mixed
@@ -152,9 +167,9 @@ $app->group('/admin/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
-    
 
-     /**
+
+    /**
      * POST admin/GetAllLockHours
      * Summery: Get ALL lock Hours
      * @return mixed
@@ -168,6 +183,4 @@ $app->group('/admin/Calendar', function () use ($app) {
             return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
         }
     });
-
-
 });
