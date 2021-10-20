@@ -36,31 +36,57 @@ class UsersService
         }
     }
 
-    public static function sign_in(Users $user)
+    public static function validate_user($userName, $password)
+    {
+        $user = new Users();
+        try {
+            $stmt = $user->read();
+            $count = $stmt->rowCount();
+            if ($count > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    if ($userName == $UserName) {
+                        $userValidate = (object) array(
+                            "id" => (int) $id,
+                            "Password" => $Password,
+                            "UserName" => $UserName,
+                            "RegId" => $RegId
+                        );
+
+                        if (password_verify($password, $userValidate->Password))
+                            return $userValidate;
+                        else
+                            throw new UnauthorizedException("User name or password do not match our records");
+                    }
+                }
+                throw new UnauthorizedException("User name or password do not match our records");
+
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public static function sign_in($userName,$password)
     {
 
         $now = new DateTime();
         $future = new DateTime("now +2 hours");
 
-        $auth = $user->sign_in();
-
-        if (!$auth) throw new UnauthorizedException("User name or password do not match our records");
+        $auth = UsersService::validate_user($userName,$password);
 
         session_start();
 
         $payload = [
             "iat" => $now->getTimeStamp(),
             "exp" => $future->getTimeStamp(),
+            "iss" => "Miritush.com",
             "sub" => $auth,
             "scope" => ["admin"]
         ];
         $token = JWT::encode($payload, $_SERVER['Secret'], "HS384");
         $_SESSION['TokenApi'] = $token;
-
-        $tt = $_SERVER['Secret'];
-
-        $user->token = $token;
-        $user->password = "";
+        $user = new Users($userName,$token);
 
         return $user;
     }

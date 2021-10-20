@@ -79,8 +79,8 @@ class CalendarService
      */
     public static function get_unfree_days($startDate, $Duration)
     {
-        $month = date("m", strtotime($startDate));
-        $year = date("Y", strtotime($startDate));
+        $month = date("m", strtotime("+150 days", strtotime($startDate)));
+        $year = date("Y", strtotime("+150 days", strtotime($startDate)));
 
         $endDate  = date($year . '-' . $month . '-t', strtotime($startDate));
         $unfreeDays = array();

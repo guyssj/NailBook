@@ -77,7 +77,7 @@ $app->group('/api/Calendar', function () use ($app) {
         $resultObj = new ResultAPI();
         $date = $request->getParam('Date');
         $endTimeOfLockHours = 0;
-        $arrayOfTimesLock = $LockObj->get_slots_lock($date);
+        $arrayOfTimesLock = LockHoursService::get_slots_lock($date);
         if (count($arrayOfTimesLock) > 0) {
             $count = count($arrayOfTimesLock) - 1;
 

@@ -27,12 +27,21 @@ class Customer
     public $PhoneNumber;
     public $Color;
     public $Notes;
+    public $Active;
+
 
     public function from_array($array)
     {
         foreach (get_object_vars($this) as $attrName => $attrValue) {
             if (isset($array[$attrName]))
                 $this->{$attrName} = $array[$attrName];
+        }
+    }
+    public function to_object($obj)
+    {
+        foreach (get_object_vars($this) as $attrName => $attrValue) {
+            if (isset($obj->{$attrName}))
+                $this->{$attrName} = $obj->$attrName;
         }
     }
     
@@ -82,7 +91,7 @@ class Customer
 
         try {
             $this->connectDB();
-            $sqlquery = "SELECT CustomerID,FirstName,LastName,PhoneNumber,Color,Notes FROM Customers";
+            $sqlquery = "SELECT CustomerID,FirstName,LastName,PhoneNumber,Color,Notes,Active FROM Customers";
             $stmt = $this->connection->prepare($sqlquery);
             $this->connection->query("set character_set_client='utf8'");
             $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
@@ -101,7 +110,7 @@ class Customer
         try {
             $this->connectDB();
 
-            $sqlquery = "call CustomerUpdate(:CustomerID,:FirstName,:LastName,:PhoneNumber,:Color,:Notes);";
+            $sqlquery = "call CustomerUpdate(:CustomerID,:FirstName,:LastName,:PhoneNumber,:Color,:Notes,:Active);";
 
             $stmt = $this->connection->prepare($sqlquery);
 
@@ -116,6 +125,7 @@ class Customer
             $stmt->bindParam(':PhoneNumber', $this->PhoneNumber);
             $stmt->bindParam(':Color', $this->Color);
             $stmt->bindParam(':Notes', $this->Notes);
+            $stmt->bindParam(':Active', $this->Active);
 
 
             $this->connection->query("set character_set_client='utf8'");
@@ -126,6 +136,28 @@ class Customer
 
         } catch (PDOException $e) {
             $var = (string) $e->getMessage();
+            return $var;
+        }
+    }
+
+    public function update_prop($propName,$value)
+    {
+
+        // $sql = "call CustomerUpdate('$this->CustomerID','$this->FirstName','$this->LastName','$this->PhoneNumber');";
+        try {
+            $this->connectDB();
+
+            $sqlquery = "UPDATE Customers SET $propName = $value WHERE CustomerId =  $this->CustomerID";
+
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            return $stmt;
+
+
+        } catch (PDOException $e) {
+            $var = (string) $e->getMessage(); //Torow
             return $var;
         }
     }

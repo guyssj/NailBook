@@ -62,6 +62,53 @@ class LockHoursService
             throw $e;
         }
     }
+    /**
+     * get hours by date 
+     * @return array(\BookNail\LockHours)
+     */
+    public static function get_hours_by_date($date)
+    {
+        $lockHours = new LockHours();
+        $LockSHours = array();
+        try {
+            $stmt = $lockHours->get_hours_by_date($date);
+            $count = $stmt->rowCount();
+            if ($count > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    $Lock = (object) array(
+                        "idLockHours" => (int) $idLockHours,
+                        "StartDate" => $StartDate,
+                        "StartAt" => $StartAt,
+                        "EndAt" => $EndAt,
+                        "Notes" => $Notes,
+                    );
+
+                    array_push($LockSHours, $Lock);
+                }
+            }
+            return $LockSHours;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public static function get_slots_lock($Date)
+    {
+        $EventBetweenTimes = array();
+        $LockHoursData = LockHoursService::get_hours_by_date($Date);
+        if ($LockHoursData) {
+            foreach ($LockHoursData as $LockHour) {
+                $start_et = $LockHour->StartAt;
+                $end_et = $LockHour->EndAt;
+                for ($i = $start_et; $i < $end_et; $i += 5) //making 5min slot
+                {
+                    // $EventBetweenTimes[] = convertToHoursMins($i, '%02d:%02d');
+                    $EventBetweenTimes[] = $i;
+                }
+            }
+        }
+        return $EventBetweenTimes;
+    }
 
     public static function add_new_lock_hours(LockHours $lockHour)
     {

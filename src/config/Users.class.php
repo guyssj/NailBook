@@ -33,6 +33,12 @@ class Users
                 $this->{$attrName} = $array[$attrName];
         }
     }
+    public function __construct($userName = null, $token = null, $regId = null)
+    {
+        $this->userName = $userName;
+        $this->token = $token;
+        $this->regId = $regId;
+    }
     public function connectDB()
     {
         $this->dbclass = new db();
@@ -48,7 +54,7 @@ class Users
         $mysqli->query("set character_set_client='utf8'");
         $mysqli->query("set character_set_results='utf8'");
         $result = $mysqli->query($sql);
-        $row = cast_query_results($result);
+        $row = cast_query_results($result); //TODO : change mysqli to PDO
         foreach ($row as $key => $value) {
             if (password_verify($this->password, $value['Password'])) {
                 return $value;
@@ -56,6 +62,7 @@ class Users
                 return false;
             }
         }
+        
     }
         /**
      * 

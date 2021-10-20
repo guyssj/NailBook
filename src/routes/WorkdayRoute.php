@@ -5,6 +5,7 @@ use Slim\Http\Response as Response;
 use Slim\Http\Request as Request;
 use BookNail\ResultAPI;
 use BookNail\WorkingHours;
+use BookNail\WorkingHoursService;
 
 /**
  * GET api/GetWorkHoursByDay?dayOfWeek={dayOfWeek}
@@ -18,7 +19,7 @@ $app->get('/api/GetWorkHoursByDay', function (Request $request, Response $respon
     $resultObj = new ResultAPI();
     try {
         $dayOfWeek = $request->getParam('dayOfWeek');
-        $results = $WorkDay->get_hours_by_day($dayOfWeek);
+        $results = WorkingHoursService::get_hours_by_day($dayOfWeek);
         $resultObj->set_result($results);
         $resultObj->set_statusCode($response->getStatusCode());
         echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
@@ -38,9 +39,8 @@ $app->get('/api/GetWorkHoursByDay', function (Request $request, Response $respon
  */
 
 $app->get('/admin/GetAllWorkingHours', function (Request $request, Response $response) {
-    $WorkingHours = new WorkingHours();
     $resultObj = new ResultAPI();
-    $resultObj->set_result($WorkingHours->get_all_hours());
+    $resultObj->set_result(WorkingHoursService::get_all_hours());
     $resultObj->set_statusCode($response->getStatusCode());
     echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
 });

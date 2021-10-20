@@ -18,9 +18,9 @@ class TimeSlots
             return $TimeSlots;
 
         $dayofweek = date('w', strtotime($Date));
-        $WorkingHours = new WorkingHours();
+        //$WorkingHours = new WorkingHours();
 
-        $WorkingHours->get_hours_by_day($dayofweek);
+        $WorkingHours = WorkingHoursService::get_hours_by_day($dayofweek);
         $start = $WorkingHours->openTime;
 
         $end = $WorkingHours->closeTime;
@@ -82,7 +82,7 @@ class TimeSlots
             //change to service
             $WorkDays = new WorkingHours();
             $LockObj = new LockHours();
-            $arrayOfTimesLock = $LockObj->get_slots_lock($Date);
+            $arrayOfTimesLock = LockHoursService::get_slots_lock($Date);
             $endTimeOfLockHours = 0;
             if (count($arrayOfTimesLock) > 0) {
                 $count = count($arrayOfTimesLock) - 1;
@@ -112,10 +112,10 @@ class TimeSlots
     {
         $TimeSlots = array();
         $dayofweek = date('w', strtotime($Date));
-        $WorkingHours = new WorkingHours();
+        //$WorkingHours = new WorkingHours();
         $bookExist = new Books();
 
-        $WorkingHours->get_hours_by_day($dayofweek);
+        $WorkingHours = WorkingHoursService::get_hours_by_day($dayofweek);
         $start = $WorkingHours->openTime;
 
         $end = $WorkingHours->closeTime;

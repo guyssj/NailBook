@@ -52,7 +52,8 @@ class CustomersService
                         "LastName" => $LastName,
                         "PhoneNumber" => $PhoneNumber,
                         "Color" => $Color,
-                        "Notes" => $Notes
+                        "Notes" => $Notes,
+                        "Active" =>boolval($Active)
                     );
 
                     array_push($Customers, $p);
@@ -102,12 +103,27 @@ class CustomersService
 
     public static function find_customer_by_id($ID)
     {
-        $customers = CustomersService::get_customers();
+        $customers = CustomersService::get_customers(); // change to db where
 
         foreach ($customers as $customer) {
             if ($customer->CustomerID == $ID)
                 return (object)$customer;
         }
         throw new Exception("Customer not found", 404);
+    }
+    public static function update_property($id,$prop,$value)
+    {
+        $customer = CustomersService::find_customer_by_id($id); //get from customer from Db with where
+
+        $customerObj = new Customer();
+        $customerObj->to_object($customer);
+
+        //$customerObj->update_prop($prop,$value);
+        $rowCount = $customerObj->update_prop($prop,$value)->rowCount();
+        if ($rowCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

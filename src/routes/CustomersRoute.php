@@ -29,6 +29,23 @@ $app->group('/admin/Customer', function () use ($app) {
         }
     });
 
+        /**
+     * GET admin/GetAllCustomers
+     * Summery: Return all customers list
+     * @return Customer[]
+     */
+    $app->patch('/UpdateProp/{id}', function (Request $request, Response $response, array $args) {
+        try {
+            $id = $args['id'];
+            $keyValue = $request->getParsedBody();
+            $resultObj = new ResultAPI(CustomersService::update_property($id,$keyValue['propName'],$keyValue['propValue']), $response->getStatusCode());
+            echo json_encode($resultObj, JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
+            return $response->withJson(new ResultAPI(null, $response->getStatusCode(), $e->getMessage()));
+        }
+    });
+
     /**
      * GET admin/GetCustomerById
      * Summery: Returns a customer

@@ -158,11 +158,9 @@ class BookingService
         $books = new Books();
         $BooksCustomer = array();
         try {
-            $stmt = $books->read();
+            $stmt = $books->find_by_customer_id($cusId);
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
-                $date = date('Y-m-d', time());
-                if ((int) $CustomerID == $cusId && $StartDate >= $date) {
                     $p = (object) array(
                         "BookID" => (int) $BookID,
                         "StartDate" => $StartDate,
@@ -175,7 +173,7 @@ class BookingService
                     );
 
                     array_push($BooksCustomer, $p);
-                }
+                
             }
             if (count($BooksCustomer) == 0)
                 throw new Exception("Book not found", 404);
@@ -200,29 +198,7 @@ class BookingService
         $books = new Books();
         $BooksCustomer = array();
         try {
-            $stmt = $books->read();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                extract($row);
-                $date = date('Y-m-d', time());
-                if ((int) $CustomerID == $cusId && $StartDate >= $date) {
-                    $p = (object) array(
-                        "BookID" => (int) $BookID,
-                        "StartDate" => $StartDate,
-                        "StartAt" => (int) $StartAt,
-                        "CustomerID" => (int) $CustomerID,
-                        "ServiceID" => (int) $ServiceID,
-                        "Durtion" => (int) $Durtion,
-                        "ServiceTypeID" => (int) $ServiceTypeID,
-                        "Notes" => $Notes,
-                    );
-
-                    array_push($BooksCustomer, $p);
-                }
-            }
-            if (count($BooksCustomer) == 0)
-                throw new Exception("Book not found", 404);
-
-            BookingService::array_sort_by_column($BooksCustomer, 'StartDate');
+            $BooksCustomer = BookingService::get_books_by_customerId($cusId);
             return $BooksCustomer;
         } catch (Exception $e) {
             throw $e;
@@ -231,7 +207,7 @@ class BookingService
 
     /**
      * Find books with date range
-     * @return array[Books]
+     * @return Books[]
      */
     public static function find_books_by_date_range($start, $end)
     {
@@ -266,7 +242,7 @@ class BookingService
     }
     /**
      * Find books by StartDate
-     * @return array[Books]
+     * @return Books[]
      */
     public static function find_books_by_date($date)
     {
@@ -361,10 +337,10 @@ class BookingService
      */
     public static function get_slots_exists($Date)
     {
-        $WorkingHours = new WorkingHours();
+        //$WorkingHours = new WorkingHours();
         $dayofweek = date('w', strtotime($Date));
 
-        $WorkingHours->get_hours_by_day($dayofweek);
+        $WorkingHours = WorkingHoursService::get_hours_by_day($dayofweek);
         $AppBetweenTimes = array();
         $AppNextTimes = array();
         $LockTimesSlots = array();
@@ -373,8 +349,6 @@ class BookingService
         $start = $WorkingHours->openTime;
 
         $end = $WorkingHours->closeTime;
-        //$end = strtotime(convertToHoursMins($WorkingHours->closeTime, '%02d:%02d'));
-
 
         for ($i = $start; $i <= $end; $i += 30) {
             $AllSlotTimesList[] = $i;
@@ -450,7 +424,7 @@ class BookingService
             //end calculating Next & Previous time of booked appointments
 
         } // end if $AllAppointmentsData
-        $LockTimesSlots = LockHours::get_slots_lock($Date);
+        $LockTimesSlots = LockHoursService::get_slots_lock($Date);
 
         $DisableSlotsTimes = array_merge($AppBetweenTimes, $AppNextTimes, $LockTimesSlots);
         unset($AppBetweenTimes);
@@ -466,10 +440,10 @@ class BookingService
      */
     public static function get_slots_exists_for_lock($Date)
     {
-        $WorkingHours = new WorkingHours();
+        //$WorkingHours = new WorkingHours();
         $dayofweek = date('w', strtotime($Date));
 
-        $WorkingHours->get_hours_by_day($dayofweek);
+        $WorkingHours = WorkingHoursService::get_hours_by_day($dayofweek);
         $AppBetweenTimes = array();
         $AppNextTimes = array();
         $LockTimesSlots = array();
@@ -554,7 +528,7 @@ class BookingService
             //end calculating Next & Previous time of booked appointments
 
         } // end if $AllAppointmentsData
-        $LockTimesSlots = LockHours::get_slots_lock($Date);
+        $LockTimesSlots = LockHoursService::get_slots_lock($Date);
 
         $DisableSlotsTimes = array_merge($AppBetweenTimes, $AppNextTimes, $LockTimesSlots);
         unset($AppBetweenTimes);

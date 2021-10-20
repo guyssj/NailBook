@@ -211,6 +211,21 @@ class Books
             throw $e->getMessage();
         }
     }
+    public function find_by_customer_id($customerId)
+    {
+        $sqlquery = "SELECT BookID,StartDate,StartAt,CustomerID,ServiceID,Durtion,ServiceTypeID,Notes FROM Books WHERE CustomerID = $customerId AND StartDate >= DATE(NOW());";
+        try {
+            $this->connectDB();
+            $stmt = $this->connection->prepare($sqlquery);
+            $this->connection->query("set character_set_client='utf8'");
+            $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+            $stmt->execute();
+            $this->connection = null;
+            return $stmt;
+        } catch (PDOException $e) {
+            throw $e->getMessage();
+        }
+    }
 
 
 

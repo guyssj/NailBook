@@ -24,7 +24,7 @@ $app->post('/login', function (Request $request, Response $response) {
     try {
         return $response
                  ->withStatus(200)
-                ->withJson( new ResultAPI(UsersService::sign_in($user),$response->getStatusCode()));
+                ->withJson( new ResultAPI(UsersService::sign_in($input['userName'],$input['key']),$response->getStatusCode()));
 
     } catch (Exception $e) {
         $response = $response->withStatus($e->getCode() <= 0 ? 500 : $e->getCode());
